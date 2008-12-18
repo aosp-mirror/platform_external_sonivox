@@ -32,6 +32,11 @@
 #include "eas_types.h"
 #include "eas.h"
 
+/* for C++ linkage */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* opaque handle types for JET interface */
 typedef struct s_jet_data_tag *JET_DATA_HANDLE;
 
@@ -173,6 +178,11 @@ EAS_PUBLIC EAS_RESULT JET_SetMuteFlag (EAS_DATA_HANDLE easHandle, EAS_INT trackN
  *----------------------------------------------------------------------------
 */
 EAS_PUBLIC EAS_RESULT JET_TriggerClip (EAS_DATA_HANDLE easHandle, EAS_INT clipID);
+
+#ifdef __cplusplus
+} /* end extern "C" */
+#endif
+
 
 #endif
 

@@ -35,6 +35,7 @@ LOCAL_SRC_FILES = \
 	lib_src/eas_xmf.c \
 	lib_src/eas_xmfdata.c \
 	lib_src/wt_22khz.c \
+	lib_src/jet.c \
 	host_src/eas_config.c \
 	host_src/eas_hostmm.c \
 	host_src/eas_main.c \
@@ -70,7 +71,8 @@ LOCAL_COPY_HEADERS_TO := libsonivox
 LOCAL_COPY_HEADERS := \
 	host_src/eas.h \
 	host_src/eas_types.h \
-	host_src/eas_reverb.h
+	host_src/eas_reverb.h \
+	host_src/jet.h
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_SRC_FILES+= \
@@ -94,7 +96,7 @@ LOCAL_COPY_HEADERS += lib_src/ARM_synth_constants_gnu.inc
 endif
 
 LOCAL_SHARED_LIBRARIES := \
-	libutils
+	libutils libcutils
 
 LOCAL_LDLIBS := -lpthread
 
