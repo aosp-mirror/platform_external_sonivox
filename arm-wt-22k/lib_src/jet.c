@@ -548,6 +548,18 @@ EAS_PUBLIC EAS_RESULT JET_Status (EAS_DATA_HANDLE easHandle, S_JET_STATUS *pStat
 
 	pStatus->paused = !(easHandle->jetHandle->flags & JET_FLAGS_PLAYING);
 	pStatus->numQueuedSegments = easHandle->jetHandle->numQueuedSegments;
+	pStatus->currentPlayingSegment = easHandle->jetHandle->playSegment;
+	pStatus->currentQueuedSegment = easHandle->jetHandle->queueSegment;
+	if (pSeg->streamHandle != NULL)
+	{
+		EAS_RESULT result;
+		EAS_I32 location ;
+		if ((result = EAS_GetLocation(easHandle, pSeg->streamHandle, &location)) == EAS_SUCCESS)
+			if(location != 0)
+			{
+				pStatus->location = location;
+			}
+	}
 	return EAS_SUCCESS;
 }
 
@@ -621,8 +633,8 @@ EAS_PUBLIC EAS_RESULT JET_QueueSegment (EAS_DATA_HANDLE easHandle, EAS_INT segme
 		return result;
 	p->state = JET_STATE_OPEN;
 
-	/* if less than 3 segments queued up, prepare file for playback */
-	if (++easHandle->jetHandle->numQueuedSegments < 3)
+	/* if less than SEG_QUEUE_DEPTH segments queued up, prepare file for playback */
+	if (++easHandle->jetHandle->numQueuedSegments < SEG_QUEUE_DEPTH)
 	{
 		result = JET_PrepareSegment(easHandle, easHandle->jetHandle->queueSegment);
 		if (result != EAS_SUCCESS)
@@ -739,14 +751,6 @@ EAS_PUBLIC EAS_RESULT JET_SetMuteFlags (EAS_DATA_HANDLE easHandle, EAS_U32 muteF
 		return EAS_IntSetStrmParam(easHandle, pSeg->streamHandle, PARSER_DATA_MUTE_FLAGS, (EAS_I32) muteFlags);
 	}
 
-	/* if this segment is not repeating, use next segment */
-	if (pSeg->repeatCount == 0)
-	{
-		EAS_INT index;
-		index = JET_NextSegment(easHandle->jetHandle->playSegment);
-		pSeg = &easHandle->jetHandle->segQueue[index];
-		sync = EAS_FALSE;
-	}
 
 	/* check for valid stream state */
 	if (pSeg->state == JET_STATE_CLOSED)
@@ -793,13 +797,6 @@ EAS_PUBLIC EAS_RESULT JET_SetMuteFlag (EAS_DATA_HANDLE easHandle, EAS_INT trackN
 		return EAS_IntSetStrmParam(easHandle, pSeg->streamHandle, PARSER_DATA_MUTE_FLAGS, (EAS_I32) pSeg->muteFlags);
 	}
 
-	/* if this segment is not repeating, use next segment */
-	if (pSeg->repeatCount == 0)
-	{
-		EAS_INT index;
-		index = JET_NextSegment(easHandle->jetHandle->playSegment);
-		pSeg = &easHandle->jetHandle->segQueue[index];
-	}
 
 	/* check for valid stream state */
 	if (pSeg->state == JET_STATE_CLOSED)
@@ -976,6 +973,9 @@ EAS_PUBLIC EAS_RESULT JET_Process (EAS_DATA_HANDLE easHandle)
 						prepareNextSegment = EAS_FALSE;
 					}
 					break;
+
+				case JET_STATE_PAUSED:
+					break;
 					
 				default:
 					{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "JET_Render: Unexpected segment state %d\n", pSeg->state); */ }
@@ -1026,7 +1026,7 @@ void JET_Event (EAS_DATA_HANDLE easHandle, EAS_U32 segTrack, EAS_U8 channel, EAS
 				muteFlag = 1 << ((segTrack & JET_EVENT_TRACK_MASK) >> JET_EVENT_TRACK_SHIFT);
 				
 				/* un-mute the track */
-				if (easHandle->jetHandle->muteQueue[i] & JET_CLIP_TRIGGER_FLAG)
+				if ((easHandle->jetHandle->muteQueue[i] & JET_CLIP_TRIGGER_FLAG) && ((value & 0x40) > 0))
 				{
 					pSeg->muteFlags &= ~muteFlag;
 					easHandle->jetHandle->muteQueue[i] &= ~JET_CLIP_TRIGGER_FLAG;
@@ -1035,8 +1035,11 @@ void JET_Event (EAS_DATA_HANDLE easHandle, EAS_U32 segTrack, EAS_U8 channel, EAS
 				/* mute the track */
 				else
 				{
+					EAS_U32 beforeMute ;
+					beforeMute = pSeg->muteFlags ;
 					pSeg->muteFlags |= muteFlag;
-					easHandle->jetHandle->muteQueue[i] = 0;
+					if (beforeMute != pSeg->muteFlags)
+						easHandle->jetHandle->muteQueue[i] = 0;
 				}
 				EAS_IntSetStrmParam(easHandle, pSeg->streamHandle, PARSER_DATA_MUTE_FLAGS, (EAS_I32) pSeg->muteFlags);
 				return;
@@ -1076,5 +1079,47 @@ void JET_Event (EAS_DATA_HANDLE easHandle, EAS_U32 segTrack, EAS_U8 channel, EAS
 			JET_EVENT_QUEUE_SIZE,
 			event);
 	}
+}
+
+/*----------------------------------------------------------------------------
+ * JET_Clear_Queue()
+ *----------------------------------------------------------------------------
+ * Clears the queue and stops play without a complete shutdown
+ *----------------------------------------------------------------------------
+*/
+EAS_RESULT JET_Clear_Queue(EAS_DATA_HANDLE easHandle)
+{	
+	EAS_INT index;
+	EAS_RESULT result = EAS_SUCCESS;
+
+	{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_INFO, "JET_Clear_Queue\n"); */ }
+		
+	/* pause all playing streams */
+	for (index = 0; index < SEG_QUEUE_DEPTH; index++)
+	{
+		if (easHandle->jetHandle->segQueue[index].state == JET_STATE_PLAYING)
+		{
+			result = EAS_Pause(easHandle, easHandle->jetHandle->segQueue[index].streamHandle);
+			if (result != EAS_SUCCESS)
+				return result;
+				
+			easHandle->jetHandle->segQueue[index].state = JET_STATE_PAUSED;
+		}		
+	}
+	
+	/* close all streams */
+	for (index = 0; index < SEG_QUEUE_DEPTH; index++)
+	{
+		if (easHandle->jetHandle->segQueue[index].streamHandle != NULL)
+		{
+			result = JET_CloseSegment(easHandle, index);
+			if (result != EAS_SUCCESS)
+				return result;
+		}
+	}
+	
+	easHandle->jetHandle->flags &= ~JET_FLAGS_PLAYING;
+	easHandle->jetHandle->playSegment = easHandle->jetHandle->queueSegment = 0;
+	return result;
 }
 
