@@ -44,17 +44,17 @@
 
 /* maximum number of JET events in internal queue */
 #ifndef JET_EVENT_QUEUE_SIZE
-#define JET_EVENT_QUEUE_SIZE		8
+#define JET_EVENT_QUEUE_SIZE		32
 #endif
 
 /* maximum number of JET events in application queue */
 #ifndef APP_EVENT_QUEUE_SIZE
-#define APP_EVENT_QUEUE_SIZE		8
+#define APP_EVENT_QUEUE_SIZE		32
 #endif
 
 /* maximum number of active mute events */
 #ifndef JET_MUTE_QUEUE_SIZE
-#define JET_MUTE_QUEUE_SIZE			4
+#define JET_MUTE_QUEUE_SIZE			8
 #endif
 
 /*----------------------------------------------------------------------------

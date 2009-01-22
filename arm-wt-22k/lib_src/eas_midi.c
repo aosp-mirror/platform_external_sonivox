@@ -239,7 +239,7 @@ static EAS_RESULT ProcessMIDIMessage (S_EAS_DATA *pEASData, S_SYNTH *pSynth, S_M
 	case 0x80:
 		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"NoteOff: %02x %02x %02x\n",
 			pMIDIStream->status, pMIDIStream->d1, pMIDIStream->d2); */ }
-		if (parserMode < eParserModeMute)
+		if (parserMode <= eParserModeMute)
 			VMStopNote(pEASData->pVoiceMgr, pSynth, channel, pMIDIStream->d1, pMIDIStream->d2); 
 		break;
 		
@@ -256,7 +256,7 @@ static EAS_RESULT ProcessMIDIMessage (S_EAS_DATA *pEASData, S_SYNTH *pSynth, S_M
 		{
 			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"NoteOff: %02x %02x %02x\n",
 				pMIDIStream->status, pMIDIStream->d1, pMIDIStream->d2); */ }
-			if (parserMode < eParserModeMute)
+			if (parserMode <= eParserModeMute)
 				VMStopNote(pEASData->pVoiceMgr, pSynth, channel, pMIDIStream->d1, pMIDIStream->d2); 
 		}
 		break;
@@ -269,7 +269,7 @@ static EAS_RESULT ProcessMIDIMessage (S_EAS_DATA *pEASData, S_SYNTH *pSynth, S_M
 	case 0xb0:
 		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"Control: %02x %02x %02x\n",
 			pMIDIStream->status, pMIDIStream->d1, pMIDIStream->d2); */ }
-		if (parserMode < eParserModeMute)
+		if (parserMode <= eParserModeMute)
 			VMControlChange(pEASData->pVoiceMgr, pSynth, channel, pMIDIStream->d1, pMIDIStream->d2);
 #ifdef JET_INTERFACE
 		if (pMIDIStream->jetData & MIDI_FLAGS_JET_CB)
@@ -283,21 +283,21 @@ static EAS_RESULT ProcessMIDIMessage (S_EAS_DATA *pEASData, S_SYNTH *pSynth, S_M
 	case 0xc0:
 		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"Program: %02x %02x\n",
 			pMIDIStream->status, pMIDIStream->d1); */ }
-		if (parserMode < eParserModeMute)
+		if (parserMode <= eParserModeMute)
 			VMProgramChange(pEASData->pVoiceMgr, pSynth, channel, pMIDIStream->d1);
 		break;
 		
 	case 0xd0:
 		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"ChanPres: %02x %02x\n",
 			pMIDIStream->status, pMIDIStream->d1); */ }
-		if (parserMode < eParserModeMute)
+		if (parserMode <= eParserModeMute)
 			VMChannelPressure(pSynth, channel, pMIDIStream->d1);
 		break;
 		
 	case 0xe0:
 		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL,"PBend: %02x %02x %02x\n",
 			pMIDIStream->status, pMIDIStream->d1, pMIDIStream->d2); */ }
-		if (parserMode < eParserModeMute)
+		if (parserMode <= eParserModeMute)
 			VMPitchBend(pSynth, channel, pMIDIStream->d1, pMIDIStream->d2);
 		break;
 		

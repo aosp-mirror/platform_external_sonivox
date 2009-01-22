@@ -52,6 +52,9 @@ typedef struct s_jet_status_tag
 	EAS_INT 	segmentRepeatCount;
 	EAS_INT 	numQueuedSegments;
 	EAS_BOOL 	paused;
+	EAS_I32		location;
+	EAS_U8		currentPlayingSegment;
+	EAS_U8		currentQueuedSegment;
 } S_JET_STATUS;
 
 typedef struct s_jet_event_tag
@@ -178,6 +181,14 @@ EAS_PUBLIC EAS_RESULT JET_SetMuteFlag (EAS_DATA_HANDLE easHandle, EAS_INT trackN
  *----------------------------------------------------------------------------
 */
 EAS_PUBLIC EAS_RESULT JET_TriggerClip (EAS_DATA_HANDLE easHandle, EAS_INT clipID);
+
+/*----------------------------------------------------------------------------
+ * JET_Clear_Queue()
+ *----------------------------------------------------------------------------
+ * Clears all segments in the queue
+ *----------------------------------------------------------------------------
+*/
+EAS_PUBLIC EAS_RESULT JET_Clear_Queue (EAS_DATA_HANDLE easHandle);
 
 #ifdef __cplusplus
 } /* end extern "C" */
