@@ -569,7 +569,7 @@ EAS_PUBLIC EAS_RESULT JET_Status (EAS_DATA_HANDLE easHandle, S_JET_STATUS *pStat
  * Checks for application events
  *----------------------------------------------------------------------------
 */
-EAS_BOOL JET_GetEvent (EAS_DATA_HANDLE easHandle, EAS_U32 *pEventRaw, S_JET_EVENT *pEvent)
+EAS_PUBLIC EAS_BOOL JET_GetEvent (EAS_DATA_HANDLE easHandle, EAS_U32 *pEventRaw, S_JET_EVENT *pEvent)
 {
 	EAS_U32 jetEvent;
 	EAS_BOOL gotEvent;
@@ -1117,6 +1117,12 @@ EAS_RESULT JET_Clear_Queue(EAS_DATA_HANDLE easHandle)
 				return result;
 		}
 	}
+    
+    /* clear all clips */
+    for (index = 0; index < JET_MUTE_QUEUE_SIZE ; index++)
+    {
+        easHandle->jetHandle->muteQueue[index] = 0;
+    }
 	
 	easHandle->jetHandle->flags &= ~JET_FLAGS_PLAYING;
 	easHandle->jetHandle->playSegment = easHandle->jetHandle->queueSegment = 0;

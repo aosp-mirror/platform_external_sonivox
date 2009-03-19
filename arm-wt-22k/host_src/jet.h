@@ -124,7 +124,7 @@ EAS_PUBLIC EAS_RESULT JET_Status (EAS_DATA_HANDLE easHandle, S_JET_STATUS *pStat
  * Checks for application events
  *----------------------------------------------------------------------------
 */
-EAS_BOOL JET_GetEvent (EAS_DATA_HANDLE easHandle, EAS_U32 *pEventRaw, S_JET_EVENT *pEvent);
+EAS_PUBLIC EAS_BOOL JET_GetEvent (EAS_DATA_HANDLE easHandle, EAS_U32 *pEventRaw, S_JET_EVENT *pEvent);
 
 /*----------------------------------------------------------------------------
  * JET_ParseEvent()

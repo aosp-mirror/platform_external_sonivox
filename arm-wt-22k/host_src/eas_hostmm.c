@@ -70,8 +70,11 @@
 #endif
 
 #ifndef EAS_MAX_FILE_HANDLES
-#define EAS_MAX_FILE_HANDLES    32
-#endif
+// 100 max file handles == 3 * (nb tracks(32) + 1 for the segment) + 1 for jet file
+//                         3 == 1(playing segment) + 1(prepared segment)
+//                              + 1(after end of playing segment, before files closed)
+#define EAS_MAX_FILE_HANDLES    100 
+#endif 
 
 /*
  * this structure and the related function are here
