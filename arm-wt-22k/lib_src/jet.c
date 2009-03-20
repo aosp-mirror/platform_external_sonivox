@@ -26,11 +26,10 @@
  *----------------------------------------------------------------------------
 */
 
-//FIXME: remove debug flag for release
-#define LOG_NDEBUG 0
+//#define LOG_NDEBUG 0
 #define LOG_TAG "JET_C"
 
-#define DEBUG_JET
+//#define DEBUG_JET
 
 #include "eas_data.h"
 #include "eas_smf.h"
@@ -38,7 +37,6 @@
 #include "eas_host.h"
 #include "eas_report.h"
 
-#include <cutils/log.h>
 
 /* default configuration */
 static const S_JET_CONFIG jetDefaultConfig = 
