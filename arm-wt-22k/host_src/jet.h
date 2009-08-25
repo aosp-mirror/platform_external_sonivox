@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * jet.h
  *
  * Contents and purpose:
@@ -42,28 +42,28 @@ typedef struct s_jet_data_tag *JET_DATA_HANDLE;
 
 typedef struct s_jet_config_tag
 {
-	EAS_U8		appEventRangeLow;
-	EAS_U8		appEventRangeHigh;
+    EAS_U8      appEventRangeLow;
+    EAS_U8      appEventRangeHigh;
 } S_JET_CONFIG;
 
 typedef struct s_jet_status_tag
 {
-	EAS_INT 	currentUserID;
-	EAS_INT 	segmentRepeatCount;
-	EAS_INT 	numQueuedSegments;
-	EAS_BOOL 	paused;
-	EAS_I32		location;
-	EAS_U8		currentPlayingSegment;
-	EAS_U8		currentQueuedSegment;
+    EAS_INT     currentUserID;
+    EAS_INT     segmentRepeatCount;
+    EAS_INT     numQueuedSegments;
+    EAS_BOOL    paused;
+    EAS_I32     location;
+    EAS_U8      currentPlayingSegment;
+    EAS_U8      currentQueuedSegment;
 } S_JET_STATUS;
 
 typedef struct s_jet_event_tag
 {
-	EAS_U8		segment;
-	EAS_U8		channel;
-	EAS_U8		track;
-	EAS_U8		controller;
-	EAS_U8		value;
+    EAS_U8      segment;
+    EAS_U8      channel;
+    EAS_U8      track;
+    EAS_U8      controller;
+    EAS_U8      value;
 } S_JET_EVENT;
 
 /*----------------------------------------------------------------------------

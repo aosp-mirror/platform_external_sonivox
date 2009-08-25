@@ -59,7 +59,7 @@
 #define EAS_FILE_BUFFER_SIZE    32
 #endif
 
-/* 
+/*
  * this structure and the related function are here
  * to support the ability to create duplicate handles
  * and buffering it in memory. If your system uses
@@ -125,7 +125,7 @@ bool bStopped = true;
 
 // buffer to hold the data
 typedef struct
-{    
+{
     UInt32          uOutBufferLength;
     UInt32          uOutFrames;
     int             ix;
@@ -135,7 +135,7 @@ typedef struct
 
 static S_BUFFER_INFO *pBuf = NULL;
 const S_EAS_LIB_CONFIG *pConfig = NULL;
-    
+
 /*----------------------------------------------------------------------------
  * ResetErrorCounters()
  *----------------------------------------------------------------------------
@@ -154,8 +154,8 @@ EAS_EXPORT void ResetErrorCounters()
 EAS_EXPORT void SetLogCallback (EAS_LOG_FUNC callback)
 {
     logCallback = callback;
-}   
-    
+}
+
 #ifndef _NO_DEBUG_PREPROCESSOR
 static S_DEBUG_MESSAGES debugMessages[] =
 {
@@ -179,7 +179,7 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -211,7 +211,7 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
             vsprintf_s(messageBuffer, sizeof(messageBuffer), fmt, vargs);
 #else
             vsprintf(messageBuffer, debugMessages[i].m_pDebugMsg, vargs);
-#endif          
+#endif
             logCallback(severity, messageBuffer);
             va_end(vargs);
             return;
@@ -228,13 +228,13 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
 void EAS_Report (int severity, const char *fmt, ...)
 {
     va_list vargs;
-    
+
     switch (severity)
     {
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -272,13 +272,13 @@ void EAS_Report (int severity, const char *fmt, ...)
 void EAS_ReportX (int severity, const char *fmt, ...)
 {
     va_list vargs;
-    
+
     switch (severity)
     {
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -339,34 +339,34 @@ EAS_EXPORT EAS_RESULT EAS_SelectLib (EAS_DATA_HANDLE pEASData, EAS_HANDLE stream
 }
 
 // Callback proc
-static OSStatus RenderProc( void                                    *inRefCon, 
-                                        AudioUnitRenderActionFlags  *ioActionFlags, 
-                                        const AudioTimeStamp                *inTimeStamp, 
-                                        UInt32                              inBusNumber, 
-                                        UInt32                              inNumberFrames, 
+static OSStatus RenderProc( void                                    *inRefCon,
+                                        AudioUnitRenderActionFlags  *ioActionFlags,
+                                        const AudioTimeStamp                *inTimeStamp,
+                                        UInt32                              inBusNumber,
+                                        UInt32                              inNumberFrames,
                                         AudioBufferList                 *ioData)
-{   
+{
     // Get the mutex
     pthread_mutex_lock(&mtx);
-    
+
     short* ptrOutL = (short *)ioData->mBuffers[0].mData;
     short* ptrOutR = (short *)ioData->mBuffers[1].mData;
 
     memset(ptrOutL, 0, pBuf->uOutFrames);
     memset(ptrOutR, 0, pBuf->uOutFrames);
-    
+
     // check if there is any data in the buffer
-    if (pBuf->ix == 0 ) 
+    if (pBuf->ix == 0 )
     {
         // Release the mutex and signal the python thread
         pthread_mutex_unlock(&mtx);
         pthread_cond_signal(&cond);
-        return 0;   
+        return 0;
     }
-        
-    // Get a ptr to the data 
+
+    // Get a ptr to the data
     short* pData = pBuf->pData[--(pBuf->ix)];
-    
+
     // Now copy the data
     int i;
     for (i = 0; i < pBuf->uOutFrames; i+=2 )
@@ -374,31 +374,31 @@ static OSStatus RenderProc( void                                    *inRefCon,
         *ptrOutL++ = pData[i];
         *ptrOutR++ = pData[i+1];
     }
-    
+
     // Release the mutex
     pthread_mutex_unlock(&mtx);
     pthread_cond_signal(&cond);
-    
+
     return 0;
 }
 
 EAS_RESULT addData(EAS_PCM *pAudioBuffer)
-{   
+{
     // Copy the data we got from the synth
     memcpy(pBuf->pData[(pBuf->ix)++], pAudioBuffer, 2048);
-    
+
     // Start the output Audio Unit only the first time
     if ( bStopped == true )
     {
         bStopped = false;
         OSStatus err = AudioOutputUnitStart (OutputUnit);
-        if (err) 
-        { 
-            printf ("AudioDeviceStart=%ld\n", err); 
+        if (err)
+        {
+            printf ("AudioDeviceStart=%ld\n", err);
             return EAS_FAILURE;
         }
     }
-    
+
     return EAS_SUCCESS;
 }
 
@@ -407,15 +407,15 @@ EAS_EXPORT EAS_RESULT EAS_RenderWaveOut(EAS_DATA_HANDLE easHandle, EAS_PCM *pAud
 {
     // Get the mutex
     pthread_mutex_lock(&mtx);
-    
+
     // Check if our buffer is full
     while(pBuf->ix == MAX_BUFFERS - 1)
         pthread_cond_wait(&cond, &mtx);
-    
+
     // Call the synth the render a buffer
     EAS_RESULT result = EAS_Render(easHandle, pAudioBuffer, numRequested, pNumGenerated);
     addData( pAudioBuffer );
-    
+
     // Release the mutex
     pthread_mutex_unlock(&mtx);
 
@@ -428,23 +428,23 @@ EAS_EXPORT EAS_RESULT EAS_RenderAuxMixerWaveOut (EAS_DATA_HANDLE easHandle, EAS_
 {
     // Get the mutex
     pthread_mutex_lock(&mtx);
-    
+
     // Check if our buffer is full
-    while(pBuf->ix == MAX_BUFFERS - 1) 
+    while(pBuf->ix == MAX_BUFFERS - 1)
         pthread_cond_wait(&cond, &mtx);
-    
+
     EAS_RESULT result = EAS_RenderAuxMixer(easHandle, pAudioBuffer, pNumGenerated);
-    addData( pAudioBuffer );    
-    
+    addData( pAudioBuffer );
+
     // Release the mutex
     pthread_mutex_unlock(&mtx);
-    
+
     return result;
 }
 #endif
 
 EAS_EXPORT EAS_RESULT OpenWaveOutDevice(EAS_INT devNum, EAS_INT sampleRate, EAS_INT maxBufSize)
-{   
+{
     // Open the default output unit
     ComponentDescription desc;
     desc.componentType = kAudioUnitType_Output;
@@ -452,18 +452,18 @@ EAS_EXPORT EAS_RESULT OpenWaveOutDevice(EAS_INT devNum, EAS_INT sampleRate, EAS_
     desc.componentManufacturer = kAudioUnitManufacturer_Apple;
     desc.componentFlags = 0;
     desc.componentFlagsMask = 0;
-    
+
     Component comp = FindNextComponent(NULL, &desc);
-    if (comp == NULL) 
-    { 
-        printf ("Could find the default output unit!!!\n"); 
+    if (comp == NULL)
+    {
+        printf ("Could find the default output unit!!!\n");
         return EAS_FAILURE;
     }
-    
+
     OSStatus err = OpenAComponent(comp, &OutputUnit);
-    if (comp == NULL) 
-    { 
-        printf ("OpenAComponent=%ld\n", err); 
+    if (comp == NULL)
+    {
+        printf ("OpenAComponent=%ld\n", err);
         return EAS_FAILURE;
     }
 
@@ -472,106 +472,106 @@ EAS_EXPORT EAS_RESULT OpenWaveOutDevice(EAS_INT devNum, EAS_INT sampleRate, EAS_
     auRenderCallback.inputProc = RenderProc;
     auRenderCallback.inputProcRefCon = NULL;
 
-    err = AudioUnitSetProperty (OutputUnit, 
-                                kAudioUnitProperty_SetRenderCallback, 
+    err = AudioUnitSetProperty (OutputUnit,
+                                kAudioUnitProperty_SetRenderCallback,
                                 kAudioUnitScope_Input,
-                                0, 
-                                &auRenderCallback, 
+                                0,
+                                &auRenderCallback,
                                 sizeof(auRenderCallback));
-    if (err) 
-    { 
-        printf ("AudioUnitSetProperty-CB=%ld\n", err); 
-        return EAS_FAILURE;; 
+    if (err)
+    {
+        printf ("AudioUnitSetProperty-CB=%ld\n", err);
+        return EAS_FAILURE;;
     }
 
     pConfig = EAS_Config();
-    
+
     // The synth engine already uses short* for the buffers so let CoreAudio do any conversions if needed
     if (sampleRate != 0)
-        streamFormat.mSampleRate = sampleRate;      
+        streamFormat.mSampleRate = sampleRate;
     else
         streamFormat.mSampleRate = pConfig->sampleRate;
-    
-    streamFormat.mFormatID =    kAudioFormatLinearPCM;          
-    streamFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger 
+
+    streamFormat.mFormatID =    kAudioFormatLinearPCM;
+    streamFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger
                                 | kAudioFormatFlagsNativeEndian
                                 | kLinearPCMFormatFlagIsPacked
                                 | kAudioFormatFlagIsNonInterleaved;
-                                
-    streamFormat.mBytesPerPacket   = 2; 
-    streamFormat.mFramesPerPacket  = 1; 
-    streamFormat.mBytesPerFrame    = 2;     
-    streamFormat.mChannelsPerFrame = 2; 
-    streamFormat.mBitsPerChannel   = 16;    
-    
+
+    streamFormat.mBytesPerPacket   = 2;
+    streamFormat.mFramesPerPacket  = 1;
+    streamFormat.mBytesPerFrame    = 2;
+    streamFormat.mChannelsPerFrame = 2;
+    streamFormat.mBitsPerChannel   = 16;
+
     err = AudioUnitSetProperty (OutputUnit,
                                 kAudioUnitProperty_StreamFormat,
                                 kAudioUnitScope_Input,
                                 0,
                                 &streamFormat,
                                 sizeof(AudioStreamBasicDescription));
-    if (err) 
-    { 
-        printf ("AudioUnitSetProperty-SF= %4.4s, %ld\n", (char*)&err, err); 
-        return EAS_FAILURE; 
-    }
-    
-     // Initialize
-    err = AudioUnitInitialize(OutputUnit);
-    if (err) 
-    { 
-        printf ("AudioUnitInitialize = %ld\n", err); 
+    if (err)
+    {
+        printf ("AudioUnitSetProperty-SF= %4.4s, %ld\n", (char*)&err, err);
         return EAS_FAILURE;
     }
-    
+
+     // Initialize
+    err = AudioUnitInitialize(OutputUnit);
+    if (err)
+    {
+        printf ("AudioUnitInitialize = %ld\n", err);
+        return EAS_FAILURE;
+    }
+
     pBuf = (S_BUFFER_INFO *) malloc(sizeof(S_BUFFER_INFO));
     if( !pBuf )
         return EAS_FAILURE;
-        
+
     pBuf->uOutBufferLength = pConfig->mixBufferSize * streamFormat.mBitsPerChannel / 2;
     UInt32 uDataSize = sizeof(pBuf->uOutBufferLength);
-    
+
     err = AudioUnitSetProperty(OutputUnit, kAudioDevicePropertyBufferSize, kAudioUnitScope_Output, 0, &pBuf->uOutBufferLength, uDataSize);
-    if (err) 
-    { 
-        printf ("AudioUnitSetProperty = %ld\n", err); 
+    if (err)
+    {
+        printf ("AudioUnitSetProperty = %ld\n", err);
         return EAS_FAILURE;
     }
-    
+
     err = AudioUnitGetProperty(OutputUnit, kAudioDevicePropertyBufferSize, kAudioUnitScope_Output, 0, &pBuf->uOutBufferLength, &uDataSize);
-    if (err) 
-    { 
-        printf ("AudioUnitGetProperty = %ld\n", err); 
+    if (err)
+    {
+        printf ("AudioUnitGetProperty = %ld\n", err);
         return EAS_FAILURE;
     }
-    
+
     pBuf->uLength = pBuf->uOutBufferLength;
     int i;
     for ( i = 0; i < MAX_BUFFERS; i++)
         pBuf->pData[i]   = malloc(pBuf->uLength);
-    
+
     pBuf->uOutBufferLength /= pConfig->numChannels;
     pBuf->uOutFrames = pBuf->uOutBufferLength / sizeof(short);
 
     pBuf->ix = 0;
-    
+
     // Init the stop flag
     bStopped = true;
-    
+
     int result = pthread_mutex_init(&mtx, NULL);
-    if (result) 
+    if (result)
     {
         printf("pthread_mutex_init failed\n");
         return EAS_FAILURE;
     }
 
     result = pthread_cond_init(&cond, NULL);
-    if (result) 
+    if (result)
     {
         printf("pthread_cond_init failed\n");
         return EAS_FAILURE;
     }
-    
+
     // Done
     return EAS_SUCCESS;
 }
@@ -584,14 +584,14 @@ EAS_EXPORT EAS_RESULT StartStream()
     if ( bStopped == true )
     {
         err = AudioOutputUnitStart (OutputUnit);
-        if (err) 
-        { 
-            printf ("AudioOutputUnitStart=%ld\n", err); 
+        if (err)
+        {
+            printf ("AudioOutputUnitStart=%ld\n", err);
             return EAS_FAILURE;
         }
         bStopped = false;
     }
-    
+
     return EAS_SUCCESS;
 }
 
@@ -599,28 +599,28 @@ EAS_EXPORT EAS_RESULT StartStream()
 EAS_EXPORT EAS_RESULT CloseWaveOutDevice()
 {
     OSStatus err;
-    
+
     pthread_mutex_lock(&mtx);
     if( false == bStopped )
-    {       
+    {
         AudioOutputUnitStop (OutputUnit);
-        bStopped = true;    
-    
+        bStopped = true;
+
         err = AudioUnitUninitialize (OutputUnit);
-        if (err) 
-        { 
-            printf ("AudioUnitUninitialize=%ld\n", err); 
+        if (err)
+        {
+            printf ("AudioUnitUninitialize=%ld\n", err);
             return EAS_FAILURE;
         }
-        
+
         CloseComponent (OutputUnit);
         int i = 0;
         for(i; i < MAX_BUFFERS; i++)
             free(pBuf->pData[i]);
-        
+
         free(pBuf);
     }
-    
+
     pthread_mutex_unlock(&mtx);
     return EAS_SUCCESS;
 }
@@ -691,7 +691,7 @@ EAS_RESULT EAS_HWInit (EAS_HW_DATA_HANDLE *pHWInstData)
     *pHWInstData = malloc(sizeof(EAS_HW_INST_DATA));
     if (!(*pHWInstData))
         return EAS_ERROR_MALLOC_FAILED;
-    
+
     EAS_HWMemSet(*pHWInstData, 0, sizeof(EAS_HW_INST_DATA));
     return EAS_SUCCESS;
 }
@@ -715,7 +715,7 @@ EAS_RESULT EAS_HWShutdown (EAS_HW_DATA_HANDLE hwInstData)
 #if defined(_DEBUG) && !defined(MSC)
     HeapCheck();
 #endif
-    
+
     return EAS_SUCCESS;
 }
 
@@ -759,7 +759,7 @@ void EAS_HWFree (EAS_HW_DATA_HANDLE hwInstData, void *p)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount) 
+void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
 {
     return memcpy(dest, src, (size_t) amount);
 }
@@ -772,7 +772,7 @@ void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount) 
+void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
 {
     return memset(dest, val, (size_t) amount);
 }
@@ -785,7 +785,7 @@ void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount) 
+EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount)
 {
     return (EAS_I32) memcmp(s1, s2, (size_t) amount);
 }
@@ -832,7 +832,7 @@ EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locat
                 return result;
             }
 
-#ifdef DEBUG_FILE_IO            
+#ifdef DEBUG_FILE_IO
             EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWOpenFile: Open file %d\n", i);
 #endif
 
@@ -891,7 +891,7 @@ EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 
     *pBytesRead = 0;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -906,7 +906,7 @@ EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         temp = file->bytesInBuffer - file->readIndex;
         if (temp > bytesLeft)
             temp = bytesLeft;
-        
+
         /* copy data from buffer */
         EAS_HWMemCpy(p, &file->buffer[file->readIndex], temp);
         *pBytesRead += temp;
@@ -973,7 +973,7 @@ EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
 {
     EAS_RESULT result;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1055,7 +1055,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         *((EAS_U32*) p) = ((EAS_U32) c[0] << 24) | ((EAS_U32) c[1] << 16) | ((EAS_U32) c[2] << 8) | c[3];
     else
         *((EAS_U32*) p) = ((EAS_U32) c[3] << 24) | ((EAS_U32) c[2] << 16) | ((EAS_U32) c[1] << 8) | c[0];
-    
+
     return EAS_SUCCESS;
 }
 
@@ -1063,7 +1063,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1071,10 +1071,10 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pPosition)
 {
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pPosition = file->filePos;
     return EAS_SUCCESS;
 }
@@ -1092,7 +1092,7 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 {
     EAS_I32 newIndex;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1137,7 +1137,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
     EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeekOfs: Seeking to new position %d\n", file->filePos + position);
 #endif
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1175,7 +1175,7 @@ EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
 {
     long pos;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1251,7 +1251,7 @@ EAS_RESULT EAS_HWCloseFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file1
     EAS_HW_FILE *file2,*dupFile;
     int i;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file1->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1354,14 +1354,14 @@ EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locat
 
             /* read the file into memory */
             temp = (int) fread(file->buffer, (size_t) file->fileSize, 1, ioFile);
-            
+
             /* close the file - don't need it any more */
             fclose(ioFile);
 
             /* check for error reading file */
             if (temp != 1)
                 return EAS_ERROR_FILE_READ_FAILED;
-            
+
             /* initialize some values */
             file->filePos = 0;
             file->dup = EAS_FALSE;
@@ -1450,7 +1450,7 @@ EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
  *
  * EAS_HWGetWord
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1471,7 +1471,7 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
         *((EAS_U16*) p) = ((EAS_U16) c1 << 8) | c2;
     else
         *((EAS_U16*) p) = ((EAS_U16) c2 << 8) | c1;
-    
+
     return EAS_SUCCESS;
 }
 
@@ -1479,7 +1479,7 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
  *
  * EAS_HWGetDWord
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1504,7 +1504,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         *((EAS_U32*) p) = ((EAS_U32) c1 << 24) | ((EAS_U32) c2 << 16) | ((EAS_U32) c3 << 8) | c4;
     else
         *((EAS_U32*) p)= ((EAS_U32) c4 << 24) | ((EAS_U32) c3 << 16) | ((EAS_U32) c2 << 8) | c1;
-    
+
     return EAS_SUCCESS;
 }
 
@@ -1512,7 +1512,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1527,7 +1527,7 @@ EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, E
     /* make sure we have a valid handle */
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pPosition = file->filePos;
     return EAS_SUCCESS;
 } /* end EAS_HWFilePos */
@@ -1552,7 +1552,7 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* validate new position */ 
+    /* validate new position */
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;
 
@@ -1581,7 +1581,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* determine the file position */   
+    /* determine the file position */
     position += file->filePos;
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;
@@ -1602,7 +1602,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
 /*lint -esym(715, hwInstData) available for customer use */
 EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pLength)
 {
-    
+
     /* simulate failure */
     if (errorConditions[eLengthError])
         return EAS_FAILURE;
@@ -1610,7 +1610,7 @@ EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
     /* make sure we have a valid handle */
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pLength = file->fileSize;
     return EAS_SUCCESS;
 }

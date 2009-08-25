@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_wavefile.h
  *
  * Contents and purpose:
@@ -42,21 +42,21 @@
 */
 typedef struct s_wave_state_tag
 {
-	EAS_FILE_HANDLE	fileHandle;
-	EAS_PCM_HANDLE	streamHandle;
-	S_METADATA_CB	metadata;
-	EAS_U32			time;
-	EAS_I32			fileOffset;
-	EAS_I32			audioOffset;
-	EAS_I32			mediaLength;
-	EAS_U32			audioSize;
-	EAS_U32			flags;
-	EAS_I16			fileType;
+    EAS_FILE_HANDLE fileHandle;
+    EAS_PCM_HANDLE  streamHandle;
+    S_METADATA_CB   metadata;
+    EAS_U32         time;
+    EAS_I32         fileOffset;
+    EAS_I32         audioOffset;
+    EAS_I32         mediaLength;
+    EAS_U32         audioSize;
+    EAS_U32         flags;
+    EAS_I16         fileType;
 #ifdef MMAPI_SUPPORT
-	EAS_VOID_PTR	fmtChunk;
+    EAS_VOID_PTR    fmtChunk;
 #endif
-	EAS_I32			infoChunkPos;
-	EAS_I32			infoChunkSize;
+    EAS_I32         infoChunkPos;
+    EAS_I32         infoChunkSize;
 } S_WAVE_STATE;
 
 #endif

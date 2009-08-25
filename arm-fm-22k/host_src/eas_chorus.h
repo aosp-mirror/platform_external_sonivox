@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_chorus.h
  *
  * Contents and purpose:
@@ -34,19 +34,19 @@
 /* enumerated parameter settings for Chorus effect */
 typedef enum
 {
-	EAS_PARAM_CHORUS_BYPASS,
-	EAS_PARAM_CHORUS_PRESET,
-	EAS_PARAM_CHORUS_RATE,
-	EAS_PARAM_CHORUS_DEPTH,
-	EAS_PARAM_CHORUS_LEVEL
+    EAS_PARAM_CHORUS_BYPASS,
+    EAS_PARAM_CHORUS_PRESET,
+    EAS_PARAM_CHORUS_RATE,
+    EAS_PARAM_CHORUS_DEPTH,
+    EAS_PARAM_CHORUS_LEVEL
 } E_CHORUS_PARAMS;
 
 typedef enum
 {
-	EAS_PARAM_CHORUS_PRESET1,
-	EAS_PARAM_CHORUS_PRESET2,
-	EAS_PARAM_CHORUS_PRESET3,
-	EAS_PARAM_CHORUS_PRESET4
+    EAS_PARAM_CHORUS_PRESET1,
+    EAS_PARAM_CHORUS_PRESET2,
+    EAS_PARAM_CHORUS_PRESET3,
+    EAS_PARAM_CHORUS_PRESET4
 } E_CHORUS_PRESETS;
 
 

@@ -57,7 +57,7 @@
 #define EAS_FILE_BUFFER_SIZE    32
 #endif
 
-/* 
+/*
  * this structure and the related function are here
  * to support the ability to create duplicate handles
  * and buffering it in memory. If your system uses
@@ -136,8 +136,8 @@ EAS_EXPORT void ResetErrorCounters()
 EAS_EXPORT void SetLogCallback (EAS_LOG_FUNC callback)
 {
     logCallback = callback;
-}   
-    
+}
+
 #ifndef _NO_DEBUG_PREPROCESSOR
 static S_DEBUG_MESSAGES debugMessages[] =
 {
@@ -161,7 +161,7 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -193,7 +193,7 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
             vsprintf_s(messageBuffer, sizeof(messageBuffer), fmt, vargs);
 #else
             vsprintf(messageBuffer, debugMessages[i].m_pDebugMsg, vargs);
-#endif          
+#endif
             logCallback(severity, messageBuffer);
             va_end(vargs);
             return;
@@ -210,13 +210,13 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
 void EAS_Report (int severity, const char *fmt, ...)
 {
     va_list vargs;
-    
+
     switch (severity)
     {
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -254,13 +254,13 @@ void EAS_Report (int severity, const char *fmt, ...)
 void EAS_ReportX (int severity, const char *fmt, ...)
 {
     va_list vargs;
-    
+
     switch (severity)
     {
         case _EAS_SEVERITY_FATAL:
             eas_fatalErrors++;
             break;
-            
+
         case _EAS_SEVERITY_ERROR:
             eas_errors++;
             break;
@@ -386,7 +386,7 @@ EAS_RESULT EAS_HWInit (EAS_HW_DATA_HANDLE *pHWInstData)
     *pHWInstData = malloc(sizeof(EAS_HW_INST_DATA));
     if (!(*pHWInstData))
         return EAS_ERROR_MALLOC_FAILED;
-    
+
     EAS_HWMemSet(*pHWInstData, 0, sizeof(EAS_HW_INST_DATA));
     return EAS_SUCCESS;
 }
@@ -410,7 +410,7 @@ EAS_RESULT EAS_HWShutdown (EAS_HW_DATA_HANDLE hwInstData)
 #if defined(_DEBUG) && !defined(MSC)
     HeapCheck();
 #endif
-    
+
     return EAS_SUCCESS;
 }
 
@@ -454,7 +454,7 @@ void EAS_HWFree (EAS_HW_DATA_HANDLE hwInstData, void *p)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount) 
+void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
 {
     return memcpy(dest, src, (size_t) amount);
 }
@@ -467,7 +467,7 @@ void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount) 
+void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
 {
     return memset(dest, val, (size_t) amount);
 }
@@ -480,7 +480,7 @@ void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount) 
+EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount)
 {
     return (EAS_I32) memcmp(s1, s2, (size_t) amount);
 }
@@ -527,7 +527,7 @@ EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locat
                 return result;
             }
 
-#ifdef DEBUG_FILE_IO            
+#ifdef DEBUG_FILE_IO
             EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWOpenFile: Open file %d\n", i);
 #endif
 
@@ -586,7 +586,7 @@ EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 
     *pBytesRead = 0;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -601,7 +601,7 @@ EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         temp = file->bytesInBuffer - file->readIndex;
         if (temp > bytesLeft)
             temp = bytesLeft;
-        
+
         /* copy data from buffer */
         EAS_HWMemCpy(p, &file->buffer[file->readIndex], temp);
         *pBytesRead += temp;
@@ -668,7 +668,7 @@ EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
 {
     EAS_RESULT result;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -750,7 +750,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         *((EAS_U32*) p) = ((EAS_U32) c[0] << 24) | ((EAS_U32) c[1] << 16) | ((EAS_U32) c[2] << 8) | c[3];
     else
         *((EAS_U32*) p) = ((EAS_U32) c[3] << 24) | ((EAS_U32) c[2] << 16) | ((EAS_U32) c[1] << 8) | c[0];
-    
+
     return EAS_SUCCESS;
 }
 
@@ -758,7 +758,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -766,10 +766,10 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pPosition)
 {
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pPosition = file->filePos;
     return EAS_SUCCESS;
 }
@@ -787,7 +787,7 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 {
     EAS_I32 newIndex;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -832,7 +832,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
     EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeekOfs: Seeking to new position %d\n", file->filePos + position);
 #endif
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -870,7 +870,7 @@ EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
 {
     long pos;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -946,7 +946,7 @@ EAS_RESULT EAS_HWCloseFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file1
     EAS_HW_FILE *file2,*dupFile;
     int i;
 
-    /* check handle integrity */    
+    /* check handle integrity */
     if (file1->pFile == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
@@ -1049,14 +1049,14 @@ EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locat
 
             /* read the file into memory */
             temp = (int) fread(file->buffer, (size_t) file->fileSize, 1, ioFile);
-            
+
             /* close the file - don't need it any more */
             fclose(ioFile);
 
             /* check for error reading file */
             if (temp != 1)
                 return EAS_ERROR_FILE_READ_FAILED;
-            
+
             /* initialize some values */
             file->filePos = 0;
             file->dup = EAS_FALSE;
@@ -1145,7 +1145,7 @@ EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
  *
  * EAS_HWGetWord
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1166,7 +1166,7 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
         *((EAS_U16*) p) = ((EAS_U16) c1 << 8) | c2;
     else
         *((EAS_U16*) p) = ((EAS_U16) c2 << 8) | c1;
-    
+
     return EAS_SUCCESS;
 }
 
@@ -1174,7 +1174,7 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
  *
  * EAS_HWGetDWord
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1199,7 +1199,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
         *((EAS_U32*) p) = ((EAS_U32) c1 << 24) | ((EAS_U32) c2 << 16) | ((EAS_U32) c3 << 8) | c4;
     else
         *((EAS_U32*) p)= ((EAS_U32) c4 << 24) | ((EAS_U32) c3 << 16) | ((EAS_U32) c2 << 8) | c1;
-    
+
     return EAS_SUCCESS;
 }
 
@@ -1207,7 +1207,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -1222,7 +1222,7 @@ EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, E
     /* make sure we have a valid handle */
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pPosition = file->filePos;
     return EAS_SUCCESS;
 } /* end EAS_HWFilePos */
@@ -1247,7 +1247,7 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* validate new position */ 
+    /* validate new position */
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;
 
@@ -1276,7 +1276,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* determine the file position */   
+    /* determine the file position */
     position += file->filePos;
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;
@@ -1297,7 +1297,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
 /*lint -esym(715, hwInstData) available for customer use */
 EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pLength)
 {
-    
+
     /* simulate failure */
     if (errorConditions[eLengthError])
         return EAS_FAILURE;
@@ -1305,7 +1305,7 @@ EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
     /* make sure we have a valid handle */
     if (file->buffer == NULL)
         return EAS_ERROR_INVALID_HANDLE;
-    
+
     *pLength = file->fileSize;
     return EAS_SUCCESS;
 }

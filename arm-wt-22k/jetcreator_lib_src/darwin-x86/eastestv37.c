@@ -21,7 +21,7 @@
  * Articulations
  *----------------------------------------------------------------------------
 */
-const S_ARTICULATION testArticulations[] = 
+const S_ARTICULATION testArticulations[] =
 {
     { /* articulation 0 */
         { 32767, 0, 32767, 0 },
@@ -514,7 +514,7 @@ const S_ARTICULATION testArticulations[] =
  * Regions
  *----------------------------------------------------------------------------
 */
-const S_WT_REGION testRegions[] = 
+const S_WT_REGION testRegions[] =
 {
     { { 32769, 0, 127 }, -6000, 32767, 101, 301, 4, 0 }, /* region 0 */
     { { 1, 0, 60 }, -6000, 32767, 101, 301, 4, 2 }, /* region 1 */
@@ -674,7 +674,7 @@ const S_WT_REGION testRegions[] =
  * Programs
  *----------------------------------------------------------------------------
 */
-const S_PROGRAM testPrograms[] = 
+const S_PROGRAM testPrograms[] =
 {
     { 0, 41 } /* program 0 */,
     { 1, 10 } /* program 1 */,
@@ -705,7 +705,7 @@ const S_PROGRAM testPrograms[] =
  *----------------------------------------------------------------------------
 */
 
-const EAS_SAMPLE testSamples[] = 
+const EAS_SAMPLE testSamples[] =
 {
       -1,   -1,   -1,   -1,    0,    1,    2,    3,    4,    5,    6,    7,    9,   10,   11,   12,
       13,   13,   14,   13,   13,   13,   12,   12,   10,    9,    8,    6,    5,    3,    2,    0,
@@ -951,12 +951,12 @@ const EAS_SAMPLE testSamples[] =
     -124, -102,  -57,  -11,    0
 };
 
-const EAS_U32 testSampleLengths[] = 
+const EAS_U32 testSampleLengths[] =
 {
     1568, 784, 642, 392, 302, 172
 };
 
-const EAS_U32 testSampleOffsets[] = 
+const EAS_U32 testSampleOffsets[] =
 {
     0x00000000, 0x00000620, 0x00000930, 0x00000bb2, 0x00000d3a, 0x00000e68
 };
@@ -965,7 +965,7 @@ const EAS_U32 testSampleOffsets[] =
  * S_EAS
  *----------------------------------------------------------------------------
 */
-const S_EAS easTestLib = 
+const S_EAS easTestLib =
 {
     0x01534145,
     0x00105622,

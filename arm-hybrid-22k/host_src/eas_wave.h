@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_wave.h
  *
  * Contents and purpose:
  * Writes output to a .WAV file
- *			
+ *
  * DO NOT MODIFY THIS FILE!
  *
  * Copyright Sonic Network Inc. 2005
@@ -36,31 +36,31 @@
 
 /* .WAV file format chunk */
 typedef struct {
-	EAS_U16 wFormatTag;
-	EAS_U16 nChannels;
-	EAS_U32 nSamplesPerSec;
-	EAS_U32 nAvgBytesPerSec;
-	EAS_U16 nBlockAlign;
-	EAS_U16 wBitsPerSample;
+    EAS_U16 wFormatTag;
+    EAS_U16 nChannels;
+    EAS_U32 nSamplesPerSec;
+    EAS_U32 nAvgBytesPerSec;
+    EAS_U16 nBlockAlign;
+    EAS_U16 wBitsPerSample;
 } FMT_CHUNK;
 
 /* .WAV file header */
 typedef struct {
-	EAS_U32 nRiffTag;
-	EAS_U32 nRiffSize;
-	EAS_U32 nWaveTag;
-	EAS_U32 nFmtTag;
-	EAS_U32 nFmtSize;
-	FMT_CHUNK fc;
-	EAS_U32 nDataTag;
-	EAS_U32 nDataSize;
+    EAS_U32 nRiffTag;
+    EAS_U32 nRiffSize;
+    EAS_U32 nWaveTag;
+    EAS_U32 nFmtTag;
+    EAS_U32 nFmtSize;
+    FMT_CHUNK fc;
+    EAS_U32 nDataTag;
+    EAS_U32 nDataSize;
 } WAVE_HEADER;
 
 typedef struct {
-	WAVE_HEADER wh;
-	FILE *file;
-	EAS_BOOL write;
-	EAS_U32 dataSize;
+    WAVE_HEADER wh;
+    FILE *file;
+    EAS_BOOL write;
+    EAS_U32 dataSize;
 } WAVE_FILE;
 
 WAVE_FILE *WaveFileCreate (const char *filename, EAS_I32 nChannels, EAS_I32 nSamplesPerSec, EAS_I32 wBitsPerSample);

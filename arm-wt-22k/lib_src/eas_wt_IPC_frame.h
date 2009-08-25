@@ -43,19 +43,19 @@
  * S_WT_FRAME
  *
  * This structure contains the common parameters that are updated
-  *for each frame of audio. 
+  *for each frame of audio.
  *----------------------------------------------------------------------------
 */
 typedef struct s_wt_frame_tag
 {
-	EAS_I32			gainTarget;
-	EAS_I32			phaseIncrement;
+    EAS_I32         gainTarget;
+    EAS_I32         phaseIncrement;
 
 #if defined(_FILTER_ENABLED)
-	EAS_I32			k;
-	EAS_I32			b1;
-	EAS_I32			b2;
-#endif	
+    EAS_I32         k;
+    EAS_I32         b1;
+    EAS_I32         b2;
+#endif
 } S_WT_FRAME;
 
 /*----------------------------------------------------------------------------
@@ -66,16 +66,16 @@ typedef struct s_wt_frame_tag
 */
 typedef struct s_wt_config_tag
 {
-	EAS_U32				loopEnd;				/* points to last PCM sample (not 1 beyond last) */
-	EAS_U32				loopStart;				/* points to first sample at start of loop */
-	EAS_U32				phaseAccum;				/* current sample, integer portion of phase */
+    EAS_U32             loopEnd;                /* points to last PCM sample (not 1 beyond last) */
+    EAS_U32             loopStart;              /* points to first sample at start of loop */
+    EAS_U32             phaseAccum;             /* current sample, integer portion of phase */
 
-#if	(NUM_OUTPUT_CHANNELS == 2)
-	EAS_I16				gainLeft;				/* left channel gain */
-	EAS_I16				gainRight;				/* right channel gain */
+#if (NUM_OUTPUT_CHANNELS == 2)
+    EAS_I16             gainLeft;               /* left channel gain */
+    EAS_I16             gainRight;              /* right channel gain */
 #endif
 
-	EAS_I16				gain;					/* current voice gain */
+    EAS_I16             gain;                   /* current voice gain */
 } S_WT_CONFIG;
 
 #endif

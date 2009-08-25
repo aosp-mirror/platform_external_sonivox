@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_synthcfg.h
  *
  * Contents and purpose:
  * Defines for various synth configurations
- *			
+ *
  * Copyright Sonic Network Inc. 2004, 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");

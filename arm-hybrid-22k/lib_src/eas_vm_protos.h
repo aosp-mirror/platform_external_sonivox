@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_vm_protos.h
  *
  * Contents and purpose:
  * Declarations, interfaces, and prototypes for voice manager.
- *			
+ *
  * Copyright Sonic Network Inc. 2004
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,11 +37,11 @@
 /*----------------------------------------------------------------------------
  * VMInitialize()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
- * Inputs: 
+ * Purpose:
+ *
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  *
  *----------------------------------------------------------------------------
@@ -51,11 +51,11 @@ EAS_RESULT VMInitialize (S_EAS_DATA *pEASData);
 /*----------------------------------------------------------------------------
  * VMInitMIDI()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
- * Inputs: 
+ * Purpose:
+ *
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  *
  *----------------------------------------------------------------------------
@@ -93,15 +93,15 @@ void VMResetControllers (S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMInitMIPTable()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Initialize the SP-MIDI MIP table
  *
  * Inputs:
- * pEASData			- pointer to synthesizer instance data
- * mute				- EAS_FALSE to unmute channels, EAS_TRUE to mute
- *		
+ * pEASData         - pointer to synthesizer instance data
+ * mute             - EAS_FALSE to unmute channels, EAS_TRUE to mute
+ *
  * Outputs:
- * 
+ *
  *
  * Side Effects:
  *
@@ -112,17 +112,17 @@ void VMInitMIPTable (S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMSetMIPEntry()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Sets the priority and MIP level for a MIDI channel
  *
  * Inputs:
- * pEASData			- pointer to synthesizer instance data
- * channel			- MIDI channel number
- * priority			- priority (0-15 with 0 = highest priority)
- * mip				- maximum instantaneous polyphony
- *		
+ * pEASData         - pointer to synthesizer instance data
+ * channel          - MIDI channel number
+ * priority         - priority (0-15 with 0 = highest priority)
+ * mip              - maximum instantaneous polyphony
+ *
  * Outputs:
- * 
+ *
  *
  * Side Effects:
  *
@@ -133,14 +133,14 @@ void VMSetMIPEntry (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, EAS
 /*----------------------------------------------------------------------------
  * VMUpdateMIPTable()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * This routine is called when the polyphony count in the synthesizer changes
  *
  * Inputs:
- * pEASData			- pointer to synthesizer instance data
- *		
+ * pEASData         - pointer to synthesizer instance data
+ *
  * Outputs:
- * 
+ *
  *
  * Side Effects:
  *
@@ -166,15 +166,15 @@ void VMInitializeAllVoices (S_VOICE_MGR *pVoiceMgr, EAS_INT vSynthNum);
  * VMStartNote()
  *----------------------------------------------------------------------------
  * Purpose:
- * Update the synth's state to play the requested note on the requested 
+ * Update the synth's state to play the requested note on the requested
  * channel if possible.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the MIDI channel
  * nKeyNumber - the MIDI key number for this note
  * nNoteVelocity - the key velocity for this note
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  *
  *----------------------------------------------------------------------------
@@ -184,21 +184,21 @@ void VMStartNote (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, EAS_U
 /*----------------------------------------------------------------------------
  * VMCheckKeyGroup()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * If the note that we've been asked to start is in the same key group as
  * any currently playing notes, then we must shut down the currently playing
  * note in the same key group and then start the newly requested note.
- * 
- * Inputs: 
+ *
+ * Inputs:
  * nChannel - synth channel that wants to start a new note
  * nKeyNumber - new note's midi note number
  * nRegionIndex - calling routine finds this index and gives to us
  * nNoteVelocity - new note's velocity
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * pbVoiceStealingRequired - flag: this routine sets true if we needed to
- *								   steal a voice
+ *                                 steal a voice
  *
  * Side Effects:
  * gsSynthObject.m_sVoice[free voice num].m_nKeyNumber may be assigned
@@ -210,21 +210,21 @@ void VMCheckKeyGroup (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U16 keyGroup,
 /*----------------------------------------------------------------------------
  * VMCheckPolyphonyLimiting()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * We only play at most 2 of the same note on a MIDI channel.
  * E.g., if we are asked to start note 36, and there are already two voices
  * that are playing note 36, then we must steal the voice playing
  * the oldest note 36 and use that stolen voice to play the new note 36.
- * 
- * Inputs: 
+ *
+ * Inputs:
  * nChannel - synth channel that wants to start a new note
  * nKeyNumber - new note's midi note number
  * nNoteVelocity - new note's velocity
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * pbVoiceStealingRequired - flag: this routine sets true if we needed to
- *								   steal a voice
+ *                                 steal a voice
  * *
  * Side Effects:
  * psSynthObject->m_sVoice[free voice num].m_nKeyNumber may be assigned
@@ -236,16 +236,16 @@ EAS_BOOL VMCheckPolyphonyLimiting (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_
 /*----------------------------------------------------------------------------
  * VMStopNote()
  *----------------------------------------------------------------------------
- * Purpose: 
- * Update the synth's state to end the requested note on the requested 
+ * Purpose:
+ * Update the synth's state to end the requested note on the requested
  * channel.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the MIDI channel
  * nKeyNumber - the key number of the note to stop
  * nNoteVelocity - the note-off velocity
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * Side Effects:
  * gsSynthObject.m_sVoice[free voice num].m_nSynthChannel may be assigned
@@ -258,13 +258,13 @@ void VMStopNote (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, EAS_U8
 /*----------------------------------------------------------------------------
  * VMFindAvailableVoice()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Find an available voice and return the voice number if available.
  *
- * Inputs: 
+ * Inputs:
  * pnVoiceNumber - really an output, see below
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * pnVoiceNumber - returns the voice number of available voice if found
  * success - if there is an available voice
@@ -276,12 +276,12 @@ EAS_RESULT VMFindAvailableVoice (S_VOICE_MGR *pVoiceMgr, EAS_INT *pVoiceNumber, 
 /*----------------------------------------------------------------------------
  * VMStealVoice()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Steal a voice and return the voice number
  *
  * Stealing algorithm: steal the best choice with minimal work, taking into
  * account SP-Midi channel priorities and polyphony allocation.
- * 
+ *
  * In one pass through all the voices, figure out which voice to steal
  * taking into account a number of different factors:
  * Priority of the voice's MIDI channel
@@ -291,11 +291,11 @@ EAS_RESULT VMFindAvailableVoice (S_VOICE_MGR *pVoiceMgr, EAS_INT *pVoiceNumber, 
  * Key velocity (for voices that haven't been started yet)
  * If any matching notes are found
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the channel that this voice wants to be started on
  * nKeyNumber - the key number for this new voice
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * pnVoiceNumber - voice stolen
  * EAS_RESULT EAS_SUCCESS - always successful
@@ -306,16 +306,16 @@ EAS_RESULT VMStealVoice (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_INT *pVoic
 /*----------------------------------------------------------------------------
  * VMAddSamples()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Synthesize the requested number of samples.
  *
- * Inputs: 
+ * Inputs:
  * nNumSamplesToAdd - number of samples to write to buffer
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
  * number of samples actually written to buffer
- * 
+ *
  * Side Effects:
  * - samples are added to the presently free buffer
  *
@@ -355,11 +355,11 @@ void VMProgramChange (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, E
  * Purpose:
  * Change the channel pressure for the given channel
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the MIDI channel
  * nVelocity - the channel pressure value
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * Side Effects:
  * gsSynthObject.m_sChannel[nChannel].m_nChannelPressure is updated
@@ -370,28 +370,28 @@ void VMChannelPressure (S_SYNTH *pSynth, EAS_U8 channel, EAS_U8 value);
 /*----------------------------------------------------------------------------
  * VMPitchBend()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Change the pitch wheel value for the given channel.
  * This routine constructs the proper 14-bit argument when the calling routine
  * passes the pitch LSB and MSB.
  *
  * Note: some midi disassemblers display a bipolar pitch bend value.
- * We can display the bipolar value using 
+ * We can display the bipolar value using
  * if m_nPitchBend >= 0x2000
- *		bipolar pitch bend = postive (m_nPitchBend - 0x2000)
+ *      bipolar pitch bend = postive (m_nPitchBend - 0x2000)
  * else
- * 		bipolar pitch bend = negative (0x2000 - m_nPitchBend)
+ *      bipolar pitch bend = negative (0x2000 - m_nPitchBend)
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the MIDI channel
  * nPitchLSB - the LSB byte from the pitch bend message
  * nPitchMSB - the MSB byte from the message
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  *
  * Side Effects:
- * gsSynthObject.m_sChannel[nChannel].m_nPitchBend is changed 
+ * gsSynthObject.m_sChannel[nChannel].m_nPitchBend is changed
  *
  *----------------------------------------------------------------------------
 */
@@ -400,16 +400,16 @@ void VMPitchBend (S_SYNTH *pSynth, EAS_U8 channel, EAS_U8 pitchLSB, EAS_U8 pitch
 /*----------------------------------------------------------------------------
  * VMControlChange()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Change the controller (or mode) for the given channel.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - the MIDI channel
  * nControllerNumber - the controller number
  * nControlValue - the controller number for this control change
  * nControlValue - the value for this control change
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * Side Effects:
  * gsSynthObject.m_sChannel[nChannel] controller is changed
@@ -421,9 +421,9 @@ void VMControlChange (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, E
 /*----------------------------------------------------------------------------
  * VMUpdateRPNStateMachine()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Call this function when we want to parse a stream of RPN messages.
- * NOTE: The synth has only one set of global RPN data instead of RPN data 
+ * NOTE: The synth has only one set of global RPN data instead of RPN data
  * per channel.
  * So actually, we don't really need to look at the nChannel parameter,
  * but we pass it to facilitate future upgrades. Furthermore, we only
@@ -433,9 +433,9 @@ void VMControlChange (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel, E
  * Inputs:
  * nChannel - the MIDI channel
  * nControllerNumber - the RPN controller number
- * nControlValue - the value for this control change 
+ * nControlValue - the value for this control change
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  *
  * Side Effects:
@@ -448,18 +448,18 @@ EAS_RESULT VMUpdateRPNStateMachine (S_SYNTH *pSynth, EAS_U8 channel, EAS_U8 cont
 /*----------------------------------------------------------------------------
  * VMUpdateStaticChannelParameters()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Update all of the static channel parameters for channels that have had
  * a controller change values
  * Or if the synth has signalled that all channels must forcibly
  * be updated
  *
- * Inputs: 
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
  * none
- * 
+ *
  * Side Effects:
  * - psSynthObject->m_sChannel[].m_nStaticGain and m_nStaticPitch
  * are updated for channels whose controller values have changed
@@ -472,22 +472,22 @@ void VMUpdateStaticChannelParameters (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMReleaseAllDeferredNoteOffs()
  *----------------------------------------------------------------------------
- * Purpose: 
- * Call this functin when the sustain flag is presently set but 
- * we are now transitioning from damper pedal on to 
+ * Purpose:
+ * Call this functin when the sustain flag is presently set but
+ * we are now transitioning from damper pedal on to
  * damper pedal off. This means all notes in this channel
  * that received a note off while the damper pedal was on, and
  * had their note-off requests deferred, should now proceed to
  * the release state.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - this channel has its sustain pedal transitioning from on to off
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * Side Effects:
  * any voice with deferred note offs on this channel are updated such that
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
@@ -496,18 +496,18 @@ void VMReleaseAllDeferredNoteOffs (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_
 /*----------------------------------------------------------------------------
  * VMCatchNotesForSustainPedal()
  *----------------------------------------------------------------------------
- * Purpose: 
- * Call this function when the sustain flag is presently clear and 
- * the damper pedal is off and we are transitioning from damper pedal OFF to 
+ * Purpose:
+ * Call this function when the sustain flag is presently clear and
+ * the damper pedal is off and we are transitioning from damper pedal OFF to
  * damper pedal ON. Currently sounding notes should be left
  * unchanged. However, we should try to "catch" notes if possible.
  * If any notes have levels >= sustain level, catch them,
  * otherwise, let them continue to release.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - this channel has its sustain pedal transitioning from on to off
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * Side Effects:
  * any voice with deferred note offs on this channel are updated such that
@@ -538,17 +538,17 @@ void VMUpdateAllNotesAge (S_VOICE_MGR *pVoiceMgr, EAS_U16 nAge);
 /*----------------------------------------------------------------------------
  * VMFindRegionIndex()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Find the region index for the given instrument using the midi key number
- * and the RPN2 (coarse tuning) value. By using RPN2 as part of the 
+ * and the RPN2 (coarse tuning) value. By using RPN2 as part of the
  * region selection process, we reduce the amount a given sample has
  * to be transposed by selecting the closest recorded root instead.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - current channel for this note
- * nKeyNumber - current midi note number 
+ * nKeyNumber - current midi note number
  * psEASData - pointer to overall EAS data structure
- * 
+ *
  * Outputs:
  * pnRegionIndex - valid only if we returned success
  * success if we found the region index number, otherwise
@@ -570,7 +570,7 @@ void VMIncRefCount (S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMReset()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * We call this routine to start the process of reseting the synth.
  * This routine sets a flag for the entire synth indicating that we want
  * to reset.
@@ -578,15 +578,15 @@ void VMIncRefCount (S_SYNTH *pSynth);
  * However, we do not actually perform any synthesis in this routine. That
  * is, we do not ramp the voices down from this routine, but instead, we
  * let the "regular" synth processing steps take care of adding the ramp
- * down samples to the output buffer. After we are sure that all voices 
+ * down samples to the output buffer. After we are sure that all voices
  * have completed ramping down, we continue the process of resetting the
  * synth (from another routine).
  *
- * Inputs: 
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
- * 
+ *
  * Side Effects:
  * - set a flag (in gsSynthObject.m_nFlags) indicating synth reset requested.
  * - force all voices to update their envelope states to mute
@@ -598,15 +598,15 @@ void VMReset (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_BOOL force);
 /*----------------------------------------------------------------------------
  * VMMuteAllVoices()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * We call this in an emergency reset situation.
  * This forces all voices to mute quickly.
  *
- * Inputs: 
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
- * 
+ *
  * Side Effects:
  * - forces all voices to update their envelope states to mute
  *
@@ -618,17 +618,17 @@ void VMMuteAllVoices (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMReleaseAllVoices()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * We call this after we've encountered the end of the Midi file.
  * This ensures all voice are either in release (because we received their
  * note off already) or forces them to mute quickly.
  * We use this as a safety to prevent bad midi files from playing forever.
  *
- * Inputs: 
+ * Inputs:
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
- * 
+ *
  * Side Effects:
  * - forces all voices to update their envelope states to release or mute
  *
@@ -642,7 +642,7 @@ void VMReleaseAllVoices (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth);
  * Purpose:
  * Quickly mute all notes on the given channel.
  *
- * Inputs: 
+ * Inputs:
  * nChannel - quickly turn off all notes on this channel
  * psEASData - pointer to overall EAS data structure
  *
@@ -658,12 +658,12 @@ void VMAllNotesOff (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_U8 channel);
 /*----------------------------------------------------------------------------
  * VMDeferredStopNote()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Stop the notes that had deferred note-off requests.
  *
  * Inputs:
  * psEASData - pointer to overall EAS data structure
- *			
+ *
  * Outputs:
  * None.
  *
@@ -678,15 +678,15 @@ void VMDeferredStopNote (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMSetSynthPolyphony()
  *----------------------------------------------------------------------------
- * Purpose: 
- * Set the synth to a new polyphony value. Value must be >= 1 and 
+ * Purpose:
+ * Set the synth to a new polyphony value. Value must be >= 1 and
  * <= MAX_SYNTH_VOICES. This function will pin the polyphony at those limits
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * synth			synthesizer number (0 = onboard, 1 = DSP)	
- * polyphonyCount	desired polyphony count
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * synth            synthesizer number (0 = onboard, 1 = DSP)
+ * polyphonyCount   desired polyphony count
+ *
  * Outputs:
  *
  * Side Effects:
@@ -698,15 +698,15 @@ EAS_RESULT VMSetSynthPolyphony (S_VOICE_MGR *pVoiceMgr, EAS_I32 synth, EAS_I32 p
 /*----------------------------------------------------------------------------
  * VMGetSynthPolyphony()
  *----------------------------------------------------------------------------
- * Purpose: 
- * Set the synth to a new polyphony value. Value must be >= 1 and 
+ * Purpose:
+ * Set the synth to a new polyphony value. Value must be >= 1 and
  * <= MAX_SYNTH_VOICES. This function will pin the polyphony at those limits
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * synth			synthesizer number (0 = onboard, 1 = DSP)	
- * polyphonyCount	desired polyphony count
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * synth            synthesizer number (0 = onboard, 1 = DSP)
+ * polyphonyCount   desired polyphony count
+ *
  * Outputs:
  *
  * Side Effects:
@@ -718,15 +718,15 @@ EAS_RESULT VMGetSynthPolyphony (S_VOICE_MGR *pVoiceMgr, EAS_I32 synth, EAS_I32 *
 /*----------------------------------------------------------------------------
  * VMSetPolyphony()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Set the virtual synth polyphony. 0 = no limit (i.e. can use
  * all available voices).
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * polyphonyCount	desired polyphony count
- * pSynth			pointer to virtual synth	
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * polyphonyCount   desired polyphony count
+ * pSynth           pointer to virtual synth
+ *
  * Outputs:
  * Returns error code
  *
@@ -739,14 +739,14 @@ EAS_RESULT VMSetPolyphony (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 poly
 /*----------------------------------------------------------------------------
  * VMGetPolyphony()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Returns the current polyphony setting
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * pSynth			pointer to virtual synth	
- * pPolyphonyCount	pointer to variable to receive data
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * pSynth           pointer to virtual synth
+ * pPolyphonyCount  pointer to variable to receive data
+ *
  * Outputs:
  *
  * Side Effects:
@@ -758,14 +758,14 @@ EAS_RESULT VMGetPolyphony (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 *pPo
 /*----------------------------------------------------------------------------
  * VMSetPriority()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Set the virtual synth priority
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * priority			new priority
- * pSynth			pointer to virtual synth	
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * priority         new priority
+ * pSynth           pointer to virtual synth
+ *
  * Outputs:
  * Returns error code
  *
@@ -778,14 +778,14 @@ EAS_RESULT VMSetPriority (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 prior
 /*----------------------------------------------------------------------------
  * VMGetPriority()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Get the virtual synth priority
  *
  * Inputs:
- * pVoiceMgr		pointer to synthesizer data
- * pPriority		pointer to variable to hold priority
- * pSynth			pointer to virtual synth	
- *		
+ * pVoiceMgr        pointer to synthesizer data
+ * pPriority        pointer to variable to hold priority
+ * pSynth           pointer to virtual synth
+ *
  * Outputs:
  * Returns error code
  *
@@ -798,15 +798,15 @@ EAS_RESULT VMGetPriority (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 *pPri
 /*----------------------------------------------------------------------------
  * VMSetVolume()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Set the master volume for this sequence
  *
  * Inputs:
  * nSynthVolume - the desired master volume
  * psEASData - pointer to overall EAS data structure
- *		
+ *
  * Outputs:
- * 
+ *
  *
  * Side Effects:
  * overrides any previously set master volume from sysex
@@ -866,8 +866,8 @@ EAS_RESULT VMSetDLSLib (S_SYNTH *pSynth, EAS_DLSLIB_HANDLE pDLS);
  * amount. Range is limited to +/-12 semitones.
  *
  * Inputs:
- * psEASData	 	- pointer to overall EAS data structure
- * transposition	- transpose amount (+/-12)
+ * psEASData        - pointer to overall EAS data structure
+ * transposition    - transpose amount (+/-12)
  *
  * Outputs:
  *
@@ -913,10 +913,10 @@ EAS_I32 VMGetNoteCount (S_SYNTH *pSynth);
  * This routine renders a frame of audio
  *
  * Inputs:
- * psEASData 		- pointer to overall EAS data structure
+ * psEASData        - pointer to overall EAS data structure
  *
  * Outputs:
- * pVoicesRendered	- number of voices rendered this frame
+ * pVoicesRendered  - number of voices rendered this frame
  *
  * Side Effects:
  * sets psMidiObject->m_nMaxWorkloadPerFrame
@@ -928,12 +928,12 @@ EAS_RESULT VMRender (S_VOICE_MGR *pVoiceMgr, EAS_I32 numSamples, EAS_I32 *pMixBu
 /*----------------------------------------------------------------------------
  * VMInitWorkload()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Clears the workload counter
  *
  * Inputs:
- * pVoiceMgr			- pointer to instance data
- *		
+ * pVoiceMgr            - pointer to instance data
+ *
  * Outputs:
  *
  * Side Effects:
@@ -945,12 +945,12 @@ void VMInitWorkload (S_VOICE_MGR *pVoiceMgr);
 /*----------------------------------------------------------------------------
  * VMSetWorkload()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Sets the max workload for a single frame.
  *
  * Inputs:
- * pVoiceMgr			- pointer to instance data
- *		
+ * pVoiceMgr            - pointer to instance data
+ *
  * Outputs:
  *
  * Side Effects:
@@ -962,12 +962,12 @@ void VMSetWorkload (S_VOICE_MGR *pVoiceMgr, EAS_I32 maxWorkLoad);
 /*----------------------------------------------------------------------------
  * VMCheckWorkload()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Checks to see if work load has been exceeded on this frame.
  *
  * Inputs:
- * pVoiceMgr			- pointer to instance data
- *		
+ * pVoiceMgr            - pointer to instance data
+ *
  * Outputs:
  *
  * Side Effects:
@@ -979,12 +979,12 @@ EAS_BOOL VMCheckWorkload (S_VOICE_MGR *pVoiceMgr);
 /*----------------------------------------------------------------------------
  * VMActiveVoices()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Returns the number of active voices in the synthesizer.
  *
  * Inputs:
- * pEASData			- pointer to instance data
- *		
+ * pEASData         - pointer to instance data
+ *
  * Outputs:
  * Returns the number of active voices
  *
@@ -997,12 +997,12 @@ EAS_I32 VMActiveVoices (S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMMIDIShutdown()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Clean up any Synth related system issues.
  *
  * Inputs:
  * psEASData - pointer to overall EAS data structure
- *		
+ *
  * Outputs:
  * None
  *
@@ -1015,12 +1015,12 @@ void VMMIDIShutdown (S_EAS_DATA *pEASData, S_SYNTH *pSynth);
 /*----------------------------------------------------------------------------
  * VMShutdown()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Clean up any Synth related system issues.
  *
  * Inputs:
  * psEASData - pointer to overall EAS data structure
- *		
+ *
  * Outputs:
  * None
  *
@@ -1052,11 +1052,11 @@ void VMGetMIDIControllers (S_SYNTH *pSynth, EAS_U8 channel, S_MIDI_CONTROLLERS *
 /*----------------------------------------------------------------------------
  * VMStartFrame()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Starts an audio frame
  *
  * Inputs:
- *		
+ *
  * Outputs:
  *
  * Side Effects:
@@ -1068,11 +1068,11 @@ EAS_BOOL VMStartFrame (S_EAS_DATA *pEASData);
 /*----------------------------------------------------------------------------
  * VMEndFrame()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Stops an audio frame
  *
  * Inputs:
- *		
+ *
  * Outputs:
  *
  * Side Effects:

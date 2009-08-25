@@ -36,12 +36,12 @@
 
 /* FM envelope state */
 typedef enum {
-	eFMEnvelopeStateAttack = 0,
-	eFMEnvelopeStateDecay,
-	eFMEnvelopeStateSustain,
-	eFMEnvelopeStateRelease,
-	eFMEnvelopeStateMuted,
-	eFMEnvelopeStateInvalid			/* should never be in this state! */
+    eFMEnvelopeStateAttack = 0,
+    eFMEnvelopeStateDecay,
+    eFMEnvelopeStateSustain,
+    eFMEnvelopeStateRelease,
+    eFMEnvelopeStateMuted,
+    eFMEnvelopeStateInvalid         /* should never be in this state! */
 } E_FM_ENVELOPE_STATE;
 
 /*------------------------------------
@@ -50,25 +50,25 @@ typedef enum {
 */
 typedef struct s_operator_tag
 {
-	EAS_I16		pitch;				/* operator pitch in cents */
-    EAS_U16		envGain;			/* envelope target */
-    EAS_I16		baseGain;			/* patch gain (inc. vel & key scale) */
-    EAS_U16		outputGain;			/* current output gain */
-    EAS_U16		envRate;			/* calculated envelope rate */
-    EAS_U8		envState;			/* envelope state */
-    EAS_U8		pad;				/* pad to 16-bits */
+    EAS_I16     pitch;              /* operator pitch in cents */
+    EAS_U16     envGain;            /* envelope target */
+    EAS_I16     baseGain;           /* patch gain (inc. vel & key scale) */
+    EAS_U16     outputGain;         /* current output gain */
+    EAS_U16     envRate;            /* calculated envelope rate */
+    EAS_U8      envState;           /* envelope state */
+    EAS_U8      pad;                /* pad to 16-bits */
 } S_OPERATOR;
 #endif
 
 typedef struct s_fm_voice_tag
 {
-	S_OPERATOR			oper[4];		/* operator data */
-    EAS_I16				voiceGain;		/* LFO + channel parameters */
-	EAS_U16				lfoPhase;		/* LFO current phase */
-	EAS_I16				lfoValue;		/* LFO current value */
-	EAS_U16				lfoDelay;		/* keeps track of elapsed delay time */
-	EAS_I8				pan;			/* stereo pan value (-64 to +64) */
-	EAS_I8				pad;			/* reserved to maintain alignment */
+    S_OPERATOR          oper[4];        /* operator data */
+    EAS_I16             voiceGain;      /* LFO + channel parameters */
+    EAS_U16             lfoPhase;       /* LFO current phase */
+    EAS_I16             lfoValue;       /* LFO current value */
+    EAS_U16             lfoDelay;       /* keeps track of elapsed delay time */
+    EAS_I8              pan;            /* stereo pan value (-64 to +64) */
+    EAS_I8              pad;            /* reserved to maintain alignment */
 } S_FM_VOICE;
 
 #ifdef _FM_EDITOR

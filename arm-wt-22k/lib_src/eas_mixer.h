@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_mixer.h
  *
  * Contents and purpose:
  * This file contains the critical components of the mix engine that
  * must be optimized for best performance.
- *			
+ *
  * Copyright Sonic Network Inc. 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,9 +34,9 @@
 //3 dls: This module is in the midst of being converted from a synth
 //3 specific module to a general purpose mix engine
 
-#define MIX_FLAGS_STEREO_SOURCE		1
-#define MIX_FLAGS_STEREO_OUTPUT		2
-#define NUM_MIXER_GUARD_BITS		4
+#define MIX_FLAGS_STEREO_SOURCE     1
+#define MIX_FLAGS_STEREO_OUTPUT     2
+#define NUM_MIXER_GUARD_BITS        4
 
 #include "eas_effects.h"
 
@@ -49,8 +49,8 @@ extern void SynthMasterGain( long *pInputBuffer, EAS_PCM *pOutputBuffer, EAS_U16
  * Prepares the mix engine for work, allocates buffers, locates effects modules, etc.
  *
  * Inputs:
- * pEASData		 	- instance data
- * pInstData		- pointer to variable to receive instance data handle
+ * pEASData         - instance data
+ * pInstData        - pointer to variable to receive instance data handle
  *
  * Outputs:
  *
@@ -81,13 +81,13 @@ void EAS_MixEnginePrep (EAS_DATA_HANDLE pEASData, EAS_I32 nNumSamplesToAdd);
 /*----------------------------------------------------------------------------
  * EAS_MixEnginePost
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * This routine does the post-processing after all voices have been
  * synthesized. It calls any sweeteners and does the final mixdown to
  * the output buffer.
- * 
- * Inputs: 
- *			
+ *
+ * Inputs:
+ *
  * Outputs:
  *
  * Notes:
@@ -102,8 +102,8 @@ void EAS_MixEnginePost (EAS_DATA_HANDLE pEASData, EAS_I32 nNumSamplesToAdd);
  * Shuts down effects modules and deallocates memory
  *
  * Inputs:
- * pEASData		 	- instance data
- * pInstData		- instance data handle
+ * pEASData         - instance data
+ * pInstData        - instance data handle
  *
  * Outputs:
  *
@@ -119,15 +119,15 @@ EAS_RESULT EAS_MixEngineShutdown (EAS_DATA_HANDLE pEASData);
  *----------------------------------------------------------------------------
  * Mix a 16-bit stream into a 32-bit buffer
  *
- * pInputBuffer	16-bit input buffer
- * pMixBuffer	32-bit mix buffer
- * numSamples	number of samples to mix
- * gainLeft		initial gain left or mono
- * gainRight	initial gain right
- * gainLeft		left gain increment per sample
- * gainRight	right gain increment per sample
- * flags		bit 0 = stereo source
- * 				bit 1 = stereo output
+ * pInputBuffer 16-bit input buffer
+ * pMixBuffer   32-bit mix buffer
+ * numSamples   number of samples to mix
+ * gainLeft     initial gain left or mono
+ * gainRight    initial gain right
+ * gainLeft     left gain increment per sample
+ * gainRight    right gain increment per sample
+ * flags        bit 0 = stereo source
+ *              bit 1 = stereo output
  *----------------------------------------------------------------------------
 */
 void EAS_MixStream (EAS_PCM *pInputBuffer, EAS_I32 *pMixBuffer, EAS_I32 numSamples, EAS_I32 gainLeft, EAS_I32 gainRight, EAS_I32 gainIncLeft, EAS_I32 gainIncRight, EAS_I32 flags);

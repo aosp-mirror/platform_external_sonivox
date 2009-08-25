@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_mdls.c
  *
  * Contents and purpose:
  * This file contains DLS to EAS converter.
- *			
+ *
  * Copyright (c) 2005 Sonic Network Inc.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -133,11 +133,11 @@ extern double log10(double x);
 
 // #define _DEBUG_DLS
 
-#define DLS_MAX_WAVE_COUNT		1024
-#define DLS_MAX_ART_COUNT		2048
-#define DLS_MAX_REGION_COUNT	2048
-#define DLS_MAX_INST_COUNT		256
-#define MAX_DLS_WAVE_SIZE		(1024*1024)
+#define DLS_MAX_WAVE_COUNT      1024
+#define DLS_MAX_ART_COUNT       2048
+#define DLS_MAX_REGION_COUNT    2048
+#define DLS_MAX_INST_COUNT      256
+#define MAX_DLS_WAVE_SIZE       (1024*1024)
 
 /*------------------------------------
  * typedefs
@@ -147,230 +147,230 @@ extern double log10(double x);
 /* offsets to articulation data */
 typedef enum
 {
-	PARAM_MODIFIED = 0,
-	PARAM_MOD_LFO_FREQ,
-	PARAM_MOD_LFO_DELAY,
-	
-	PARAM_VIB_LFO_FREQ,
-	PARAM_VIB_LFO_DELAY,
-	
-	PARAM_VOL_EG_DELAY,
-	PARAM_VOL_EG_ATTACK,
-	PARAM_VOL_EG_HOLD,
-	PARAM_VOL_EG_DECAY,
-	PARAM_VOL_EG_SUSTAIN,
-	PARAM_VOL_EG_RELEASE,
-	PARAM_VOL_EG_SHUTDOWN,
-	PARAM_VOL_EG_VEL_TO_ATTACK,
-	PARAM_VOL_EG_KEY_TO_DECAY,
-	PARAM_VOL_EG_KEY_TO_HOLD,
+    PARAM_MODIFIED = 0,
+    PARAM_MOD_LFO_FREQ,
+    PARAM_MOD_LFO_DELAY,
 
-	PARAM_MOD_EG_DELAY,
-	PARAM_MOD_EG_ATTACK,
-	PARAM_MOD_EG_HOLD,
-	PARAM_MOD_EG_DECAY,
-	PARAM_MOD_EG_SUSTAIN,
-	PARAM_MOD_EG_RELEASE,
-	PARAM_MOD_EG_VEL_TO_ATTACK,
-	PARAM_MOD_EG_KEY_TO_DECAY,
-	PARAM_MOD_EG_KEY_TO_HOLD,
+    PARAM_VIB_LFO_FREQ,
+    PARAM_VIB_LFO_DELAY,
 
-	PARAM_INITIAL_FC,
-	PARAM_INITIAL_Q,
-	PARAM_MOD_LFO_TO_FC,
-	PARAM_MOD_LFO_CC1_TO_FC,
-	PARAM_MOD_LFO_CHAN_PRESS_TO_FC,
-	PARAM_MOD_EG_TO_FC,
-	PARAM_VEL_TO_FC,
-	PARAM_KEYNUM_TO_FC,
+    PARAM_VOL_EG_DELAY,
+    PARAM_VOL_EG_ATTACK,
+    PARAM_VOL_EG_HOLD,
+    PARAM_VOL_EG_DECAY,
+    PARAM_VOL_EG_SUSTAIN,
+    PARAM_VOL_EG_RELEASE,
+    PARAM_VOL_EG_SHUTDOWN,
+    PARAM_VOL_EG_VEL_TO_ATTACK,
+    PARAM_VOL_EG_KEY_TO_DECAY,
+    PARAM_VOL_EG_KEY_TO_HOLD,
 
-	PARAM_MOD_LFO_TO_GAIN,
-	PARAM_MOD_LFO_CC1_TO_GAIN,
-	PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN,
-	PARAM_VEL_TO_GAIN,
+    PARAM_MOD_EG_DELAY,
+    PARAM_MOD_EG_ATTACK,
+    PARAM_MOD_EG_HOLD,
+    PARAM_MOD_EG_DECAY,
+    PARAM_MOD_EG_SUSTAIN,
+    PARAM_MOD_EG_RELEASE,
+    PARAM_MOD_EG_VEL_TO_ATTACK,
+    PARAM_MOD_EG_KEY_TO_DECAY,
+    PARAM_MOD_EG_KEY_TO_HOLD,
 
-	PARAM_TUNING,
-	PARAM_KEYNUM_TO_PITCH,
-	PARAM_VIB_LFO_TO_PITCH,
-	PARAM_VIB_LFO_CC1_TO_PITCH,
-	PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH,
-	PARAM_MOD_LFO_TO_PITCH,
-	PARAM_MOD_LFO_CC1_TO_PITCH,
-	PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH,
-	PARAM_MOD_EG_TO_PITCH,
+    PARAM_INITIAL_FC,
+    PARAM_INITIAL_Q,
+    PARAM_MOD_LFO_TO_FC,
+    PARAM_MOD_LFO_CC1_TO_FC,
+    PARAM_MOD_LFO_CHAN_PRESS_TO_FC,
+    PARAM_MOD_EG_TO_FC,
+    PARAM_VEL_TO_FC,
+    PARAM_KEYNUM_TO_FC,
 
-	PARAM_DEFAULT_PAN,
-	PARAM_MIDI_CC91_TO_REVERB_SEND,
-	PARAM_DEFAULT_REVERB_SEND,
-	PARAM_MIDI_CC93_TO_CHORUS_SEND,
-	PARAM_DEFAULT_CHORUS_SEND,
-	PARAM_TABLE_SIZE
+    PARAM_MOD_LFO_TO_GAIN,
+    PARAM_MOD_LFO_CC1_TO_GAIN,
+    PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN,
+    PARAM_VEL_TO_GAIN,
+
+    PARAM_TUNING,
+    PARAM_KEYNUM_TO_PITCH,
+    PARAM_VIB_LFO_TO_PITCH,
+    PARAM_VIB_LFO_CC1_TO_PITCH,
+    PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH,
+    PARAM_MOD_LFO_TO_PITCH,
+    PARAM_MOD_LFO_CC1_TO_PITCH,
+    PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH,
+    PARAM_MOD_EG_TO_PITCH,
+
+    PARAM_DEFAULT_PAN,
+    PARAM_MIDI_CC91_TO_REVERB_SEND,
+    PARAM_DEFAULT_REVERB_SEND,
+    PARAM_MIDI_CC93_TO_CHORUS_SEND,
+    PARAM_DEFAULT_CHORUS_SEND,
+    PARAM_TABLE_SIZE
 } E_ART_INDEX;
 
 /* temporary data structure combining region, articulation, and envelope data */
 typedef struct s_art_dls_tag
 {
-	EAS_I16		values[PARAM_TABLE_SIZE];
+    EAS_I16     values[PARAM_TABLE_SIZE];
 } S_DLS_ART_VALUES;
 
 /* temporary data structure for wlnk chunk data */
 typedef struct
 {
-	EAS_I32	gain;
-	EAS_U32	loopStart;
-	EAS_U32	loopLength;
-	EAS_U32	sampleRate;
-	EAS_U16	bitsPerSample;
-	EAS_I16	fineTune;
-	EAS_U8	unityNote;
+    EAS_I32 gain;
+    EAS_U32 loopStart;
+    EAS_U32 loopLength;
+    EAS_U32 sampleRate;
+    EAS_U16 bitsPerSample;
+    EAS_I16 fineTune;
+    EAS_U8  unityNote;
 } S_WSMP_DATA;
 
 /* temporary data structure used while parsing a DLS file */
 typedef struct
 {
-	S_DLS				*pDLS;
-	EAS_HW_DATA_HANDLE	hwInstData;
-	EAS_FILE_HANDLE		fileHandle;
-	S_WSMP_DATA			*wsmpData;
-	EAS_U32				instCount;
-	EAS_U32				regionCount;
-	EAS_U32				artCount;
-	EAS_U32				waveCount;
-	EAS_U32				wavePoolSize;
-	EAS_U32				wavePoolOffset;
-	EAS_BOOL			bigEndian;
-	EAS_BOOL			filterUsed;
+    S_DLS               *pDLS;
+    EAS_HW_DATA_HANDLE  hwInstData;
+    EAS_FILE_HANDLE     fileHandle;
+    S_WSMP_DATA         *wsmpData;
+    EAS_U32             instCount;
+    EAS_U32             regionCount;
+    EAS_U32             artCount;
+    EAS_U32             waveCount;
+    EAS_U32             wavePoolSize;
+    EAS_U32             wavePoolOffset;
+    EAS_BOOL            bigEndian;
+    EAS_BOOL            filterUsed;
 } SDLS_SYNTHESIZER_DATA;
 
 /* connection lookup table */
 typedef struct s_connection_tag
 {
-	EAS_U16 source;
-	EAS_U16 control;
-	EAS_U16 destination;
-	EAS_U16 connection;
+    EAS_U16 source;
+    EAS_U16 control;
+    EAS_U16 destination;
+    EAS_U16 connection;
 } S_CONNECTION;
 
-static const S_CONNECTION connTable[] = 
+static const S_CONNECTION connTable[] =
 {
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_LFO_FREQUENCY, PARAM_MOD_LFO_FREQ },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_LFO_STARTDELAY, PARAM_MOD_LFO_DELAY},
-		
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_VIB_FREQUENCY, PARAM_VIB_LFO_FREQ },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_VIB_STARTDELAY, PARAM_VIB_LFO_DELAY },
-		
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_DELAYTIME, PARAM_VOL_EG_DELAY },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_ATTACKTIME, PARAM_VOL_EG_ATTACK },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_HOLDTIME, PARAM_VOL_EG_HOLD },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_DECAYTIME, PARAM_VOL_EG_DECAY },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_SUSTAINLEVEL, PARAM_VOL_EG_SUSTAIN },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_RELEASETIME, PARAM_VOL_EG_RELEASE },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_SHUTDOWNTIME, PARAM_VOL_EG_SHUTDOWN },
-	{ CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_EG1_ATTACKTIME, PARAM_VOL_EG_VEL_TO_ATTACK },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG1_DECAYTIME, PARAM_VOL_EG_KEY_TO_DECAY },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG1_HOLDTIME, PARAM_VOL_EG_KEY_TO_HOLD },
-		
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_DELAYTIME, PARAM_MOD_EG_DELAY },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_ATTACKTIME, PARAM_MOD_EG_ATTACK },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_HOLDTIME, PARAM_MOD_EG_HOLD },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_DECAYTIME, PARAM_MOD_EG_DECAY },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_SUSTAINLEVEL, PARAM_MOD_EG_SUSTAIN },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_RELEASETIME, PARAM_MOD_EG_RELEASE },
-	{ CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_EG2_ATTACKTIME, PARAM_MOD_EG_VEL_TO_ATTACK },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG2_DECAYTIME, PARAM_MOD_EG_KEY_TO_DECAY },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG2_HOLDTIME, PARAM_MOD_EG_KEY_TO_HOLD },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_LFO_FREQUENCY, PARAM_MOD_LFO_FREQ },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_LFO_STARTDELAY, PARAM_MOD_LFO_DELAY},
 
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_INITIAL_FC },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_FILTER_Q, PARAM_INITIAL_Q },
-	{ CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_TO_FC },
-	{ CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_CC1_TO_FC },
-	{ CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_CHAN_PRESS_TO_FC },
-	{ CONN_SRC_EG2, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_EG_TO_FC },
-	{ CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_VEL_TO_FC },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_KEYNUM_TO_FC },
-		
-	{ CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_GAIN, PARAM_MOD_LFO_TO_GAIN },
-	{ CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_GAIN, PARAM_MOD_LFO_CC1_TO_GAIN },
-	{ CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_GAIN, PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN },
-	{ CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_GAIN, PARAM_VEL_TO_GAIN },
-		
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_TUNING },
-	{ CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_KEYNUM_TO_PITCH },
-	{ CONN_SRC_VIBRATO, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_VIB_LFO_TO_PITCH },
-	{ CONN_SRC_VIBRATO, CONN_SRC_CC1, CONN_DST_PITCH, PARAM_VIB_LFO_CC1_TO_PITCH },
-	{ CONN_SRC_VIBRATO, CONN_SRC_CHANNELPRESSURE, CONN_DST_PITCH, PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH },
-	{ CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_MOD_LFO_TO_PITCH },
-	{ CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_PITCH, PARAM_MOD_LFO_CC1_TO_PITCH },
-	{ CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_PITCH, PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH },
-	{ CONN_SRC_EG2, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_MOD_EG_TO_PITCH },
-		
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_PAN, PARAM_DEFAULT_PAN },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_DEFAULT_REVERB_SEND },
-	{ CONN_SRC_CC91, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_MIDI_CC91_TO_REVERB_SEND },
-	{ CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_CHORUS, PARAM_DEFAULT_CHORUS_SEND },
-	{ CONN_SRC_CC93, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_MIDI_CC93_TO_CHORUS_SEND }
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_VIB_FREQUENCY, PARAM_VIB_LFO_FREQ },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_VIB_STARTDELAY, PARAM_VIB_LFO_DELAY },
+
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_DELAYTIME, PARAM_VOL_EG_DELAY },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_ATTACKTIME, PARAM_VOL_EG_ATTACK },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_HOLDTIME, PARAM_VOL_EG_HOLD },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_DECAYTIME, PARAM_VOL_EG_DECAY },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_SUSTAINLEVEL, PARAM_VOL_EG_SUSTAIN },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_RELEASETIME, PARAM_VOL_EG_RELEASE },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG1_SHUTDOWNTIME, PARAM_VOL_EG_SHUTDOWN },
+    { CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_EG1_ATTACKTIME, PARAM_VOL_EG_VEL_TO_ATTACK },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG1_DECAYTIME, PARAM_VOL_EG_KEY_TO_DECAY },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG1_HOLDTIME, PARAM_VOL_EG_KEY_TO_HOLD },
+
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_DELAYTIME, PARAM_MOD_EG_DELAY },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_ATTACKTIME, PARAM_MOD_EG_ATTACK },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_HOLDTIME, PARAM_MOD_EG_HOLD },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_DECAYTIME, PARAM_MOD_EG_DECAY },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_SUSTAINLEVEL, PARAM_MOD_EG_SUSTAIN },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_EG2_RELEASETIME, PARAM_MOD_EG_RELEASE },
+    { CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_EG2_ATTACKTIME, PARAM_MOD_EG_VEL_TO_ATTACK },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG2_DECAYTIME, PARAM_MOD_EG_KEY_TO_DECAY },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_EG2_HOLDTIME, PARAM_MOD_EG_KEY_TO_HOLD },
+
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_INITIAL_FC },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_FILTER_Q, PARAM_INITIAL_Q },
+    { CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_TO_FC },
+    { CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_CC1_TO_FC },
+    { CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_LFO_CHAN_PRESS_TO_FC },
+    { CONN_SRC_EG2, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_MOD_EG_TO_FC },
+    { CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_VEL_TO_FC },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_FILTER_CUTOFF, PARAM_KEYNUM_TO_FC },
+
+    { CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_GAIN, PARAM_MOD_LFO_TO_GAIN },
+    { CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_GAIN, PARAM_MOD_LFO_CC1_TO_GAIN },
+    { CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_GAIN, PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN },
+    { CONN_SRC_KEYONVELOCITY, CONN_SRC_NONE, CONN_DST_GAIN, PARAM_VEL_TO_GAIN },
+
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_TUNING },
+    { CONN_SRC_KEYNUMBER, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_KEYNUM_TO_PITCH },
+    { CONN_SRC_VIBRATO, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_VIB_LFO_TO_PITCH },
+    { CONN_SRC_VIBRATO, CONN_SRC_CC1, CONN_DST_PITCH, PARAM_VIB_LFO_CC1_TO_PITCH },
+    { CONN_SRC_VIBRATO, CONN_SRC_CHANNELPRESSURE, CONN_DST_PITCH, PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH },
+    { CONN_SRC_LFO, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_MOD_LFO_TO_PITCH },
+    { CONN_SRC_LFO, CONN_SRC_CC1, CONN_DST_PITCH, PARAM_MOD_LFO_CC1_TO_PITCH },
+    { CONN_SRC_LFO, CONN_SRC_CHANNELPRESSURE, CONN_DST_PITCH, PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH },
+    { CONN_SRC_EG2, CONN_SRC_NONE, CONN_DST_PITCH, PARAM_MOD_EG_TO_PITCH },
+
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_PAN, PARAM_DEFAULT_PAN },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_DEFAULT_REVERB_SEND },
+    { CONN_SRC_CC91, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_MIDI_CC91_TO_REVERB_SEND },
+    { CONN_SRC_NONE, CONN_SRC_NONE, CONN_DST_CHORUS, PARAM_DEFAULT_CHORUS_SEND },
+    { CONN_SRC_CC93, CONN_SRC_NONE, CONN_DST_REVERB, PARAM_MIDI_CC93_TO_CHORUS_SEND }
 };
 #define ENTRIES_IN_CONN_TABLE (sizeof(connTable)/sizeof(S_CONNECTION))
 
 static const S_DLS_ART_VALUES defaultArt =
 {
-	0,				/* not modified */
-	-851,			/* Mod LFO frequency: 5 Hz */
-	-7973,			/* Mod LFO delay: 10 milliseconds */
+    0,              /* not modified */
+    -851,           /* Mod LFO frequency: 5 Hz */
+    -7973,          /* Mod LFO delay: 10 milliseconds */
 
-	-851,			/* Vib LFO frequency: 5 Hz */
-	-7973,			/* Vib LFO delay: 10 milliseconds */
+    -851,           /* Vib LFO frequency: 5 Hz */
+    -7973,          /* Vib LFO delay: 10 milliseconds */
 
-	-32768,			/* EG1 delay time: 0 secs */
-	-32768,			/* EG1 attack time: 0 secs */
-	-32768,			/* EG1 hold time: 0 secs */
-	-32768,			/* EG1 decay time: 0 secs */
-	1000,			/* EG1 sustain level: 100.0% */
-	-32768,			/* EG1 release time: 0 secs */
-	-7271,			/* EG1 shutdown time: 15 msecs */
-	0,				/* EG1 velocity to attack: 0 time cents */
-	0,				/* EG1 key number to decay: 0 time cents */
-	0,				/* EG1 key number to hold: 0 time cents */
+    -32768,         /* EG1 delay time: 0 secs */
+    -32768,         /* EG1 attack time: 0 secs */
+    -32768,         /* EG1 hold time: 0 secs */
+    -32768,         /* EG1 decay time: 0 secs */
+    1000,           /* EG1 sustain level: 100.0% */
+    -32768,         /* EG1 release time: 0 secs */
+    -7271,          /* EG1 shutdown time: 15 msecs */
+    0,              /* EG1 velocity to attack: 0 time cents */
+    0,              /* EG1 key number to decay: 0 time cents */
+    0,              /* EG1 key number to hold: 0 time cents */
 
-	-32768,			/* EG2 delay time: 0 secs */
-	-32768,			/* EG2 attack time: 0 secs */
-	-32768,			/* EG2 hold time: 0 secs */
-	-32768,			/* EG2 decay time: 0 secs */
-	1000,			/* EG2 sustain level: 100.0% */
-	-32768,			/* EG2 release time: 0 secs */
-	0,				/* EG2 velocity to attack: 0 time cents */
-	0,				/* EG2 key number to decay: 0 time cents */
-	0,				/* EG2 key number to hold: 0 time cents */
-	
-	0x7fff,			/* Initial Fc: Disabled */
-	0,				/* Initial Q: 0 dB */
-	0,				/* Mod LFO to Fc: 0 cents */
-	0,				/* Mod LFO CC1 to Fc: 0 cents */
-	0,				/* Mod LFO channel pressure to Fc: 0 cents */
-	0,				/* EG2 to Fc: 0 cents */
-	0,				/* Velocity to Fc: 0 cents */
-	0,				/* Key number to Fc: 0 cents */
+    -32768,         /* EG2 delay time: 0 secs */
+    -32768,         /* EG2 attack time: 0 secs */
+    -32768,         /* EG2 hold time: 0 secs */
+    -32768,         /* EG2 decay time: 0 secs */
+    1000,           /* EG2 sustain level: 100.0% */
+    -32768,         /* EG2 release time: 0 secs */
+    0,              /* EG2 velocity to attack: 0 time cents */
+    0,              /* EG2 key number to decay: 0 time cents */
+    0,              /* EG2 key number to hold: 0 time cents */
 
-	0,				/* Mod LFO to gain: 0 dB */
-	0,				/* Mod LFO CC1 to gain: 0 dB */
-	0,				/* Mod LFO channel pressure to gain: 0 dB */
-	960,			/* Velocity to gain: 96 dB */
+    0x7fff,         /* Initial Fc: Disabled */
+    0,              /* Initial Q: 0 dB */
+    0,              /* Mod LFO to Fc: 0 cents */
+    0,              /* Mod LFO CC1 to Fc: 0 cents */
+    0,              /* Mod LFO channel pressure to Fc: 0 cents */
+    0,              /* EG2 to Fc: 0 cents */
+    0,              /* Velocity to Fc: 0 cents */
+    0,              /* Key number to Fc: 0 cents */
 
-	0,				/* Tuning: 0 cents */
-	12800,			/* Key number to pitch: 12,800 cents */
-	0,				/* Vibrato to pitch: 0 cents */
-	0,				/* Vibrato CC1 to pitch: 0 cents */
-	0,				/* Vibrato channel pressure to pitch: 0 cents */
-	0,				/* Mod LFO to pitch: 0 cents */
-	0,				/* Mod LFO CC1 to pitch: 0 cents */
-	0,				/* Mod LFO channel pressure to pitch: 0 cents */
-	0,				/* Mod EG to pitch: 0 cents */
+    0,              /* Mod LFO to gain: 0 dB */
+    0,              /* Mod LFO CC1 to gain: 0 dB */
+    0,              /* Mod LFO channel pressure to gain: 0 dB */
+    960,            /* Velocity to gain: 96 dB */
 
-	0,				/* Default pan: 0.0% */
-	0,				/* Default reverb send: 0.0% */
-	1000,			/* Default CC91 to reverb send: 100.0% */
-	0,				/* Default chorus send: 0.0% */
-	1000			/* Default CC93 to chorus send: 100.0% */
+    0,              /* Tuning: 0 cents */
+    12800,          /* Key number to pitch: 12,800 cents */
+    0,              /* Vibrato to pitch: 0 cents */
+    0,              /* Vibrato CC1 to pitch: 0 cents */
+    0,              /* Vibrato channel pressure to pitch: 0 cents */
+    0,              /* Mod LFO to pitch: 0 cents */
+    0,              /* Mod LFO CC1 to pitch: 0 cents */
+    0,              /* Mod LFO channel pressure to pitch: 0 cents */
+    0,              /* Mod EG to pitch: 0 cents */
+
+    0,              /* Default pan: 0.0% */
+    0,              /* Default reverb send: 0.0% */
+    1000,           /* Default CC91 to reverb send: 100.0% */
+    0,              /* Default chorus send: 0.0% */
+    1000            /* Default CC93 to chorus send: 100.0% */
 };
 
 /*------------------------------------
@@ -396,7 +396,7 @@ static const EAS_I32 dlsLFOFrequencyConvert = DLS_LFO_FREQUENCY_CONVERT;
 */
 EAS_INLINE void *PtrOfs (void *p, EAS_I32 offset)
 {
-	return (void*) (((EAS_U8*) p) + offset);
+    return (void*) (((EAS_U8*) p) + offset);
 }
 
 /*------------------------------------
@@ -435,13 +435,13 @@ static void DumpDLS (S_EAS *pEAS);
 /*----------------------------------------------------------------------------
  * DLSParser ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
- * Inputs: 
+ * Purpose:
+ *
+ * Inputs:
  * pEASData - pointer to over EAS data instance
  * fileHandle - file handle for input file
  * offset - offset into file where DLS data starts
- *			
+ *
  * Outputs:
  * EAS_RESULT
  * ppEAS - address of pointer to alternate EAS wavetable
@@ -450,268 +450,268 @@ static void DumpDLS (S_EAS *pEAS);
 */
 EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle, EAS_I32 offset, EAS_DLSLIB_HANDLE *ppDLS)
 {
-	EAS_RESULT result;
-	SDLS_SYNTHESIZER_DATA dls;
-	EAS_U32 temp;
-	EAS_I32 pos;
-	EAS_I32 chunkPos;
-	EAS_I32 size;
-	EAS_I32 instSize;
-	EAS_I32 rgnPoolSize;
-	EAS_I32 artPoolSize;
-	EAS_I32 waveLenSize;
-	EAS_I32 endDLS;
-	EAS_I32 wvplPos;
-	EAS_I32 wvplSize;
-	EAS_I32 linsPos;
-	EAS_I32 linsSize;
-	EAS_I32 ptblPos;
-	EAS_I32 ptblSize;
-	void *p;
+    EAS_RESULT result;
+    SDLS_SYNTHESIZER_DATA dls;
+    EAS_U32 temp;
+    EAS_I32 pos;
+    EAS_I32 chunkPos;
+    EAS_I32 size;
+    EAS_I32 instSize;
+    EAS_I32 rgnPoolSize;
+    EAS_I32 artPoolSize;
+    EAS_I32 waveLenSize;
+    EAS_I32 endDLS;
+    EAS_I32 wvplPos;
+    EAS_I32 wvplSize;
+    EAS_I32 linsPos;
+    EAS_I32 linsSize;
+    EAS_I32 ptblPos;
+    EAS_I32 ptblSize;
+    void *p;
 
-	/* zero counts and pointers */
-	EAS_HWMemSet(&dls, 0, sizeof(dls));
+    /* zero counts and pointers */
+    EAS_HWMemSet(&dls, 0, sizeof(dls));
 
-	/* save file handle and hwInstData to save copying pointers around */
-	dls.hwInstData = hwInstData;
-	dls.fileHandle = fileHandle;
-	
-	/* NULL return value in case of error */
-	*ppDLS = NULL;
+    /* save file handle and hwInstData to save copying pointers around */
+    dls.hwInstData = hwInstData;
+    dls.fileHandle = fileHandle;
 
-	/* seek to start of DLS and read in RIFF tag and set processor endian flag */
-	if ((result = EAS_HWFileSeek(dls.hwInstData, dls.fileHandle, offset)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWReadFile(dls.hwInstData, dls.fileHandle, &temp, sizeof(temp), &size)) != EAS_SUCCESS)
-		return result;
+    /* NULL return value in case of error */
+    *ppDLS = NULL;
 
-	/* check for processor endian-ness */
-	dls.bigEndian = (temp == CHUNK_RIFF);
-	
-	/* first chunk should be DLS */
-	pos = offset;
-	if ((result = NextChunk(&dls, &pos, &temp, &size)) != EAS_SUCCESS)
-		return result;
-	if (temp != CHUNK_DLS)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Expected DLS chunk, got %08lx\n", temp); */ }
-		return EAS_ERROR_FILE_FORMAT;
-	}
+    /* seek to start of DLS and read in RIFF tag and set processor endian flag */
+    if ((result = EAS_HWFileSeek(dls.hwInstData, dls.fileHandle, offset)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWReadFile(dls.hwInstData, dls.fileHandle, &temp, sizeof(temp), &size)) != EAS_SUCCESS)
+        return result;
 
-	/* no instrument or wavepool chunks */
-	linsSize = wvplSize = ptblSize = linsPos = wvplPos = ptblPos = 0;
+    /* check for processor endian-ness */
+    dls.bigEndian = (temp == CHUNK_RIFF);
 
-	/* scan the chunks in the DLS list */
-	endDLS = offset + size;
-	pos = offset + 12;
-	while (pos < endDLS)
-	{
-		chunkPos = pos;
-		
-		/* get the next chunk type */
-		if ((result = NextChunk(&dls, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* first chunk should be DLS */
+    pos = offset;
+    if ((result = NextChunk(&dls, &pos, &temp, &size)) != EAS_SUCCESS)
+        return result;
+    if (temp != CHUNK_DLS)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Expected DLS chunk, got %08lx\n", temp); */ }
+        return EAS_ERROR_FILE_FORMAT;
+    }
 
-		/* parse useful chunks */
-		switch (temp)
-		{
-			case CHUNK_CDL:
-				if ((result = Parse_cdl(&dls, size, &temp)) != EAS_SUCCESS)
-					return result;
-				if (!temp)
-					return EAS_ERROR_UNRECOGNIZED_FORMAT;
-				break;
+    /* no instrument or wavepool chunks */
+    linsSize = wvplSize = ptblSize = linsPos = wvplPos = ptblPos = 0;
 
-			case CHUNK_LINS:
-				linsPos = chunkPos + 12;
-				linsSize = size - 4;
-				break;
-				
-			case CHUNK_WVPL:
-				wvplPos = chunkPos + 12;
-				wvplSize = size - 4;
-				break;
-				
-			case CHUNK_PTBL:
-				ptblPos = chunkPos + 8;
-				ptblSize = size - 4;
-				break;
+    /* scan the chunks in the DLS list */
+    endDLS = offset + size;
+    pos = offset + 12;
+    while (pos < endDLS)
+    {
+        chunkPos = pos;
 
-			default:
-				break;
-		}
-	}
+        /* get the next chunk type */
+        if ((result = NextChunk(&dls, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-	/* must have a lins chunk */
-	if (linsSize == 0)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No lins chunk found"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
-		
-	/* must have a wvpl chunk */
-	if (wvplSize == 0)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No wvpl chunk found"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+        /* parse useful chunks */
+        switch (temp)
+        {
+            case CHUNK_CDL:
+                if ((result = Parse_cdl(&dls, size, &temp)) != EAS_SUCCESS)
+                    return result;
+                if (!temp)
+                    return EAS_ERROR_UNRECOGNIZED_FORMAT;
+                break;
 
-	/* must have a ptbl chunk */
-	if ((ptblSize == 0) || (ptblSize > DLS_MAX_WAVE_COUNT * sizeof(POOLCUE) + sizeof(POOLTABLE)))
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No ptbl chunk found"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+            case CHUNK_LINS:
+                linsPos = chunkPos + 12;
+                linsSize = size - 4;
+                break;
 
-	/* pre-parse the wave pool chunk */
-	if ((result = Parse_ptbl(&dls, ptblPos, wvplPos, wvplSize)) != EAS_SUCCESS)
-		return result;
+            case CHUNK_WVPL:
+                wvplPos = chunkPos + 12;
+                wvplSize = size - 4;
+                break;
 
-	/* limit check  */
-	if ((dls.waveCount == 0) || (dls.waveCount > DLS_MAX_WAVE_COUNT))
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #waves [%u]\n", dls.waveCount); */ }
-		return EAS_ERROR_FILE_FORMAT;
-	}
+            case CHUNK_PTBL:
+                ptblPos = chunkPos + 8;
+                ptblSize = size - 4;
+                break;
 
-	/* allocate memory for wsmp data */
-	dls.wsmpData = EAS_HWMalloc(dls.hwInstData, (EAS_I32) (sizeof(S_WSMP_DATA) * dls.waveCount));
-	if (dls.wsmpData == NULL)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "EAS_HWMalloc for wsmp data failed\n"); */ }
-		return EAS_ERROR_MALLOC_FAILED;
-	}
-	EAS_HWMemSet(dls.wsmpData, 0, (EAS_I32) (sizeof(S_WSMP_DATA) * dls.waveCount));
+            default:
+                break;
+        }
+    }
 
-	/* pre-parse the lins chunk */
-	result = Parse_lins(&dls, linsPos, linsSize);
-	if (result == EAS_SUCCESS)
-	{
+    /* must have a lins chunk */
+    if (linsSize == 0)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No lins chunk found"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* limit check  */
-		if ((dls.regionCount == 0) || (dls.regionCount > DLS_MAX_REGION_COUNT))
-		{
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #regions [%u]\n", dls.regionCount); */ }
-			return EAS_ERROR_FILE_FORMAT;
-		}
+    /* must have a wvpl chunk */
+    if (wvplSize == 0)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No wvpl chunk found"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* limit check  */
-		if ((dls.artCount == 0) || (dls.artCount > DLS_MAX_ART_COUNT))
-		{
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #articulations [%u]\n", dls.regionCount); */ }
-			return EAS_ERROR_FILE_FORMAT;
-		}
+    /* must have a ptbl chunk */
+    if ((ptblSize == 0) || (ptblSize > DLS_MAX_WAVE_COUNT * sizeof(POOLCUE) + sizeof(POOLTABLE)))
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No ptbl chunk found"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* limit check  */
-		if ((dls.instCount == 0) || (dls.instCount > DLS_MAX_INST_COUNT))
-		{
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #instruments [%u]\n", dls.instCount); */ }
-			return EAS_ERROR_FILE_FORMAT;
-		}
+    /* pre-parse the wave pool chunk */
+    if ((result = Parse_ptbl(&dls, ptblPos, wvplPos, wvplSize)) != EAS_SUCCESS)
+        return result;
 
-		/* Allocate memory for the converted DLS data */
-		/* calculate size of instrument data */
-		instSize = (EAS_I32) (sizeof(S_PROGRAM) * dls.instCount);
+    /* limit check  */
+    if ((dls.waveCount == 0) || (dls.waveCount > DLS_MAX_WAVE_COUNT))
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #waves [%u]\n", dls.waveCount); */ }
+        return EAS_ERROR_FILE_FORMAT;
+    }
 
-		/* calculate size of region pool */
-		rgnPoolSize = (EAS_I32) (sizeof(S_DLS_REGION) * dls.regionCount);
+    /* allocate memory for wsmp data */
+    dls.wsmpData = EAS_HWMalloc(dls.hwInstData, (EAS_I32) (sizeof(S_WSMP_DATA) * dls.waveCount));
+    if (dls.wsmpData == NULL)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "EAS_HWMalloc for wsmp data failed\n"); */ }
+        return EAS_ERROR_MALLOC_FAILED;
+    }
+    EAS_HWMemSet(dls.wsmpData, 0, (EAS_I32) (sizeof(S_WSMP_DATA) * dls.waveCount));
 
-		/* calculate size of articulation pool, add one for default articulation */
-		dls.artCount++;
-		artPoolSize = (EAS_I32) (sizeof(S_DLS_ARTICULATION) * dls.artCount);
+    /* pre-parse the lins chunk */
+    result = Parse_lins(&dls, linsPos, linsSize);
+    if (result == EAS_SUCCESS)
+    {
 
-		/* calculate size of wave length and offset arrays */
-		waveLenSize = (EAS_I32) (dls.waveCount * sizeof(EAS_U32));
+        /* limit check  */
+        if ((dls.regionCount == 0) || (dls.regionCount > DLS_MAX_REGION_COUNT))
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #regions [%u]\n", dls.regionCount); */ }
+            return EAS_ERROR_FILE_FORMAT;
+        }
 
-		/* calculate final memory size */
-		size = (EAS_I32) sizeof(S_EAS) + instSize + rgnPoolSize + artPoolSize + (2 * waveLenSize) + (EAS_I32) dls.wavePoolSize;
-		if (size <= 0) {
-			return EAS_ERROR_FILE_FORMAT;
-		}
+        /* limit check  */
+        if ((dls.artCount == 0) || (dls.artCount > DLS_MAX_ART_COUNT))
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #articulations [%u]\n", dls.regionCount); */ }
+            return EAS_ERROR_FILE_FORMAT;
+        }
 
-		/* allocate the main EAS chunk */
-		dls.pDLS = EAS_HWMalloc(dls.hwInstData, size);
-		if (dls.pDLS == NULL)
-		{
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "EAS_HWMalloc failed for DLS memory allocation size %ld\n", size); */ }
-			return EAS_ERROR_MALLOC_FAILED;
-		}
-		EAS_HWMemSet(dls.pDLS, 0, size);
-		dls.pDLS->refCount = 1;
-		p = PtrOfs(dls.pDLS, sizeof(S_EAS));
+        /* limit check  */
+        if ((dls.instCount == 0) || (dls.instCount > DLS_MAX_INST_COUNT))
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #instruments [%u]\n", dls.instCount); */ }
+            return EAS_ERROR_FILE_FORMAT;
+        }
 
-		/* setup pointer to programs */
-		dls.pDLS->numDLSPrograms = (EAS_U16) dls.instCount;
-		dls.pDLS->pDLSPrograms = p;
-		p = PtrOfs(p, instSize);
+        /* Allocate memory for the converted DLS data */
+        /* calculate size of instrument data */
+        instSize = (EAS_I32) (sizeof(S_PROGRAM) * dls.instCount);
 
-		/* setup pointer to regions */
-		dls.pDLS->pDLSRegions = p;
-		dls.pDLS->numDLSRegions = (EAS_U16) dls.regionCount;
-		p = PtrOfs(p, rgnPoolSize);
+        /* calculate size of region pool */
+        rgnPoolSize = (EAS_I32) (sizeof(S_DLS_REGION) * dls.regionCount);
 
-		/* setup pointer to articulations */
-		dls.pDLS->numDLSArticulations = (EAS_U16) dls.artCount;
-		dls.pDLS->pDLSArticulations = p;
-		p = PtrOfs(p, artPoolSize);
+        /* calculate size of articulation pool, add one for default articulation */
+        dls.artCount++;
+        artPoolSize = (EAS_I32) (sizeof(S_DLS_ARTICULATION) * dls.artCount);
 
-		/* setup pointer to wave length table */
-		dls.pDLS->numDLSSamples = (EAS_U16) dls.waveCount;
-		dls.pDLS->pDLSSampleLen = p;
-		p = PtrOfs(p, waveLenSize);
+        /* calculate size of wave length and offset arrays */
+        waveLenSize = (EAS_I32) (dls.waveCount * sizeof(EAS_U32));
 
-		/* setup pointer to wave offsets table */
-		dls.pDLS->pDLSSampleOffsets = p;
-		p = PtrOfs(p, waveLenSize);
-		
-		/* setup pointer to wave pool */
-		dls.pDLS->pDLSSamples = p;
+        /* calculate final memory size */
+        size = (EAS_I32) sizeof(S_EAS) + instSize + rgnPoolSize + artPoolSize + (2 * waveLenSize) + (EAS_I32) dls.wavePoolSize;
+        if (size <= 0) {
+            return EAS_ERROR_FILE_FORMAT;
+        }
 
-		/* clear filter flag */
-		dls.filterUsed = EAS_FALSE;
+        /* allocate the main EAS chunk */
+        dls.pDLS = EAS_HWMalloc(dls.hwInstData, size);
+        if (dls.pDLS == NULL)
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "EAS_HWMalloc failed for DLS memory allocation size %ld\n", size); */ }
+            return EAS_ERROR_MALLOC_FAILED;
+        }
+        EAS_HWMemSet(dls.pDLS, 0, size);
+        dls.pDLS->refCount = 1;
+        p = PtrOfs(dls.pDLS, sizeof(S_EAS));
 
-		/* parse the wave pool and load samples */
-		result = Parse_ptbl(&dls, ptblPos, wvplPos, wvplSize);
-	}
+        /* setup pointer to programs */
+        dls.pDLS->numDLSPrograms = (EAS_U16) dls.instCount;
+        dls.pDLS->pDLSPrograms = p;
+        p = PtrOfs(p, instSize);
 
-	/* create the default articulation */
-	Convert_art(&dls, &defaultArt, 0);
-	dls.artCount = 1;
+        /* setup pointer to regions */
+        dls.pDLS->pDLSRegions = p;
+        dls.pDLS->numDLSRegions = (EAS_U16) dls.regionCount;
+        p = PtrOfs(p, rgnPoolSize);
 
-	/* parse the lins chunk and load instruments */
-	dls.regionCount = dls.instCount = 0;
-	if (result == EAS_SUCCESS)
-		result = Parse_lins(&dls, linsPos, linsSize);
+        /* setup pointer to articulations */
+        dls.pDLS->numDLSArticulations = (EAS_U16) dls.artCount;
+        dls.pDLS->pDLSArticulations = p;
+        p = PtrOfs(p, artPoolSize);
 
-	/* clean up any temporary objects that were allocated */
-	if (dls.wsmpData)
-		EAS_HWFree(dls.hwInstData, dls.wsmpData);
+        /* setup pointer to wave length table */
+        dls.pDLS->numDLSSamples = (EAS_U16) dls.waveCount;
+        dls.pDLS->pDLSSampleLen = p;
+        p = PtrOfs(p, waveLenSize);
 
-	/* if successful, return a pointer to the EAS collection */
-	if (result == EAS_SUCCESS)
-	{
-		*ppDLS = dls.pDLS;
+        /* setup pointer to wave offsets table */
+        dls.pDLS->pDLSSampleOffsets = p;
+        p = PtrOfs(p, waveLenSize);
+
+        /* setup pointer to wave pool */
+        dls.pDLS->pDLSSamples = p;
+
+        /* clear filter flag */
+        dls.filterUsed = EAS_FALSE;
+
+        /* parse the wave pool and load samples */
+        result = Parse_ptbl(&dls, ptblPos, wvplPos, wvplSize);
+    }
+
+    /* create the default articulation */
+    Convert_art(&dls, &defaultArt, 0);
+    dls.artCount = 1;
+
+    /* parse the lins chunk and load instruments */
+    dls.regionCount = dls.instCount = 0;
+    if (result == EAS_SUCCESS)
+        result = Parse_lins(&dls, linsPos, linsSize);
+
+    /* clean up any temporary objects that were allocated */
+    if (dls.wsmpData)
+        EAS_HWFree(dls.hwInstData, dls.wsmpData);
+
+    /* if successful, return a pointer to the EAS collection */
+    if (result == EAS_SUCCESS)
+    {
+        *ppDLS = dls.pDLS;
 #ifdef _DEBUG_DLS
-		DumpDLS(dls.pDLS);
+        DumpDLS(dls.pDLS);
 #endif
-	}
+    }
 
-	/* something went wrong, deallocate the EAS collection */
-	else
-		DLSCleanup(dls.hwInstData, dls.pDLS);
+    /* something went wrong, deallocate the EAS collection */
+    else
+        DLSCleanup(dls.hwInstData, dls.pDLS);
 
-	return result;
+    return result;
 }
 
 /*----------------------------------------------------------------------------
  * DLSCleanup ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
- * Inputs: 
+ * Purpose:
+ *
+ * Inputs:
  * pEASData - pointer to over EAS data instance
  * pEAS - pointer to alternate EAS wavetable
- *			
+ *
  * Outputs:
  * EAS_RESULT
  *
@@ -720,16 +720,16 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
 EAS_RESULT DLSCleanup (EAS_HW_DATA_HANDLE hwInstData, S_DLS *pDLS)
 {
 
-	/* free the allocated memory */
-	if (pDLS)
-	{
-		if (pDLS->refCount)
-		{
-			if (--pDLS->refCount == 0)
-				EAS_HWFree(hwInstData, pDLS);
-		}
-	}
-	return EAS_SUCCESS;
+    /* free the allocated memory */
+    if (pDLS)
+    {
+        if (pDLS->refCount)
+        {
+            if (--pDLS->refCount == 0)
+                EAS_HWFree(hwInstData, pDLS);
+        }
+    }
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -740,18 +740,18 @@ EAS_RESULT DLSCleanup (EAS_HW_DATA_HANDLE hwInstData, S_DLS *pDLS)
 */
 void DLSAddRef (S_DLS *pDLS)
 {
-	if (pDLS)
-		pDLS->refCount++;
+    if (pDLS)
+        pDLS->refCount++;
 }
 
 /*----------------------------------------------------------------------------
  * NextChunk ()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Returns the type and size of the next chunk in the file
  *
- * Inputs: 
- *			
+ * Inputs:
+ *
  * Outputs:
  *
  * Side Effects:
@@ -759,522 +759,522 @@ void DLSAddRef (S_DLS *pDLS)
 */
 static EAS_RESULT NextChunk (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 *pPos, EAS_U32 *pChunkType, EAS_I32 *pSize)
 {
-	EAS_RESULT result;
+    EAS_RESULT result;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, *pPos)) != EAS_SUCCESS)
-		return result;
-	
-	/* read the chunk type */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pChunkType, EAS_TRUE)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, *pPos)) != EAS_SUCCESS)
+        return result;
 
-	/* read the chunk size */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pSize, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* read the chunk type */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pChunkType, EAS_TRUE)) != EAS_SUCCESS)
+        return result;
 
-	/* get form type for RIFF and LIST types */
-	if ((*pChunkType == CHUNK_RIFF) || (*pChunkType == CHUNK_LIST))
-	{
-		
-		/* read the form type */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pChunkType, EAS_TRUE)) != EAS_SUCCESS)
-			return result;
+    /* read the chunk size */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pSize, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-	}
+    /* get form type for RIFF and LIST types */
+    if ((*pChunkType == CHUNK_RIFF) || (*pChunkType == CHUNK_LIST))
+    {
 
-	/* calculate start of next chunk */
-	*pPos += *pSize + 8;
+        /* read the form type */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pChunkType, EAS_TRUE)) != EAS_SUCCESS)
+            return result;
 
-	/* adjust to word boundary */
-	if (*pPos & 1)
-		(*pPos)++;
+    }
 
-	return EAS_SUCCESS;
+    /* calculate start of next chunk */
+    *pPos += *pSize + 8;
+
+    /* adjust to word boundary */
+    if (*pPos & 1)
+        (*pPos)++;
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_ptbl ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_ptbl (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 wtblPos, EAS_I32 wtblSize)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_FILE_HANDLE tempFile;
-	EAS_U16 waveIndex;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_FILE_HANDLE tempFile;
+    EAS_U16 waveIndex;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* get the structure size */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &temp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get the structure size */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &temp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-	/* get the number of waves */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSData->waveCount, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get the number of waves */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSData->waveCount, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
 #if 0
-	/* just need the wave count on the first pass */
-	if (!pDLSData->pDLS)
-		return EAS_SUCCESS;
+    /* just need the wave count on the first pass */
+    if (!pDLSData->pDLS)
+        return EAS_SUCCESS;
 #endif
 
-	/* open duplicate file handle */
-	if ((result = EAS_HWDupHandle(pDLSData->hwInstData, pDLSData->fileHandle, &tempFile)) != EAS_SUCCESS)
-		return result;
+    /* open duplicate file handle */
+    if ((result = EAS_HWDupHandle(pDLSData->hwInstData, pDLSData->fileHandle, &tempFile)) != EAS_SUCCESS)
+        return result;
 
-	/* read to end of chunk */
-	for (waveIndex = 0; waveIndex < pDLSData->waveCount; waveIndex++)
-	{
+    /* read to end of chunk */
+    for (waveIndex = 0; waveIndex < pDLSData->waveCount; waveIndex++)
+    {
 
-		/* get the offset to the wave and make sure it is within the wtbl chunk */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, tempFile, &temp, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		if (temp > (EAS_U32) wtblSize)
-		{
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Ptbl offset exceeds size of wtbl\n"); */ }
-			EAS_HWCloseFile(pDLSData->hwInstData, tempFile);
-			return EAS_ERROR_FILE_FORMAT;
-		}
+        /* get the offset to the wave and make sure it is within the wtbl chunk */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, tempFile, &temp, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+        if (temp > (EAS_U32) wtblSize)
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Ptbl offset exceeds size of wtbl\n"); */ }
+            EAS_HWCloseFile(pDLSData->hwInstData, tempFile);
+            return EAS_ERROR_FILE_FORMAT;
+        }
 
-		/* parse the wave */
-		if ((result = Parse_wave(pDLSData, wtblPos +(EAS_I32)  temp, waveIndex)) != EAS_SUCCESS)
-			return result;
-	}
+        /* parse the wave */
+        if ((result = Parse_wave(pDLSData, wtblPos +(EAS_I32)  temp, waveIndex)) != EAS_SUCCESS)
+            return result;
+    }
 
-	/* close the temporary handle and return */
-	EAS_HWCloseFile(pDLSData->hwInstData, tempFile);
-	return EAS_SUCCESS;
+    /* close the temporary handle and return */
+    EAS_HWCloseFile(pDLSData->hwInstData, tempFile);
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_wave ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_wave (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_U16 waveIndex)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 size;
-	EAS_I32 endChunk;
-	EAS_I32 chunkPos;
-	EAS_I32 wsmpPos = 0;
-	EAS_I32 fmtPos = 0;
-	EAS_I32 dataPos = 0;
-	EAS_I32 dataSize = 0;
-	S_WSMP_DATA *p;
-	void *pSample;
-	S_WSMP_DATA wsmp;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 size;
+    EAS_I32 endChunk;
+    EAS_I32 chunkPos;
+    EAS_I32 wsmpPos = 0;
+    EAS_I32 fmtPos = 0;
+    EAS_I32 dataPos = 0;
+    EAS_I32 dataSize = 0;
+    S_WSMP_DATA *p;
+    void *pSample;
+    S_WSMP_DATA wsmp;
 
-	/* seek to start of chunk */
-	chunkPos = pos + 12;
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    chunkPos = pos + 12;
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* get the chunk type */
-	if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-		return result;
+    /* get the chunk type */
+    if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+        return result;
 
-	/* make sure it is a wave chunk */
-	if (temp != CHUNK_WAVE)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Offset in ptbl does not point to wave chunk\n"); */ }
-		return EAS_ERROR_FILE_FORMAT;
-	}
-	
-	/* read to end of chunk */
-	pos = chunkPos;
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
+    /* make sure it is a wave chunk */
+    if (temp != CHUNK_WAVE)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Offset in ptbl does not point to wave chunk\n"); */ }
+        return EAS_ERROR_FILE_FORMAT;
+    }
 
-		/* get the chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* read to end of chunk */
+    pos = chunkPos;
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-		/* parse useful chunks */
-		switch (temp)
-		{
-			case CHUNK_WSMP:
-				wsmpPos = chunkPos + 8;
-				break;
+        /* get the chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-			case CHUNK_FMT:
-				fmtPos = chunkPos + 8;
-				break;
-				
-			case CHUNK_DATA:
-				dataPos = chunkPos + 8;
-				dataSize = size;
-				break;
+        /* parse useful chunks */
+        switch (temp)
+        {
+            case CHUNK_WSMP:
+                wsmpPos = chunkPos + 8;
+                break;
 
-			default:
-				break;
-		}
-	}
+            case CHUNK_FMT:
+                fmtPos = chunkPos + 8;
+                break;
 
-	// limit to reasonable size
-	if (dataSize > MAX_DLS_WAVE_SIZE)
-	{
-		return EAS_ERROR_SOUND_LIBRARY;
-	}
+            case CHUNK_DATA:
+                dataPos = chunkPos + 8;
+                dataSize = size;
+                break;
 
-	/* for first pass, use temporary variable */
-	if (pDLSData->pDLS == NULL)
-		p = &wsmp;
-	else
-		p = &pDLSData->wsmpData[waveIndex];
-	
-	/* set the defaults */
-	p->fineTune = 0;
-	p->unityNote = 60;
-	p->gain = 0;
-	p->loopStart = 0;
-	p->loopLength = 0;
+            default:
+                break;
+        }
+    }
 
-	/* must have a fmt chunk */
-	if (!fmtPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS wave chunk has no fmt chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+    // limit to reasonable size
+    if (dataSize > MAX_DLS_WAVE_SIZE)
+    {
+        return EAS_ERROR_SOUND_LIBRARY;
+    }
 
-	/* must have a data chunk */
-	if (!dataPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS wave chunk has no data chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+    /* for first pass, use temporary variable */
+    if (pDLSData->pDLS == NULL)
+        p = &wsmp;
+    else
+        p = &pDLSData->wsmpData[waveIndex];
 
-	/* parse the wsmp chunk */
-	if (wsmpPos)
-	{
-		if ((result = Parse_wsmp(pDLSData, wsmpPos, p)) != EAS_SUCCESS)
-			return result;
-	}
+    /* set the defaults */
+    p->fineTune = 0;
+    p->unityNote = 60;
+    p->gain = 0;
+    p->loopStart = 0;
+    p->loopLength = 0;
 
-	/* parse the fmt chunk */
-	if ((result = Parse_fmt(pDLSData, fmtPos, p)) != EAS_SUCCESS)
-		return result;
+    /* must have a fmt chunk */
+    if (!fmtPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS wave chunk has no fmt chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-	/* calculate the size of the wavetable needed. We need only half
-	 * the memory for 16-bit samples when in 8-bit mode, and we need
-	 * double the memory for 8-bit samples in 16-bit mode. For
-	 * unlooped samples, we may use ADPCM. If so, we need only 1/4
-	 * the memory.
-	 *
-	 * We also need to add one for looped samples to allow for
-	 * the first sample to be copied to the end of the loop.
-	 */
+    /* must have a data chunk */
+    if (!dataPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS wave chunk has no data chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-	/* use ADPCM encode for unlooped 16-bit samples if ADPCM is enabled */
-	/*lint -e{506} -e{774} groundwork for future version to support 8 & 16 bit */
-	if (bitDepth == 8)
-	{
-		if (p->bitsPerSample == 8)
-			size = dataSize;
-		else
-			/*lint -e{704} use shift for performance */
-			size = dataSize >> 1;
-		if (p->loopLength)
-			size++;
-	}
+    /* parse the wsmp chunk */
+    if (wsmpPos)
+    {
+        if ((result = Parse_wsmp(pDLSData, wsmpPos, p)) != EAS_SUCCESS)
+            return result;
+    }
 
-	else
-	{
-		if (p->bitsPerSample == 16)
-			size = dataSize;
-		else
-			/*lint -e{703} use shift for performance */
-			size = dataSize << 1;
-		if (p->loopLength)
-			size += 2;
-	}
+    /* parse the fmt chunk */
+    if ((result = Parse_fmt(pDLSData, fmtPos, p)) != EAS_SUCCESS)
+        return result;
 
-	/* for first pass, add size to wave pool size and return */
-	if (pDLSData->pDLS == NULL)
-	{
-		pDLSData->wavePoolSize += (EAS_U32) size;
-		return EAS_SUCCESS;
-	}
+    /* calculate the size of the wavetable needed. We need only half
+     * the memory for 16-bit samples when in 8-bit mode, and we need
+     * double the memory for 8-bit samples in 16-bit mode. For
+     * unlooped samples, we may use ADPCM. If so, we need only 1/4
+     * the memory.
+     *
+     * We also need to add one for looped samples to allow for
+     * the first sample to be copied to the end of the loop.
+     */
 
-	/* allocate memory and read in the sample data */
-	pSample = pDLSData->pDLS->pDLSSamples + pDLSData->wavePoolOffset;
-	pDLSData->pDLS->pDLSSampleOffsets[waveIndex] = pDLSData->wavePoolOffset;
-	pDLSData->pDLS->pDLSSampleLen[waveIndex] = (EAS_U32) size;
-	pDLSData->wavePoolOffset += (EAS_U32) size;
-	if (pDLSData->wavePoolOffset > pDLSData->wavePoolSize)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Wave pool exceeded allocation\n"); */ }
-		return EAS_ERROR_SOUND_LIBRARY;
-	}
-	
-	if ((result = Parse_data(pDLSData, dataPos, dataSize, p, pSample)) != EAS_SUCCESS)
-		return result;
+    /* use ADPCM encode for unlooped 16-bit samples if ADPCM is enabled */
+    /*lint -e{506} -e{774} groundwork for future version to support 8 & 16 bit */
+    if (bitDepth == 8)
+    {
+        if (p->bitsPerSample == 8)
+            size = dataSize;
+        else
+            /*lint -e{704} use shift for performance */
+            size = dataSize >> 1;
+        if (p->loopLength)
+            size++;
+    }
 
-	return EAS_SUCCESS;
+    else
+    {
+        if (p->bitsPerSample == 16)
+            size = dataSize;
+        else
+            /*lint -e{703} use shift for performance */
+            size = dataSize << 1;
+        if (p->loopLength)
+            size += 2;
+    }
+
+    /* for first pass, add size to wave pool size and return */
+    if (pDLSData->pDLS == NULL)
+    {
+        pDLSData->wavePoolSize += (EAS_U32) size;
+        return EAS_SUCCESS;
+    }
+
+    /* allocate memory and read in the sample data */
+    pSample = pDLSData->pDLS->pDLSSamples + pDLSData->wavePoolOffset;
+    pDLSData->pDLS->pDLSSampleOffsets[waveIndex] = pDLSData->wavePoolOffset;
+    pDLSData->pDLS->pDLSSampleLen[waveIndex] = (EAS_U32) size;
+    pDLSData->wavePoolOffset += (EAS_U32) size;
+    if (pDLSData->wavePoolOffset > pDLSData->wavePoolSize)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Wave pool exceeded allocation\n"); */ }
+        return EAS_ERROR_SOUND_LIBRARY;
+    }
+
+    if ((result = Parse_data(pDLSData, dataPos, dataSize, p, pSample)) != EAS_SUCCESS)
+        return result;
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_wsmp ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_wsmp (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WSMP_DATA *p)
 {
-	EAS_RESULT result;
-	EAS_U16 wtemp;
-	EAS_U32 ltemp;
-	EAS_U32 cbSize;
-	
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* get structure size */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &cbSize, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    EAS_RESULT result;
+    EAS_U16 wtemp;
+    EAS_U32 ltemp;
+    EAS_U32 cbSize;
 
-	/* get unity note */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if (wtemp <= 127)
-		p->unityNote = (EAS_U8) wtemp;
-	else
-	{
-		p->unityNote = 60;
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Invalid unity note [%u] in DLS wsmp ignored, set to 60\n", wtemp); */ }
-	}
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* get fine tune */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->fineTune, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get structure size */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &cbSize, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-	/* get gain */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->gain, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if (p->gain > 0)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Positive gain [%ld] in DLS wsmp ignored, set to 0dB\n", p->gain); */ }
-		p->gain = 0;
-	}
-	
-	/* option flags */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-		
-	/* sample loops */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get unity note */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if (wtemp <= 127)
+        p->unityNote = (EAS_U8) wtemp;
+    else
+    {
+        p->unityNote = 60;
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Invalid unity note [%u] in DLS wsmp ignored, set to 60\n", wtemp); */ }
+    }
 
-	/* if looped sample, get loop data */
-	if (ltemp)
-	{
-		
-		if (ltemp > 1)
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS sample with %lu loops, ignoring extra loops\n", ltemp); */ } 
-		
-		/* skip ahead to loop data */
-		if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos + (EAS_I32) cbSize)) != EAS_SUCCESS)
-			return result;
+    /* get fine tune */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->fineTune, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-		/* get structure size */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
+    /* get gain */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->gain, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if (p->gain > 0)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Positive gain [%ld] in DLS wsmp ignored, set to 0dB\n", p->gain); */ }
+        p->gain = 0;
+    }
 
-		/* get loop type */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
+    /* option flags */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-		/* get loop start */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->loopStart, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
+    /* sample loops */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-		/* get loop length */
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->loopLength, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-	}
+    /* if looped sample, get loop data */
+    if (ltemp)
+    {
 
-	return EAS_SUCCESS;
+        if (ltemp > 1)
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS sample with %lu loops, ignoring extra loops\n", ltemp); */ }
+
+        /* skip ahead to loop data */
+        if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos + (EAS_I32) cbSize)) != EAS_SUCCESS)
+            return result;
+
+        /* get structure size */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+
+        /* get loop type */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+
+        /* get loop start */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->loopStart, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+
+        /* get loop length */
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->loopLength, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+    }
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_fmt ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_fmt (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WSMP_DATA *p)
 {
-	EAS_RESULT result;
-	EAS_U16 wtemp;
-	EAS_U32 ltemp;
-	
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* get format tag */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if (wtemp != WAVE_FORMAT_PCM)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Unsupported DLS sample format %04x\n", wtemp); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+    EAS_RESULT result;
+    EAS_U16 wtemp;
+    EAS_U32 ltemp;
 
-	/* get number of channels */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if (wtemp != 1)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No support for DLS multi-channel samples\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* get sample rate */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->sampleRate, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get format tag */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if (wtemp != WAVE_FORMAT_PCM)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Unsupported DLS sample format %04x\n", wtemp); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-	/* bytes/sec */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	
-	/* block align */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-		
-	/* bits/sample */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->bitsPerSample, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get number of channels */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if (wtemp != 1)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No support for DLS multi-channel samples\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-	if ((p->bitsPerSample != 8) && (p->bitsPerSample != 16))
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Unsupported DLS bits-per-sample %d\n", p->bitsPerSample); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
-	
-	return EAS_SUCCESS;
+    /* get sample rate */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->sampleRate, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* bytes/sec */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &ltemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* block align */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &wtemp, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* bits/sample */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->bitsPerSample, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    if ((p->bitsPerSample != 8) && (p->bitsPerSample != 16))
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "Unsupported DLS bits-per-sample %d\n", p->bitsPerSample); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
+
+    return EAS_SUCCESS;
 }
 
 #if defined( _8_BIT_SAMPLES)
 /*----------------------------------------------------------------------------
  * Parse_data ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  * NOTE: The optimized assembly versions of the interpolator require
  * an extra sample at the end of the loop - a copy of the first
  * sample. This routine must allocate an extra sample of data and
  * copy the first sample of the loop to the end.
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_WSMP_DATA *pWsmp, EAS_SAMPLE *pSample)
 {
-	EAS_RESULT result;
-	EAS_U8 convBuf[SAMPLE_CONVERT_CHUNK_SIZE];
-	EAS_I32 count;
-	EAS_I32 i;
-	EAS_I8 *p;
-	
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    EAS_RESULT result;
+    EAS_U8 convBuf[SAMPLE_CONVERT_CHUNK_SIZE];
+    EAS_I32 count;
+    EAS_I32 i;
+    EAS_I8 *p;
 
-	/* 8-bit samples in an 8-bit synth, just copy the data, and flip bit 7 */
-	p = pSample;
-	if (pWsmp->bitsPerSample == 8)
-	{
-		if ((result = EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, pSample, size, &count)) != EAS_SUCCESS)
-			return result;
-		for (i = 0; i < size; i++)
-			/*lint -e{734} convert from unsigned to signed audio */
-			*p++ ^= 0x80;
-	}
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* 16-bit samples, need to convert to 8-bit or ADPCM */
-	else
-	{
+    /* 8-bit samples in an 8-bit synth, just copy the data, and flip bit 7 */
+    p = pSample;
+    if (pWsmp->bitsPerSample == 8)
+    {
+        if ((result = EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, pSample, size, &count)) != EAS_SUCCESS)
+            return result;
+        for (i = 0; i < size; i++)
+            /*lint -e{734} convert from unsigned to signed audio */
+            *p++ ^= 0x80;
+    }
 
-		while (size)
-		{
-			EAS_I8 *pInput;
+    /* 16-bit samples, need to convert to 8-bit or ADPCM */
+    else
+    {
 
-			/* for undithered conversion, we're just copying the 8-bit data */
-			if (pDLSData->bigEndian)
-				pInput = (EAS_I8*) convBuf;
-			else
-				pInput = (EAS_I8*) convBuf + 1;
-			
-			/* read a small chunk of data and convert it */
-			count = (size < SAMPLE_CONVERT_CHUNK_SIZE ? size : SAMPLE_CONVERT_CHUNK_SIZE);
-			if ((result = EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, convBuf, count, &count)) != EAS_SUCCESS)
-				return result;
-			size -= count;
-			/*lint -e{704} use shift for performance */
-			count = count >> 1;
+        while (size)
+        {
+            EAS_I8 *pInput;
 
-			while (count--)
-			{
-				*p++ = *pInput;
-				pInput += 2;
-			}
-		}
-	}
+            /* for undithered conversion, we're just copying the 8-bit data */
+            if (pDLSData->bigEndian)
+                pInput = (EAS_I8*) convBuf;
+            else
+                pInput = (EAS_I8*) convBuf + 1;
 
-	/* for looped samples, copy the last sample to the end */
-	if (pWsmp->loopLength)
-		pSample[pWsmp->loopStart + pWsmp->loopLength] = pSample[pWsmp->loopStart];
+            /* read a small chunk of data and convert it */
+            count = (size < SAMPLE_CONVERT_CHUNK_SIZE ? size : SAMPLE_CONVERT_CHUNK_SIZE);
+            if ((result = EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, convBuf, count, &count)) != EAS_SUCCESS)
+                return result;
+            size -= count;
+            /*lint -e{704} use shift for performance */
+            count = count >> 1;
 
-	return EAS_SUCCESS;
+            while (count--)
+            {
+                *p++ = *pInput;
+                pInput += 2;
+            }
+        }
+    }
+
+    /* for looped samples, copy the last sample to the end */
+    if (pWsmp->loopLength)
+        pSample[pWsmp->loopStart + pWsmp->loopLength] = pSample[pWsmp->loopStart];
+
+    return EAS_SUCCESS;
 }
 #elif defined(_16_BIT_SAMPLES)
 #error "16-bit DLS conversion not implemented yet"
@@ -1285,1134 +1285,1134 @@ static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
 /*----------------------------------------------------------------------------
  * Parse_lins ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_lins (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 endChunk;
-	EAS_I32 chunkPos;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 endChunk;
+    EAS_I32 chunkPos;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* read to end of chunk */
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
-		
-		/* get the next chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-		/* only instrument chunks are useful */
-		if (temp != CHUNK_INS)
-			continue;
+    /* read to end of chunk */
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-		if ((result = Parse_ins(pDLSData, chunkPos + 12, size)) != EAS_SUCCESS)
-			return result;
-	}
+        /* get the next chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-	return EAS_SUCCESS;
+        /* only instrument chunks are useful */
+        if (temp != CHUNK_INS)
+            continue;
+
+        if ((result = Parse_ins(pDLSData, chunkPos + 12, size)) != EAS_SUCCESS)
+            return result;
+    }
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_ins ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_ins (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 chunkPos;
-	EAS_I32 endChunk;
-	EAS_I32 lrgnPos;
-	EAS_I32 lrgnSize;
-	EAS_I32 lartPos;
-	EAS_I32 lartSize;
-	EAS_I32 lar2Pos;
-	EAS_I32 lar2Size;
-	EAS_I32 inshPos;
-	EAS_U32 regionCount;
-	EAS_U32 locale;
-	S_DLS_ART_VALUES art;
-	S_PROGRAM *pProgram;
-	EAS_U16 artIndex;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 chunkPos;
+    EAS_I32 endChunk;
+    EAS_I32 lrgnPos;
+    EAS_I32 lrgnSize;
+    EAS_I32 lartPos;
+    EAS_I32 lartSize;
+    EAS_I32 lar2Pos;
+    EAS_I32 lar2Size;
+    EAS_I32 inshPos;
+    EAS_U32 regionCount;
+    EAS_U32 locale;
+    S_DLS_ART_VALUES art;
+    S_PROGRAM *pProgram;
+    EAS_U16 artIndex;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* no chunks yet */
-	lrgnPos = lrgnSize = lartPos = lartSize = lar2Pos = lar2Size = inshPos = artIndex = 0;
-	
-	/* read to end of chunk */
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
+    /* no chunks yet */
+    lrgnPos = lrgnSize = lartPos = lartSize = lar2Pos = lar2Size = inshPos = artIndex = 0;
 
-		/* get the next chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* read to end of chunk */
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-		/* parse useful chunks */
-		switch (temp)
-		{
-			case CHUNK_INSH:
-				inshPos = chunkPos + 8;
-				break;
-				
-			case CHUNK_LART:
-				lartPos = chunkPos + 12;
-				lartSize = size;
-				break;
-				
-			case CHUNK_LAR2:
-				lar2Pos = chunkPos + 12;
-				lar2Size = size;
-				break;
-				
-			case CHUNK_LRGN:
-				lrgnPos = chunkPos + 12;
-				lrgnSize = size;
-				break;
+        /* get the next chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-			default:
-				break;
-		}
-	}
+        /* parse useful chunks */
+        switch (temp)
+        {
+            case CHUNK_INSH:
+                inshPos = chunkPos + 8;
+                break;
 
-	/* must have an lrgn to be useful */
-	if (!lrgnPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS ins chunk has no lrgn chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+            case CHUNK_LART:
+                lartPos = chunkPos + 12;
+                lartSize = size;
+                break;
 
-	/* must have an insh to be useful */
-	if (!inshPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS ins chunk has no insh chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+            case CHUNK_LAR2:
+                lar2Pos = chunkPos + 12;
+                lar2Size = size;
+                break;
 
-	/* parse the instrument header */
-	if ((result = Parse_insh(pDLSData, inshPos, &regionCount, &locale)) != EAS_SUCCESS)
-		return result;
-	
-	/* initialize and parse the global data first */
-	EAS_HWMemCpy(&art, &defaultArt, sizeof(S_DLS_ART_VALUES));
-	if (lartPos)
-		if ((result = Parse_lart(pDLSData, lartPos, lartSize, &art)) != EAS_SUCCESS)
-			return result;
-	if (lar2Pos)
-		if ((result = Parse_lart(pDLSData, lar2Pos, lar2Size, &art)) != EAS_SUCCESS)
-			return result;
-		
-	if (art.values[PARAM_MODIFIED])
-	{
-		artIndex = (EAS_U16) pDLSData->artCount;
-		pDLSData->artCount++;
-	}
+            case CHUNK_LRGN:
+                lrgnPos = chunkPos + 12;
+                lrgnSize = size;
+                break;
 
-	/* convert data on second pass */
-	if (pDLSData->pDLS)
-	{
+            default:
+                break;
+        }
+    }
 
-		if (art.values[PARAM_MODIFIED])
-			Convert_art(pDLSData, &art, artIndex);
+    /* must have an lrgn to be useful */
+    if (!lrgnPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS ins chunk has no lrgn chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* setup pointers */
-		pProgram = &pDLSData->pDLS->pDLSPrograms[pDLSData->instCount];
+    /* must have an insh to be useful */
+    if (!inshPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS ins chunk has no insh chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* initialize instrument */
-		pProgram->locale = locale;
-		pProgram->regionIndex = (EAS_U16) pDLSData->regionCount | FLAG_RGN_IDX_DLS_SYNTH;
+    /* parse the instrument header */
+    if ((result = Parse_insh(pDLSData, inshPos, &regionCount, &locale)) != EAS_SUCCESS)
+        return result;
 
-	}
+    /* initialize and parse the global data first */
+    EAS_HWMemCpy(&art, &defaultArt, sizeof(S_DLS_ART_VALUES));
+    if (lartPos)
+        if ((result = Parse_lart(pDLSData, lartPos, lartSize, &art)) != EAS_SUCCESS)
+            return result;
+    if (lar2Pos)
+        if ((result = Parse_lart(pDLSData, lar2Pos, lar2Size, &art)) != EAS_SUCCESS)
+            return result;
 
-	/* parse the region data */
-	if ((result = Parse_lrgn(pDLSData, lrgnPos, lrgnSize, artIndex, regionCount)) != EAS_SUCCESS)
-		return result;
+    if (art.values[PARAM_MODIFIED])
+    {
+        artIndex = (EAS_U16) pDLSData->artCount;
+        pDLSData->artCount++;
+    }
 
-	/* bump instrument count */
-	pDLSData->instCount++;
-	return EAS_SUCCESS;
+    /* convert data on second pass */
+    if (pDLSData->pDLS)
+    {
+
+        if (art.values[PARAM_MODIFIED])
+            Convert_art(pDLSData, &art, artIndex);
+
+        /* setup pointers */
+        pProgram = &pDLSData->pDLS->pDLSPrograms[pDLSData->instCount];
+
+        /* initialize instrument */
+        pProgram->locale = locale;
+        pProgram->regionIndex = (EAS_U16) pDLSData->regionCount | FLAG_RGN_IDX_DLS_SYNTH;
+
+    }
+
+    /* parse the region data */
+    if ((result = Parse_lrgn(pDLSData, lrgnPos, lrgnSize, artIndex, regionCount)) != EAS_SUCCESS)
+        return result;
+
+    /* bump instrument count */
+    pDLSData->instCount++;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_insh ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_insh (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_U32 *pRgnCount, EAS_U32 *pLocale)
 {
-	EAS_RESULT result;
-	EAS_U32 bank;
-	EAS_U32 program;
-	
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    EAS_RESULT result;
+    EAS_U32 bank;
+    EAS_U32 program;
 
-	/* get the region count and locale */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pRgnCount, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &bank, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &program, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* verify the parameters are valid */
-	if (bank & 0x7fff8080)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS bank number is out of range: %08lx\n", bank); */ }
-		bank &= 0xff7f;
-	}
-	if (program > 127)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS program number is out of range: %08lx\n", program); */ }
-		program &= 0x7f;
-	}
+    /* get the region count and locale */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, pRgnCount, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &bank, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &program, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-	/* save the program number */
-	*pLocale = (bank << 8) | program;
-	return EAS_SUCCESS;
+    /* verify the parameters are valid */
+    if (bank & 0x7fff8080)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS bank number is out of range: %08lx\n", bank); */ }
+        bank &= 0xff7f;
+    }
+    if (program > 127)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS program number is out of range: %08lx\n", program); */ }
+        program &= 0x7f;
+    }
+
+    /* save the program number */
+    *pLocale = (bank << 8) | program;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_lrgn ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_lrgn (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, EAS_U16 artIndex, EAS_U32 numRegions)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 chunkPos;
-	EAS_I32 endChunk;
-	EAS_U16 regionCount;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 chunkPos;
+    EAS_I32 endChunk;
+    EAS_U16 regionCount;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* read to end of chunk */
-	regionCount = 0;
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-		/* get the next chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* read to end of chunk */
+    regionCount = 0;
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-		if ((temp == CHUNK_RGN) || (temp == CHUNK_RGN2))
-		{
-			if (regionCount == numRegions)
-			{
-				{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS region count exceeded cRegions value in insh, extra region ignored\n"); */ }
-				return EAS_SUCCESS;
-			}
-			if ((result = Parse_rgn(pDLSData, chunkPos + 12, size, artIndex)) != EAS_SUCCESS)
-				return result;
-			regionCount++;
-		}
-	}
+        /* get the next chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-	/* set a flag in the last region */
-	if ((pDLSData->pDLS != NULL) && (regionCount > 0))
-		pDLSData->pDLS->pDLSRegions[pDLSData->regionCount - 1].wtRegion.region.keyGroupAndFlags |= REGION_FLAG_LAST_REGION;
-	
-	return EAS_SUCCESS;
+        if ((temp == CHUNK_RGN) || (temp == CHUNK_RGN2))
+        {
+            if (regionCount == numRegions)
+            {
+                { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS region count exceeded cRegions value in insh, extra region ignored\n"); */ }
+                return EAS_SUCCESS;
+            }
+            if ((result = Parse_rgn(pDLSData, chunkPos + 12, size, artIndex)) != EAS_SUCCESS)
+                return result;
+            regionCount++;
+        }
+    }
+
+    /* set a flag in the last region */
+    if ((pDLSData->pDLS != NULL) && (regionCount > 0))
+        pDLSData->pDLS->pDLSRegions[pDLSData->regionCount - 1].wtRegion.region.keyGroupAndFlags |= REGION_FLAG_LAST_REGION;
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_rgn ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_rgn (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, EAS_U16 artIndex)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 chunkPos;
-	EAS_I32 endChunk;
-	EAS_I32 rgnhPos;
-	EAS_I32 lartPos;
-	EAS_I32 lartSize;
-	EAS_I32 lar2Pos;
-	EAS_I32 lar2Size;
-	EAS_I32 wlnkPos;
-	EAS_I32 wsmpPos;
-	EAS_U32 waveIndex;
-	S_DLS_ART_VALUES art;
-	S_WSMP_DATA wsmp;
-	S_WSMP_DATA *pWsmp;
-	EAS_U16 regionIndex;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 chunkPos;
+    EAS_I32 endChunk;
+    EAS_I32 rgnhPos;
+    EAS_I32 lartPos;
+    EAS_I32 lartSize;
+    EAS_I32 lar2Pos;
+    EAS_I32 lar2Size;
+    EAS_I32 wlnkPos;
+    EAS_I32 wsmpPos;
+    EAS_U32 waveIndex;
+    S_DLS_ART_VALUES art;
+    S_WSMP_DATA wsmp;
+    S_WSMP_DATA *pWsmp;
+    EAS_U16 regionIndex;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* no chunks found yet */
-	rgnhPos = lartPos = lartSize = lar2Pos = lar2Size = wsmpPos = wlnkPos = 0;
-	regionIndex = (EAS_U16) pDLSData->regionCount;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* read to end of chunk */
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
+    /* no chunks found yet */
+    rgnhPos = lartPos = lartSize = lar2Pos = lar2Size = wsmpPos = wlnkPos = 0;
+    regionIndex = (EAS_U16) pDLSData->regionCount;
 
-		/* get the next chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* read to end of chunk */
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-		/* parse useful chunks */
-		switch (temp)
-		{
-			case CHUNK_CDL:
-				if ((result = Parse_cdl(pDLSData, size, &temp)) != EAS_SUCCESS)
-					return result;
+        /* get the next chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-				/* if conditional chunk evaluates false, skip this list */
-				if (!temp)
-					return EAS_SUCCESS;
-				break;
+        /* parse useful chunks */
+        switch (temp)
+        {
+            case CHUNK_CDL:
+                if ((result = Parse_cdl(pDLSData, size, &temp)) != EAS_SUCCESS)
+                    return result;
 
-			case CHUNK_RGNH:
-				rgnhPos = chunkPos + 8;
-				break;
-				
-			case CHUNK_WLNK:
-				wlnkPos = chunkPos + 8;
-				break;
-				
-			case CHUNK_WSMP:
-				wsmpPos = chunkPos + 8;
-				break;
-				
-			case CHUNK_LART:
-				lartPos = chunkPos + 12;
-				lartSize = size;
-				break;
-				
-			case CHUNK_LAR2:
-				lar2Pos = chunkPos + 12;
-				lar2Size = size;
-				break;
-				
-			default:
-				break;
-		}
-	}
+                /* if conditional chunk evaluates false, skip this list */
+                if (!temp)
+                    return EAS_SUCCESS;
+                break;
 
-	/* must have a rgnh chunk to be useful */
-	if (!rgnhPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS rgn chunk has no rgnh chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+            case CHUNK_RGNH:
+                rgnhPos = chunkPos + 8;
+                break;
 
-	/* must have a wlnk chunk to be useful */
-	if (!wlnkPos)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS rgn chunk has no wlnk chunk\n"); */ }
-		return EAS_ERROR_UNRECOGNIZED_FORMAT;
-	}
+            case CHUNK_WLNK:
+                wlnkPos = chunkPos + 8;
+                break;
 
-	/* parse wlnk chunk */
-	if ((result = Parse_wlnk(pDLSData, wlnkPos, &waveIndex)) != EAS_SUCCESS)
-		return result;
-	pWsmp = &pDLSData->wsmpData[waveIndex];
+            case CHUNK_WSMP:
+                wsmpPos = chunkPos + 8;
+                break;
 
-	/* if there is any articulation data, parse it */
-	EAS_HWMemCpy(&art, &defaultArt, sizeof(S_DLS_ART_VALUES));
-	if (lartPos)
-	{
-		if ((result = Parse_lart(pDLSData, lartPos, lartSize, &art)) != EAS_SUCCESS)
-			return result;
-	}
-			
-	if (lar2Pos)
-	{
-		if ((result = Parse_lart(pDLSData, lar2Pos, lar2Size, &art)) != EAS_SUCCESS)
-			return result;
-	}
+            case CHUNK_LART:
+                lartPos = chunkPos + 12;
+                lartSize = size;
+                break;
 
-	/* if second pass, process region header */
-	if (pDLSData->pDLS)
-	{
+            case CHUNK_LAR2:
+                lar2Pos = chunkPos + 12;
+                lar2Size = size;
+                break;
 
-		/* if local data was found convert it */
-		if (art.values[PARAM_MODIFIED] == EAS_TRUE)
-		{
-			Convert_art(pDLSData, &art, (EAS_U16) pDLSData->artCount);
-			artIndex = (EAS_U16) pDLSData->artCount;
-		}
+            default:
+                break;
+        }
+    }
 
-		/* parse region header */
-		if ((result = Parse_rgnh(pDLSData, rgnhPos, &pDLSData->pDLS->pDLSRegions[regionIndex & REGION_INDEX_MASK])) != EAS_SUCCESS)
-			return result;
+    /* must have a rgnh chunk to be useful */
+    if (!rgnhPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS rgn chunk has no rgnh chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-		/* parse wsmp chunk, copying parameters from original first */
-		if (wsmpPos)
-		{
-			EAS_HWMemCpy(&wsmp, pWsmp, sizeof(wsmp));
-			if ((result = Parse_wsmp(pDLSData, wsmpPos, &wsmp)) != EAS_SUCCESS)
-				return result;
+    /* must have a wlnk chunk to be useful */
+    if (!wlnkPos)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS rgn chunk has no wlnk chunk\n"); */ }
+        return EAS_ERROR_UNRECOGNIZED_FORMAT;
+    }
 
-			pWsmp = &wsmp;
-		}
+    /* parse wlnk chunk */
+    if ((result = Parse_wlnk(pDLSData, wlnkPos, &waveIndex)) != EAS_SUCCESS)
+        return result;
+    pWsmp = &pDLSData->wsmpData[waveIndex];
 
-		Convert_rgn(pDLSData, regionIndex, artIndex, (EAS_U16) waveIndex, pWsmp);
-	}
+    /* if there is any articulation data, parse it */
+    EAS_HWMemCpy(&art, &defaultArt, sizeof(S_DLS_ART_VALUES));
+    if (lartPos)
+    {
+        if ((result = Parse_lart(pDLSData, lartPos, lartSize, &art)) != EAS_SUCCESS)
+            return result;
+    }
 
-	/* if local articulation, bump count */
-	if (art.values[PARAM_MODIFIED])
-		pDLSData->artCount++;
+    if (lar2Pos)
+    {
+        if ((result = Parse_lart(pDLSData, lar2Pos, lar2Size, &art)) != EAS_SUCCESS)
+            return result;
+    }
 
-	/* increment region count */
-	pDLSData->regionCount++;
-	return EAS_SUCCESS;
+    /* if second pass, process region header */
+    if (pDLSData->pDLS)
+    {
+
+        /* if local data was found convert it */
+        if (art.values[PARAM_MODIFIED] == EAS_TRUE)
+        {
+            Convert_art(pDLSData, &art, (EAS_U16) pDLSData->artCount);
+            artIndex = (EAS_U16) pDLSData->artCount;
+        }
+
+        /* parse region header */
+        if ((result = Parse_rgnh(pDLSData, rgnhPos, &pDLSData->pDLS->pDLSRegions[regionIndex & REGION_INDEX_MASK])) != EAS_SUCCESS)
+            return result;
+
+        /* parse wsmp chunk, copying parameters from original first */
+        if (wsmpPos)
+        {
+            EAS_HWMemCpy(&wsmp, pWsmp, sizeof(wsmp));
+            if ((result = Parse_wsmp(pDLSData, wsmpPos, &wsmp)) != EAS_SUCCESS)
+                return result;
+
+            pWsmp = &wsmp;
+        }
+
+        Convert_rgn(pDLSData, regionIndex, artIndex, (EAS_U16) waveIndex, pWsmp);
+    }
+
+    /* if local articulation, bump count */
+    if (art.values[PARAM_MODIFIED])
+        pDLSData->artCount++;
+
+    /* increment region count */
+    pDLSData->regionCount++;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_rgnh ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_rgnh (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_DLS_REGION *pRgn)
 {
-	EAS_RESULT result;
-	EAS_U16 lowKey;
-	EAS_U16 highKey;
-	EAS_U16 lowVel;
-	EAS_U16 highVel;
-	EAS_U16 optionFlags;
-	EAS_U16 keyGroup;
-	
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* get the key range */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &lowKey, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &highKey, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    EAS_RESULT result;
+    EAS_U16 lowKey;
+    EAS_U16 highKey;
+    EAS_U16 lowVel;
+    EAS_U16 highVel;
+    EAS_U16 optionFlags;
+    EAS_U16 keyGroup;
 
-	/* check the range */
-	if (lowKey > 127)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: Low key out of range [%u]\n", lowKey); */ }
-		lowKey = 127;
-	}
-	if (highKey > 127)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: High key out of range [%u]\n", lowKey); */ }
-		highKey = 127;
-	}
-	
-	/* get the velocity range */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &lowVel, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &highVel, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	
-	/* check the range */
-	if (lowVel > 127)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: Low velocity out of range [%u]\n", lowVel); */ }
-		lowVel = 127;
-	}
-	if (highVel > 127)
-	{
-		{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: High velocity out of range [%u]\n", highVel); */ }
-		highVel = 127;
-	}
-	
-	/* get the option flags */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &optionFlags, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	
-	/* get the key group */
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &keyGroup, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* save the key range and key group */
-	pRgn->wtRegion.region.rangeLow = (EAS_U8) lowKey;
-	pRgn->wtRegion.region.rangeHigh = (EAS_U8) highKey;
-	
-	/*lint -e{734} keyGroup will always be from 0-15 */
-	pRgn->wtRegion.region.keyGroupAndFlags = keyGroup << 8;
-	pRgn->velLow = (EAS_U8) lowVel;
-	pRgn->velHigh = (EAS_U8) highVel;
-	if (optionFlags & F_RGN_OPTION_SELFNONEXCLUSIVE)
-		pRgn->wtRegion.region.keyGroupAndFlags |= REGION_FLAG_NON_SELF_EXCLUSIVE;
-	
-	return EAS_SUCCESS;
+    /* get the key range */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &lowKey, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &highKey, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* check the range */
+    if (lowKey > 127)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: Low key out of range [%u]\n", lowKey); */ }
+        lowKey = 127;
+    }
+    if (highKey > 127)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: High key out of range [%u]\n", lowKey); */ }
+        highKey = 127;
+    }
+
+    /* get the velocity range */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &lowVel, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &highVel, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* check the range */
+    if (lowVel > 127)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: Low velocity out of range [%u]\n", lowVel); */ }
+        lowVel = 127;
+    }
+    if (highVel > 127)
+    {
+        { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS rgnh: High velocity out of range [%u]\n", highVel); */ }
+        highVel = 127;
+    }
+
+    /* get the option flags */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &optionFlags, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* get the key group */
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &keyGroup, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+
+    /* save the key range and key group */
+    pRgn->wtRegion.region.rangeLow = (EAS_U8) lowKey;
+    pRgn->wtRegion.region.rangeHigh = (EAS_U8) highKey;
+
+    /*lint -e{734} keyGroup will always be from 0-15 */
+    pRgn->wtRegion.region.keyGroupAndFlags = keyGroup << 8;
+    pRgn->velLow = (EAS_U8) lowVel;
+    pRgn->velHigh = (EAS_U8) highVel;
+    if (optionFlags & F_RGN_OPTION_SELFNONEXCLUSIVE)
+        pRgn->wtRegion.region.keyGroupAndFlags |= REGION_FLAG_NON_SELF_EXCLUSIVE;
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_lart ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_lart (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_DLS_ART_VALUES *pArt)
 {
-	EAS_RESULT result;
-	EAS_U32 temp;
-	EAS_I32 endChunk;
-	EAS_I32 chunkPos;
-	EAS_I32 art1Pos;
-	EAS_I32 art2Pos;
+    EAS_RESULT result;
+    EAS_U32 temp;
+    EAS_I32 endChunk;
+    EAS_I32 chunkPos;
+    EAS_I32 art1Pos;
+    EAS_I32 art2Pos;
 
-	/* seek to start of chunk */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
-	
-	/* no articulation chunks yet */
-	art1Pos = art2Pos = 0;
-	
-	/* read to end of chunk */
-	endChunk = pos + size;
-	while (pos < endChunk)
-	{
-		chunkPos = pos;
+    /* seek to start of chunk */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-		/* get the next chunk type */
-		if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
-			return result;
+    /* no articulation chunks yet */
+    art1Pos = art2Pos = 0;
 
-		/* parse useful chunks */
-		switch (temp)
-		{
-			case CHUNK_CDL:
-				if ((result = Parse_cdl(pDLSData, size, &temp)) != EAS_SUCCESS)
-					return result;
+    /* read to end of chunk */
+    endChunk = pos + size;
+    while (pos < endChunk)
+    {
+        chunkPos = pos;
 
-				/* if conditional chunk evaluates false, skip this list */
-				if (!temp)
-					return EAS_SUCCESS;
-				break;
+        /* get the next chunk type */
+        if ((result = NextChunk(pDLSData, &pos, &temp, &size)) != EAS_SUCCESS)
+            return result;
 
-			case CHUNK_ART1:
-				art1Pos = chunkPos + 8;
-				break;
-				
-			case CHUNK_ART2:
-				art2Pos = chunkPos + 8;
-				break;
+        /* parse useful chunks */
+        switch (temp)
+        {
+            case CHUNK_CDL:
+                if ((result = Parse_cdl(pDLSData, size, &temp)) != EAS_SUCCESS)
+                    return result;
 
-			default:
-				break;
+                /* if conditional chunk evaluates false, skip this list */
+                if (!temp)
+                    return EAS_SUCCESS;
+                break;
 
-		}
-	}
+            case CHUNK_ART1:
+                art1Pos = chunkPos + 8;
+                break;
 
-	if (art1Pos)
-	{
-		if ((result = Parse_art(pDLSData, art1Pos, pArt)) != EAS_SUCCESS)
-			return result;
-	}
-			
-	if (art2Pos)
-	{
-		if ((result = Parse_art(pDLSData, art2Pos, pArt)) != EAS_SUCCESS)
-			return result;
-	}
+            case CHUNK_ART2:
+                art2Pos = chunkPos + 8;
+                break;
 
-	return EAS_SUCCESS;
+            default:
+                break;
+
+        }
+    }
+
+    if (art1Pos)
+    {
+        if ((result = Parse_art(pDLSData, art1Pos, pArt)) != EAS_SUCCESS)
+            return result;
+    }
+
+    if (art2Pos)
+    {
+        if ((result = Parse_art(pDLSData, art2Pos, pArt)) != EAS_SUCCESS)
+            return result;
+    }
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_art()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_art (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_DLS_ART_VALUES *pArt)
 {
-	EAS_RESULT result;
-	EAS_U32 structSize;
-	EAS_U32 numConnections;
-	EAS_U16 source;
-	EAS_U16 control;
-	EAS_U16 destination;
-	EAS_U16 transform;
-	EAS_I32 scale;
-	EAS_INT i;
+    EAS_RESULT result;
+    EAS_U32 structSize;
+    EAS_U32 numConnections;
+    EAS_U16 source;
+    EAS_U16 control;
+    EAS_U16 destination;
+    EAS_U16 transform;
+    EAS_I32 scale;
+    EAS_INT i;
 
-	/* seek to start of data */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    /* seek to start of data */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-	/* get the structure size */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &structSize, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	pos += (EAS_I32) structSize;
-	
-	/* get the number of connections */
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &numConnections, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
+    /* get the structure size */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &structSize, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    pos += (EAS_I32) structSize;
 
-	/* skip to start of connections */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
-		return result;
+    /* get the number of connections */
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &numConnections, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
 
-	while (numConnections--)
-	{
+    /* skip to start of connections */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos)) != EAS_SUCCESS)
+        return result;
 
-		/* read the connection data */
-		if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &source, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &control, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &destination, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &transform, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &scale, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
-		
-		/* look up the connection */
-		for (i = 0; i < (EAS_INT) ENTRIES_IN_CONN_TABLE; i++)
-		{
-			if ((connTable[i].source == source) &&
-				(connTable[i].destination == destination) && 
-				(connTable[i].control == control))
-			{
-				/*lint -e{704} use shift for performance */
-				pArt->values[connTable[i].connection] = (EAS_I16) (scale >> 16);
-				pArt->values[PARAM_MODIFIED] = EAS_TRUE;
-				break;
-			}
-		}
-		if (i == PARAM_TABLE_SIZE)
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "WARN: Unsupported parameter in DLS file\n"); */ }
-	}
+    while (numConnections--)
+    {
 
-	return EAS_SUCCESS;
+        /* read the connection data */
+        if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &source, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+        if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &control, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+        if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &destination, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+        if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &transform, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+        if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &scale, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
+
+        /* look up the connection */
+        for (i = 0; i < (EAS_INT) ENTRIES_IN_CONN_TABLE; i++)
+        {
+            if ((connTable[i].source == source) &&
+                (connTable[i].destination == destination) &&
+                (connTable[i].control == control))
+            {
+                /*lint -e{704} use shift for performance */
+                pArt->values[connTable[i].connection] = (EAS_I16) (scale >> 16);
+                pArt->values[PARAM_MODIFIED] = EAS_TRUE;
+                break;
+            }
+        }
+        if (i == PARAM_TABLE_SIZE)
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "WARN: Unsupported parameter in DLS file\n"); */ }
+    }
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * Parse_wlnk ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_wlnk (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_U32 *pWaveIndex)
 {
-	EAS_RESULT result;
+    EAS_RESULT result;
 
-	/* we only care about the the index */
-	if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos + 8)) != EAS_SUCCESS)
-		return result;
+    /* we only care about the the index */
+    if ((result = EAS_HWFileSeek(pDLSData->hwInstData, pDLSData->fileHandle, pos + 8)) != EAS_SUCCESS)
+        return result;
 
-	/* read the index */
-	return EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle,pWaveIndex, EAS_FALSE);
+    /* read the index */
+    return EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle,pWaveIndex, EAS_FALSE);
 }
 
 /*----------------------------------------------------------------------------
  * PopcdlStack ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT PopcdlStack (EAS_U32 *pStack, EAS_INT *pStackPtr, EAS_U32 *pValue)
 {
 
-	/* stack underflow, cdl block has an errorr */
-	if (*pStackPtr < 0)
-		return EAS_ERROR_FILE_FORMAT;
+    /* stack underflow, cdl block has an errorr */
+    if (*pStackPtr < 0)
+        return EAS_ERROR_FILE_FORMAT;
 
-	/* pop the value off the stack */
-	*pValue = pStack[*pStackPtr];
-	*pStackPtr = *pStackPtr - 1;
-	return EAS_SUCCESS;
+    /* pop the value off the stack */
+    *pValue = pStack[*pStackPtr];
+    *pStackPtr = *pStackPtr - 1;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * PushcdlStack ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT PushcdlStack (EAS_U32 *pStack, EAS_INT *pStackPtr, EAS_U32 value)
 {
 
-	/* stack overflow, return an error */
-	if (*pStackPtr >= CDL_STACK_SIZE)
-		return EAS_ERROR_FILE_FORMAT;
+    /* stack overflow, return an error */
+    if (*pStackPtr >= CDL_STACK_SIZE)
+        return EAS_ERROR_FILE_FORMAT;
 
-	/* push the value onto the stack */
-	*pStackPtr = *pStackPtr + 1;
-	pStack[*pStackPtr] = value;
-	return EAS_SUCCESS;
+    /* push the value onto the stack */
+    *pStackPtr = *pStackPtr + 1;
+    pStack[*pStackPtr] = value;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  * QueryGUID ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_BOOL QueryGUID (const DLSID *pGUID, EAS_U32 *pValue)
 {
 
-	/* assume false */
-	*pValue = 0;
-	if (EAS_HWMemCmp(&DLSID_GMInHardware, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = 0xffffffff;
-		return EAS_TRUE;
-	}
-	
-	if (EAS_HWMemCmp(&DLSID_GSInHardware, pGUID, sizeof(DLSID)) == 0)
-		return EAS_TRUE;
-	
-	if (EAS_HWMemCmp(&DLSID_XGInHardware, pGUID, sizeof(DLSID)) == 0)
-		return EAS_TRUE;
-	
-	if (EAS_HWMemCmp(&DLSID_SupportsDLS1, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = 0xffffffff;
-		return EAS_TRUE;
-	}
-	
-	if (EAS_HWMemCmp(&DLSID_SupportsDLS2, pGUID, sizeof(DLSID)) == 0)
-		return EAS_TRUE;
-	
-	if (EAS_HWMemCmp(&DLSID_SampleMemorySize, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = MAX_DLS_MEMORY;
-		return EAS_TRUE;
-	}
-		
-	if (EAS_HWMemCmp(&DLSID_ManufacturersID, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = 0x0000013A; 
-		return EAS_TRUE;
-	}
+    /* assume false */
+    *pValue = 0;
+    if (EAS_HWMemCmp(&DLSID_GMInHardware, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = 0xffffffff;
+        return EAS_TRUE;
+    }
 
-	if (EAS_HWMemCmp(&DLSID_ProductID, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = LIB_VERSION; 
-		return EAS_TRUE;
-	}
-	
-	if (EAS_HWMemCmp(&DLSID_SamplePlaybackRate, pGUID, sizeof(DLSID)) == 0)
-	{
-		*pValue = (EAS_U32) outputSampleRate; 
-		return EAS_TRUE;
-	}
+    if (EAS_HWMemCmp(&DLSID_GSInHardware, pGUID, sizeof(DLSID)) == 0)
+        return EAS_TRUE;
 
-	/* unrecognized DLSID */
-	return EAS_FALSE;
+    if (EAS_HWMemCmp(&DLSID_XGInHardware, pGUID, sizeof(DLSID)) == 0)
+        return EAS_TRUE;
+
+    if (EAS_HWMemCmp(&DLSID_SupportsDLS1, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = 0xffffffff;
+        return EAS_TRUE;
+    }
+
+    if (EAS_HWMemCmp(&DLSID_SupportsDLS2, pGUID, sizeof(DLSID)) == 0)
+        return EAS_TRUE;
+
+    if (EAS_HWMemCmp(&DLSID_SampleMemorySize, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = MAX_DLS_MEMORY;
+        return EAS_TRUE;
+    }
+
+    if (EAS_HWMemCmp(&DLSID_ManufacturersID, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = 0x0000013A;
+        return EAS_TRUE;
+    }
+
+    if (EAS_HWMemCmp(&DLSID_ProductID, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = LIB_VERSION;
+        return EAS_TRUE;
+    }
+
+    if (EAS_HWMemCmp(&DLSID_SamplePlaybackRate, pGUID, sizeof(DLSID)) == 0)
+    {
+        *pValue = (EAS_U32) outputSampleRate;
+        return EAS_TRUE;
+    }
+
+    /* unrecognized DLSID */
+    return EAS_FALSE;
 }
 
 /*----------------------------------------------------------------------------
  * ReadDLSID ()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Reads a DLSID in a manner that is not sensitive to processor endian-ness
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT ReadDLSID (SDLS_SYNTHESIZER_DATA *pDLSData, DLSID *pDLSID)
 {
-	EAS_RESULT result;
-	EAS_I32 n;
+    EAS_RESULT result;
+    EAS_I32 n;
 
-	if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data1, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data2, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data3, EAS_FALSE)) != EAS_SUCCESS)
-		return result;
-	return EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, pDLSID->Data4, sizeof(pDLSID->Data4), &n);
+    if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data1, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data2, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &pDLSID->Data3, EAS_FALSE)) != EAS_SUCCESS)
+        return result;
+    return EAS_HWReadFile(pDLSData->hwInstData, pDLSData->fileHandle, pDLSID->Data4, sizeof(pDLSID->Data4), &n);
 }
 
 /*----------------------------------------------------------------------------
  * Parse_cdl ()
  *----------------------------------------------------------------------------
- * Purpose: 
- * 
+ * Purpose:
+ *
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static EAS_RESULT Parse_cdl (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 size, EAS_U32 *pValue)
 {
-	EAS_RESULT result;
-	EAS_U32 stack[CDL_STACK_SIZE];
-	EAS_U16 opcode;
-	EAS_INT stackPtr;
-	EAS_U32 x, y;
-	DLSID dlsid;
+    EAS_RESULT result;
+    EAS_U32 stack[CDL_STACK_SIZE];
+    EAS_U16 opcode;
+    EAS_INT stackPtr;
+    EAS_U32 x, y;
+    DLSID dlsid;
 
-	stackPtr = -1;
-	*pValue = 0;
-	x = 0;
-	while (size)
-	{
-		/* read the opcode */
-		if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &opcode, EAS_FALSE)) != EAS_SUCCESS)
-			return result;
+    stackPtr = -1;
+    *pValue = 0;
+    x = 0;
+    while (size)
+    {
+        /* read the opcode */
+        if ((result = EAS_HWGetWord(pDLSData->hwInstData, pDLSData->fileHandle, &opcode, EAS_FALSE)) != EAS_SUCCESS)
+            return result;
 
-		/* handle binary opcodes */
-		if (opcode <= DLS_CDL_EQ)
-		{
-			/* pop X and Y */
-			if ((result = PopcdlStack(stack, &stackPtr, &x)) != EAS_SUCCESS)
-				return result;
-			if ((result = PopcdlStack(stack, &stackPtr, &y)) != EAS_SUCCESS)
-				return result;
-			switch (opcode)
-			{
-				case DLS_CDL_AND:
-					x = x & y;
-					break;
-				case DLS_CDL_OR:
-					x = x | y;
-					break;
-				case DLS_CDL_XOR:
-					x = x ^ y;
-					break;
-				case DLS_CDL_ADD:
-					x = x + y;
-					break;
-				case DLS_CDL_SUBTRACT:
-					x = x - y;
-					break;
-				case DLS_CDL_MULTIPLY:
-					x = x * y;
-					break;
-				case DLS_CDL_DIVIDE:
-					if (!y)
-						return EAS_ERROR_FILE_FORMAT;
-					x = x / y;
-					break;
-				case DLS_CDL_LOGICAL_AND:
-					x = (x && y);
-					break;
-				case DLS_CDL_LOGICAL_OR:
-					x = (x || y);
-					break;
-				case DLS_CDL_LT:
-					x = (x < y);
-					break;
-				case DLS_CDL_LE:
-					x = (x <= y);
-					break;
-				case DLS_CDL_GT:
-					x = (x > y);
-					break;
-				case DLS_CDL_GE:
-					x = (x >= y);
-					break;
-				case DLS_CDL_EQ:
-					x = (x == y);
-					break;
-				default:
-					break;
-			}
-		}
-		
-		else if (opcode == DLS_CDL_NOT)
-		{
-			if ((result = PopcdlStack(stack, &stackPtr, &x)) != EAS_SUCCESS)
-				return result;
-			x = !x;
-		}
+        /* handle binary opcodes */
+        if (opcode <= DLS_CDL_EQ)
+        {
+            /* pop X and Y */
+            if ((result = PopcdlStack(stack, &stackPtr, &x)) != EAS_SUCCESS)
+                return result;
+            if ((result = PopcdlStack(stack, &stackPtr, &y)) != EAS_SUCCESS)
+                return result;
+            switch (opcode)
+            {
+                case DLS_CDL_AND:
+                    x = x & y;
+                    break;
+                case DLS_CDL_OR:
+                    x = x | y;
+                    break;
+                case DLS_CDL_XOR:
+                    x = x ^ y;
+                    break;
+                case DLS_CDL_ADD:
+                    x = x + y;
+                    break;
+                case DLS_CDL_SUBTRACT:
+                    x = x - y;
+                    break;
+                case DLS_CDL_MULTIPLY:
+                    x = x * y;
+                    break;
+                case DLS_CDL_DIVIDE:
+                    if (!y)
+                        return EAS_ERROR_FILE_FORMAT;
+                    x = x / y;
+                    break;
+                case DLS_CDL_LOGICAL_AND:
+                    x = (x && y);
+                    break;
+                case DLS_CDL_LOGICAL_OR:
+                    x = (x || y);
+                    break;
+                case DLS_CDL_LT:
+                    x = (x < y);
+                    break;
+                case DLS_CDL_LE:
+                    x = (x <= y);
+                    break;
+                case DLS_CDL_GT:
+                    x = (x > y);
+                    break;
+                case DLS_CDL_GE:
+                    x = (x >= y);
+                    break;
+                case DLS_CDL_EQ:
+                    x = (x == y);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-		else if (opcode == DLS_CDL_CONST)
-		{
-			if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &x, EAS_FALSE)) != EAS_SUCCESS)
-				return result;
-		}
+        else if (opcode == DLS_CDL_NOT)
+        {
+            if ((result = PopcdlStack(stack, &stackPtr, &x)) != EAS_SUCCESS)
+                return result;
+            x = !x;
+        }
 
-		else if (opcode == DLS_CDL_QUERY)
-		{
-			if ((result = ReadDLSID(pDLSData, &dlsid)) != EAS_SUCCESS)
-				return result;
-			QueryGUID(&dlsid, &x);
-		}
-		
-		else if (opcode == DLS_CDL_QUERYSUPPORTED)
-		{
-			if ((result = ReadDLSID(pDLSData, &dlsid)) != EAS_SUCCESS)
-				return result;
-			x = QueryGUID(&dlsid, &y);
-		}
-		else
-			{ /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Unsupported opcode %d in DLS file\n", opcode); */ }
+        else if (opcode == DLS_CDL_CONST)
+        {
+            if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &x, EAS_FALSE)) != EAS_SUCCESS)
+                return result;
+        }
 
-		/* push the result on the stack */
-		if ((result = PushcdlStack(stack, &stackPtr, x)) != EAS_SUCCESS)
-			return result;
-	}
+        else if (opcode == DLS_CDL_QUERY)
+        {
+            if ((result = ReadDLSID(pDLSData, &dlsid)) != EAS_SUCCESS)
+                return result;
+            QueryGUID(&dlsid, &x);
+        }
 
-	/* pop the last result off the stack */
-	return PopcdlStack(stack, &stackPtr, pValue);
+        else if (opcode == DLS_CDL_QUERYSUPPORTED)
+        {
+            if ((result = ReadDLSID(pDLSData, &dlsid)) != EAS_SUCCESS)
+                return result;
+            x = QueryGUID(&dlsid, &y);
+        }
+        else
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "Unsupported opcode %d in DLS file\n", opcode); */ }
+
+        /* push the result on the stack */
+        if ((result = PushcdlStack(stack, &stackPtr, x)) != EAS_SUCCESS)
+            return result;
+    }
+
+    /* pop the last result off the stack */
+    return PopcdlStack(stack, &stackPtr, pValue);
 }
 
 /*----------------------------------------------------------------------------
  * Convert_rgn()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Convert region data from DLS to EAS
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static void Convert_rgn (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_U16 regionIndex, EAS_U16 artIndex, EAS_U16 waveIndex, S_WSMP_DATA *pWsmp)
 {
-	S_DLS_REGION *pRgn;
+    S_DLS_REGION *pRgn;
 
-	/* setup pointers to data structures */
-	pRgn = &pDLSData->pDLS->pDLSRegions[regionIndex];
+    /* setup pointers to data structures */
+    pRgn = &pDLSData->pDLS->pDLSRegions[regionIndex];
 
-	/* intiailize indices */
-	pRgn->wtRegion.artIndex = artIndex;
-	pRgn->wtRegion.waveIndex = waveIndex;
+    /* intiailize indices */
+    pRgn->wtRegion.artIndex = artIndex;
+    pRgn->wtRegion.waveIndex = waveIndex;
 
-	/* convert region data */
-	/*lint -e{704} use shift for performance */
-	pRgn->wtRegion.gain = (EAS_I16) (pWsmp->gain >> 16);
-	pRgn->wtRegion.loopStart = pWsmp->loopStart;
-	pRgn->wtRegion.loopEnd = (pWsmp->loopStart + pWsmp->loopLength);
-	pRgn->wtRegion.tuning = pWsmp->fineTune -(pWsmp->unityNote * 100) + ConvertSampleRate(pWsmp->sampleRate);
-	if (pWsmp->loopLength != 0)
-		pRgn->wtRegion.region.keyGroupAndFlags |= REGION_FLAG_IS_LOOPED;
+    /* convert region data */
+    /*lint -e{704} use shift for performance */
+    pRgn->wtRegion.gain = (EAS_I16) (pWsmp->gain >> 16);
+    pRgn->wtRegion.loopStart = pWsmp->loopStart;
+    pRgn->wtRegion.loopEnd = (pWsmp->loopStart + pWsmp->loopLength);
+    pRgn->wtRegion.tuning = pWsmp->fineTune -(pWsmp->unityNote * 100) + ConvertSampleRate(pWsmp->sampleRate);
+    if (pWsmp->loopLength != 0)
+        pRgn->wtRegion.region.keyGroupAndFlags |= REGION_FLAG_IS_LOOPED;
 }
 
 /*----------------------------------------------------------------------------
  * Convert_art()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Convert articulation data from DLS to EAS
  *
  * Inputs:
- * 
- *		
+ *
+ *
  * Outputs:
- * 
+ *
  *
  *----------------------------------------------------------------------------
 */
 static void Convert_art (SDLS_SYNTHESIZER_DATA *pDLSData, const S_DLS_ART_VALUES *pDLSArt,  EAS_U16 artIndex)
 {
-	S_DLS_ARTICULATION *pArt;
+    S_DLS_ARTICULATION *pArt;
 
-	/* setup pointers to data structures */
-	pArt = &pDLSData->pDLS->pDLSArticulations[artIndex];
+    /* setup pointers to data structures */
+    pArt = &pDLSData->pDLS->pDLSArticulations[artIndex];
 
-	/* LFO parameters */
-	pArt->modLFO.lfoFreq = ConvertLFOPhaseIncrement(pDLSArt->values[PARAM_MOD_LFO_FREQ]);
-	pArt->modLFO.lfoDelay = -ConvertDelay(pDLSArt->values[PARAM_MOD_LFO_DELAY]);
-	pArt->vibLFO.lfoFreq = ConvertLFOPhaseIncrement(pDLSArt->values[PARAM_VIB_LFO_FREQ]);
-	pArt->vibLFO.lfoDelay = -ConvertDelay(pDLSArt->values[PARAM_VIB_LFO_DELAY]);
+    /* LFO parameters */
+    pArt->modLFO.lfoFreq = ConvertLFOPhaseIncrement(pDLSArt->values[PARAM_MOD_LFO_FREQ]);
+    pArt->modLFO.lfoDelay = -ConvertDelay(pDLSArt->values[PARAM_MOD_LFO_DELAY]);
+    pArt->vibLFO.lfoFreq = ConvertLFOPhaseIncrement(pDLSArt->values[PARAM_VIB_LFO_FREQ]);
+    pArt->vibLFO.lfoDelay = -ConvertDelay(pDLSArt->values[PARAM_VIB_LFO_DELAY]);
 
-	/* EG1 parameters */
-	pArt->eg1.delayTime = ConvertDelay(pDLSArt->values[PARAM_VOL_EG_DELAY]);
-	pArt->eg1.attackTime = pDLSArt->values[PARAM_VOL_EG_ATTACK];
-	pArt->eg1.holdTime = pDLSArt->values[PARAM_VOL_EG_HOLD];
-	pArt->eg1.decayTime = pDLSArt->values[PARAM_VOL_EG_DECAY];
-	pArt->eg1.sustainLevel = ConvertSustain(pDLSArt->values[PARAM_VOL_EG_SUSTAIN]);
-	pArt->eg1.releaseTime = ConvertRate(pDLSArt->values[PARAM_VOL_EG_RELEASE]);
-	pArt->eg1.velToAttack = pDLSArt->values[PARAM_VOL_EG_VEL_TO_ATTACK];
-	pArt->eg1.keyNumToDecay = pDLSArt->values[PARAM_VOL_EG_KEY_TO_DECAY];
-	pArt->eg1.keyNumToHold = pDLSArt->values[PARAM_VOL_EG_KEY_TO_HOLD];
-	pArt->eg1ShutdownTime = ConvertRate(pDLSArt->values[PARAM_VOL_EG_SHUTDOWN]);
+    /* EG1 parameters */
+    pArt->eg1.delayTime = ConvertDelay(pDLSArt->values[PARAM_VOL_EG_DELAY]);
+    pArt->eg1.attackTime = pDLSArt->values[PARAM_VOL_EG_ATTACK];
+    pArt->eg1.holdTime = pDLSArt->values[PARAM_VOL_EG_HOLD];
+    pArt->eg1.decayTime = pDLSArt->values[PARAM_VOL_EG_DECAY];
+    pArt->eg1.sustainLevel = ConvertSustain(pDLSArt->values[PARAM_VOL_EG_SUSTAIN]);
+    pArt->eg1.releaseTime = ConvertRate(pDLSArt->values[PARAM_VOL_EG_RELEASE]);
+    pArt->eg1.velToAttack = pDLSArt->values[PARAM_VOL_EG_VEL_TO_ATTACK];
+    pArt->eg1.keyNumToDecay = pDLSArt->values[PARAM_VOL_EG_KEY_TO_DECAY];
+    pArt->eg1.keyNumToHold = pDLSArt->values[PARAM_VOL_EG_KEY_TO_HOLD];
+    pArt->eg1ShutdownTime = ConvertRate(pDLSArt->values[PARAM_VOL_EG_SHUTDOWN]);
 
-	/* EG2 parameters */
-	pArt->eg2.delayTime = ConvertDelay(pDLSArt->values[PARAM_MOD_EG_DELAY]);
-	pArt->eg2.attackTime = pDLSArt->values[PARAM_MOD_EG_ATTACK];
-	pArt->eg2.holdTime = pDLSArt->values[PARAM_MOD_EG_HOLD];
-	pArt->eg2.decayTime = pDLSArt->values[PARAM_MOD_EG_DECAY];
-	pArt->eg2.sustainLevel = ConvertSustain(pDLSArt->values[PARAM_MOD_EG_SUSTAIN]);
-	pArt->eg2.releaseTime = ConvertRate(pDLSArt->values[PARAM_MOD_EG_RELEASE]);
-	pArt->eg2.velToAttack = pDLSArt->values[PARAM_MOD_EG_VEL_TO_ATTACK];
-	pArt->eg2.keyNumToDecay = pDLSArt->values[PARAM_MOD_EG_KEY_TO_DECAY];
-	pArt->eg2.keyNumToHold = pDLSArt->values[PARAM_MOD_EG_KEY_TO_HOLD];
+    /* EG2 parameters */
+    pArt->eg2.delayTime = ConvertDelay(pDLSArt->values[PARAM_MOD_EG_DELAY]);
+    pArt->eg2.attackTime = pDLSArt->values[PARAM_MOD_EG_ATTACK];
+    pArt->eg2.holdTime = pDLSArt->values[PARAM_MOD_EG_HOLD];
+    pArt->eg2.decayTime = pDLSArt->values[PARAM_MOD_EG_DECAY];
+    pArt->eg2.sustainLevel = ConvertSustain(pDLSArt->values[PARAM_MOD_EG_SUSTAIN]);
+    pArt->eg2.releaseTime = ConvertRate(pDLSArt->values[PARAM_MOD_EG_RELEASE]);
+    pArt->eg2.velToAttack = pDLSArt->values[PARAM_MOD_EG_VEL_TO_ATTACK];
+    pArt->eg2.keyNumToDecay = pDLSArt->values[PARAM_MOD_EG_KEY_TO_DECAY];
+    pArt->eg2.keyNumToHold = pDLSArt->values[PARAM_MOD_EG_KEY_TO_HOLD];
 
-	/* filter parameters */
-	pArt->filterCutoff = pDLSArt->values[PARAM_INITIAL_FC];
-	pArt->filterQandFlags = ConvertQ(pDLSArt->values[PARAM_INITIAL_Q]);
-	pArt->modLFOToFc = pDLSArt->values[PARAM_MOD_LFO_TO_FC];
-	pArt->modLFOCC1ToFc = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_FC];
-	pArt->modLFOChanPressToFc = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_FC];
-	pArt->eg2ToFc = pDLSArt->values[PARAM_MOD_EG_TO_FC];
-	pArt->velToFc = pDLSArt->values[PARAM_VEL_TO_FC];
-	pArt->keyNumToFc = pDLSArt->values[PARAM_KEYNUM_TO_FC];
+    /* filter parameters */
+    pArt->filterCutoff = pDLSArt->values[PARAM_INITIAL_FC];
+    pArt->filterQandFlags = ConvertQ(pDLSArt->values[PARAM_INITIAL_Q]);
+    pArt->modLFOToFc = pDLSArt->values[PARAM_MOD_LFO_TO_FC];
+    pArt->modLFOCC1ToFc = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_FC];
+    pArt->modLFOChanPressToFc = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_FC];
+    pArt->eg2ToFc = pDLSArt->values[PARAM_MOD_EG_TO_FC];
+    pArt->velToFc = pDLSArt->values[PARAM_VEL_TO_FC];
+    pArt->keyNumToFc = pDLSArt->values[PARAM_KEYNUM_TO_FC];
 
-	/* gain parameters */
-	pArt->modLFOToGain = pDLSArt->values[PARAM_MOD_LFO_TO_GAIN];
-	pArt->modLFOCC1ToGain = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_GAIN];
-	pArt->modLFOChanPressToGain = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN];
+    /* gain parameters */
+    pArt->modLFOToGain = pDLSArt->values[PARAM_MOD_LFO_TO_GAIN];
+    pArt->modLFOCC1ToGain = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_GAIN];
+    pArt->modLFOChanPressToGain = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_GAIN];
 
-	/* pitch parameters */
-	pArt->tuning = pDLSArt->values[PARAM_TUNING];
-	pArt->keyNumToPitch = pDLSArt->values[PARAM_KEYNUM_TO_PITCH];
-	pArt->vibLFOToPitch = pDLSArt->values[PARAM_VIB_LFO_TO_PITCH];
-	pArt->vibLFOCC1ToPitch = pDLSArt->values[PARAM_VIB_LFO_CC1_TO_PITCH];
-	pArt->vibLFOChanPressToPitch = pDLSArt->values[PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH];
-	pArt->modLFOToPitch = pDLSArt->values[PARAM_MOD_LFO_TO_PITCH];
-	pArt->modLFOCC1ToPitch = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_PITCH];
-	pArt->modLFOChanPressToPitch = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH];
-	pArt->eg2ToPitch = pDLSArt->values[PARAM_MOD_EG_TO_PITCH];
+    /* pitch parameters */
+    pArt->tuning = pDLSArt->values[PARAM_TUNING];
+    pArt->keyNumToPitch = pDLSArt->values[PARAM_KEYNUM_TO_PITCH];
+    pArt->vibLFOToPitch = pDLSArt->values[PARAM_VIB_LFO_TO_PITCH];
+    pArt->vibLFOCC1ToPitch = pDLSArt->values[PARAM_VIB_LFO_CC1_TO_PITCH];
+    pArt->vibLFOChanPressToPitch = pDLSArt->values[PARAM_VIB_LFO_CHAN_PRESS_TO_PITCH];
+    pArt->modLFOToPitch = pDLSArt->values[PARAM_MOD_LFO_TO_PITCH];
+    pArt->modLFOCC1ToPitch = pDLSArt->values[PARAM_MOD_LFO_CC1_TO_PITCH];
+    pArt->modLFOChanPressToPitch = pDLSArt->values[PARAM_MOD_LFO_CHAN_PRESS_TO_PITCH];
+    pArt->eg2ToPitch = pDLSArt->values[PARAM_MOD_EG_TO_PITCH];
 
-	/* output parameters */
-	pArt->pan = ConvertPan(pDLSArt->values[PARAM_DEFAULT_PAN]);
+    /* output parameters */
+    pArt->pan = ConvertPan(pDLSArt->values[PARAM_DEFAULT_PAN]);
 
-	if (pDLSArt->values[PARAM_VEL_TO_GAIN] != 0)
-		pArt->filterQandFlags |= FLAG_DLS_VELOCITY_SENSITIVE;
+    if (pDLSArt->values[PARAM_VEL_TO_GAIN] != 0)
+        pArt->filterQandFlags |= FLAG_DLS_VELOCITY_SENSITIVE;
 
-#ifdef _REVERB	
-	pArt->reverbSend = pDLSArt->values[PARAM_DEFAULT_REVERB_SEND];
-	pArt->cc91ToReverbSend = pDLSArt->values[PARAM_MIDI_CC91_TO_REVERB_SEND];
+#ifdef _REVERB
+    pArt->reverbSend = pDLSArt->values[PARAM_DEFAULT_REVERB_SEND];
+    pArt->cc91ToReverbSend = pDLSArt->values[PARAM_MIDI_CC91_TO_REVERB_SEND];
 #endif
 
 #ifdef _CHORUS
-	pArt->chorusSend = pDLSArt->values[PARAM_DEFAULT_CHORUS_SEND];
-	pArt->cc93ToChorusSend = pDLSArt->values[PARAM_MIDI_CC93_TO_CHORUS_SEND];
-#endif	
+    pArt->chorusSend = pDLSArt->values[PARAM_DEFAULT_CHORUS_SEND];
+    pArt->cc93ToChorusSend = pDLSArt->values[PARAM_MIDI_CC93_TO_CHORUS_SEND];
+#endif
 }
 
 /*----------------------------------------------------------------------------
  * ConvertSampleRate()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  *
- * Inputs: 
+ * Inputs:
  *
  * Outputs:
  *
@@ -2421,7 +2421,7 @@ static void Convert_art (SDLS_SYNTHESIZER_DATA *pDLSData, const S_DLS_ART_VALUES
 */
 static EAS_I16 ConvertSampleRate (EAS_U32 sampleRate)
 {
-	return (EAS_I16) (1200.0 * log10((double) sampleRate / (double) outputSampleRate) / log10(2.0));
+    return (EAS_I16) (1200.0 * log10((double) sampleRate / (double) outputSampleRate) / log10(2.0));
 }
 
 /*----------------------------------------------------------------------------
@@ -2432,17 +2432,17 @@ static EAS_I16 ConvertSampleRate (EAS_U32 sampleRate)
 */
 static EAS_I16 ConvertSustain (EAS_I32 sustain)
 {
-	/* check for sustain level of zero */
-	if (sustain == 0)
-		return 0;
+    /* check for sustain level of zero */
+    if (sustain == 0)
+        return 0;
 
-	/* convert to log2 factor */
-	/*lint -e{704} use shift for performance */
-	sustain = (sustain * SUSTAIN_LINEAR_CONVERSION_FACTOR) >> 15;
+    /* convert to log2 factor */
+    /*lint -e{704} use shift for performance */
+    sustain = (sustain * SUSTAIN_LINEAR_CONVERSION_FACTOR) >> 15;
 
-	if (sustain > SYNTH_FULL_SCALE_EG1_GAIN)
-		return SYNTH_FULL_SCALE_EG1_GAIN;
-	return (EAS_I16) sustain;
+    if (sustain > SYNTH_FULL_SCALE_EG1_GAIN)
+        return SYNTH_FULL_SCALE_EG1_GAIN;
+    return (EAS_I16) sustain;
 }
 
 /*----------------------------------------------------------------------------
@@ -2454,23 +2454,23 @@ static EAS_I16 ConvertSustain (EAS_I32 sustain)
 */
 EAS_I16 ConvertDelay (EAS_I32 timeCents)
 {
-	EAS_I32 temp;
+    EAS_I32 temp;
 
-	if (timeCents == ZERO_TIME_IN_CENTS)
-		return 0;
+    if (timeCents == ZERO_TIME_IN_CENTS)
+        return 0;
 
-	/* divide time by secs per frame to get number of frames */
-	temp = timeCents - dlsRateConvert;
+    /* divide time by secs per frame to get number of frames */
+    temp = timeCents - dlsRateConvert;
 
-	/* convert from time cents to 10-bit fraction */
-	temp = FMUL_15x15(temp, TIME_CENTS_TO_LOG2);
-	
-	/* convert to frame count */
-	temp = EAS_LogToLinear16(temp - (15 << 10));
+    /* convert from time cents to 10-bit fraction */
+    temp = FMUL_15x15(temp, TIME_CENTS_TO_LOG2);
 
-	if (temp < SYNTH_FULL_SCALE_EG1_GAIN)
-		return (EAS_I16) temp;	
-	return SYNTH_FULL_SCALE_EG1_GAIN;
+    /* convert to frame count */
+    temp = EAS_LogToLinear16(temp - (15 << 10));
+
+    if (temp < SYNTH_FULL_SCALE_EG1_GAIN)
+        return (EAS_I16) temp;
+    return SYNTH_FULL_SCALE_EG1_GAIN;
 }
 
 /*----------------------------------------------------------------------------
@@ -2481,36 +2481,36 @@ EAS_I16 ConvertDelay (EAS_I32 timeCents)
 */
 EAS_I16 ConvertRate (EAS_I32 timeCents)
 {
-	EAS_I32 temp;
+    EAS_I32 temp;
 
-	if (timeCents == ZERO_TIME_IN_CENTS)
-		return SYNTH_FULL_SCALE_EG1_GAIN;
+    if (timeCents == ZERO_TIME_IN_CENTS)
+        return SYNTH_FULL_SCALE_EG1_GAIN;
 
-	/* divide frame rate by time in log domain to get rate */
-	temp = dlsRateConvert - timeCents;
+    /* divide frame rate by time in log domain to get rate */
+    temp = dlsRateConvert - timeCents;
 
 #if 1
-	temp = EAS_Calculate2toX(temp);
+    temp = EAS_Calculate2toX(temp);
 #else
-	/* convert from time cents to 10-bit fraction */
-	temp = FMUL_15x15(temp, TIME_CENTS_TO_LOG2);
-	
-	/* convert to rate */
-	temp = EAS_LogToLinear16(temp);
+    /* convert from time cents to 10-bit fraction */
+    temp = FMUL_15x15(temp, TIME_CENTS_TO_LOG2);
+
+    /* convert to rate */
+    temp = EAS_LogToLinear16(temp);
 #endif
 
-	if (temp < SYNTH_FULL_SCALE_EG1_GAIN)
-		return (EAS_I16) temp;	
-	return SYNTH_FULL_SCALE_EG1_GAIN;
+    if (temp < SYNTH_FULL_SCALE_EG1_GAIN)
+        return (EAS_I16) temp;
+    return SYNTH_FULL_SCALE_EG1_GAIN;
 }
 
 
 /*----------------------------------------------------------------------------
  * ConvertLFOPhaseIncrement()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  *
- * Inputs: 
+ * Inputs:
  *
  * Outputs:
  *
@@ -2519,26 +2519,26 @@ EAS_I16 ConvertRate (EAS_I32 timeCents)
 */
 static EAS_I16 ConvertLFOPhaseIncrement (EAS_I32 pitchCents)
 {
-	
-	/* check range */
-	if (pitchCents > MAX_LFO_FREQUENCY_IN_PITCHCENTS)
-		pitchCents = MAX_LFO_FREQUENCY_IN_PITCHCENTS;
-	if (pitchCents < MIN_LFO_FREQUENCY_IN_PITCHCENTS)
-		pitchCents = MIN_LFO_FREQUENCY_IN_PITCHCENTS;
 
-	/* double the rate and divide by frame rate by subtracting in log domain */
-	pitchCents = pitchCents - dlsLFOFrequencyConvert;
+    /* check range */
+    if (pitchCents > MAX_LFO_FREQUENCY_IN_PITCHCENTS)
+        pitchCents = MAX_LFO_FREQUENCY_IN_PITCHCENTS;
+    if (pitchCents < MIN_LFO_FREQUENCY_IN_PITCHCENTS)
+        pitchCents = MIN_LFO_FREQUENCY_IN_PITCHCENTS;
 
-	/* convert to phase increment */
-	return (EAS_I16) EAS_Calculate2toX(pitchCents);
+    /* double the rate and divide by frame rate by subtracting in log domain */
+    pitchCents = pitchCents - dlsLFOFrequencyConvert;
+
+    /* convert to phase increment */
+    return (EAS_I16) EAS_Calculate2toX(pitchCents);
 }
 
 /*----------------------------------------------------------------------------
  * ConvertPan()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  *
- * Inputs: 
+ * Inputs:
  *
  * Outputs:
  *
@@ -2547,14 +2547,14 @@ static EAS_I16 ConvertLFOPhaseIncrement (EAS_I32 pitchCents)
 */
 static EAS_I8 ConvertPan (EAS_I32 pan)
 {
-	
-	/* multiply by conversion factor */
-	pan = FMUL_15x15 (PAN_CONVERSION_FACTOR, pan);
-	if (pan < MIN_PAN_VALUE)
-		return MIN_PAN_VALUE;
-	if (pan > MAX_PAN_VALUE)
-		return MAX_PAN_VALUE;
-	return (EAS_I8) pan;
+
+    /* multiply by conversion factor */
+    pan = FMUL_15x15 (PAN_CONVERSION_FACTOR, pan);
+    if (pan < MIN_PAN_VALUE)
+        return MIN_PAN_VALUE;
+    if (pan > MAX_PAN_VALUE)
+        return MAX_PAN_VALUE;
+    return (EAS_I8) pan;
 }
 
 /*----------------------------------------------------------------------------
@@ -2567,18 +2567,18 @@ static EAS_I8 ConvertPan (EAS_I32 pan)
 static EAS_U8 ConvertQ (EAS_I32 q)
 {
 
-	/* apply limits */
-	if (q <= 0)
-		return 0;
+    /* apply limits */
+    if (q <= 0)
+        return 0;
 
-	/* convert to table index */
-	/*lint -e{704} use shift for performance */
-	q = (FILTER_Q_CONVERSION_FACTOR * q + 0x4000) >> 15;
+    /* convert to table index */
+    /*lint -e{704} use shift for performance */
+    q = (FILTER_Q_CONVERSION_FACTOR * q + 0x4000) >> 15;
 
-	/* apply upper limit */
-	if (q >= FILTER_RESONANCE_NUM_ENTRIES)
-		q = FILTER_RESONANCE_NUM_ENTRIES - 1;
-	return (EAS_U8) q;
+    /* apply upper limit */
+    if (q >= FILTER_RESONANCE_NUM_ENTRIES)
+        q = FILTER_RESONANCE_NUM_ENTRIES - 1;
+    return (EAS_U8) q;
 }
 
 #ifdef _DEBUG_DLS
@@ -2588,80 +2588,80 @@ static EAS_U8 ConvertQ (EAS_I32 q)
 */
 static void DumpDLS (S_EAS *pEAS)
 {
-	S_DLS_ARTICULATION *pArt;
-	S_DLS_REGION *pRegion;
-	EAS_INT i;
-	EAS_INT j;
+    S_DLS_ARTICULATION *pArt;
+    S_DLS_REGION *pRegion;
+    EAS_INT i;
+    EAS_INT j;
 
-	EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000022 , pEAS->numPrograms);
-	EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000023 , pEAS->numWTRegions);
-	EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000024 , pEAS->numDLSArticulations);
-	EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000025 , pEAS->numSamples);
+    EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000022 , pEAS->numPrograms);
+    EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000023 , pEAS->numWTRegions);
+    EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000024 , pEAS->numDLSArticulations);
+    EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000025 , pEAS->numSamples);
 
-	/* dump the instruments */
-	for (i = 0; i < pEAS->numPrograms; i++)
-	{
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000026 , 
-				pEAS->pPrograms[i].locale >> 16,
-				(pEAS->pPrograms[i].locale >> 8) & 0x7f, 
-				pEAS->pPrograms[i].locale & 0x7f);
-		
-		for (j = pEAS->pPrograms[i].regionIndex; ; j++)
-		{
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000027 , j);
-			pRegion = &pEAS->pWTRegions[j];
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000028 , pRegion->gain);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000029 , pRegion->region.rangeLow, pRegion->region.rangeHigh);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002a , pRegion->region.keyGroupAndFlags);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002b , pRegion->loopStart);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002c , pRegion->loopEnd);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002d , pRegion->tuning);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002e , pRegion->artIndex);
-			EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002f , pRegion->waveIndex);
+    /* dump the instruments */
+    for (i = 0; i < pEAS->numPrograms; i++)
+    {
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000026 ,
+                pEAS->pPrograms[i].locale >> 16,
+                (pEAS->pPrograms[i].locale >> 8) & 0x7f,
+                pEAS->pPrograms[i].locale & 0x7f);
 
-			if (pRegion->region.keyGroupAndFlags & REGION_FLAG_LAST_REGION)
-				break;
-		}
+        for (j = pEAS->pPrograms[i].regionIndex; ; j++)
+        {
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000027 , j);
+            pRegion = &pEAS->pWTRegions[j];
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000028 , pRegion->gain);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000029 , pRegion->region.rangeLow, pRegion->region.rangeHigh);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002a , pRegion->region.keyGroupAndFlags);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002b , pRegion->loopStart);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002c , pRegion->loopEnd);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002d , pRegion->tuning);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002e , pRegion->artIndex);
+            EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000002f , pRegion->waveIndex);
 
-	}
+            if (pRegion->region.keyGroupAndFlags & REGION_FLAG_LAST_REGION)
+                break;
+        }
 
-	/* dump the articulation data */
-	for (i = 0; i < pEAS->numDLSArticulations; i++)
-	{
-		/* articulation data */
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000030 , i);
-		pArt = &pEAS->pDLSArticulations[i];
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000031 , pArt->m_nEG2toFilterDepth);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000032 , pArt->m_nEG2toPitchDepth);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000033 , pArt->m_nFilterCutoffFrequency);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000034 , pArt->m_nFilterResonance);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000035 , pArt->m_nLFOAmplitudeDepth);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000036 , pArt->m_nLFODelayTime);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000037 , pArt->m_nLFOFrequency);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000038 , pArt->m_nLFOPitchDepth);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000039 , pArt->m_nPan);
+    }
 
-		/* EG1 data */
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003a , pArt->m_sEG1.m_nAttack);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003b , pArt->m_sEG1.m_nDecay);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003c , pArt->m_sEG1.m_nSustain);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003d , pArt->m_sEG1.m_nRelease);
+    /* dump the articulation data */
+    for (i = 0; i < pEAS->numDLSArticulations; i++)
+    {
+        /* articulation data */
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000030 , i);
+        pArt = &pEAS->pDLSArticulations[i];
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000031 , pArt->m_nEG2toFilterDepth);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000032 , pArt->m_nEG2toPitchDepth);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000033 , pArt->m_nFilterCutoffFrequency);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000034 , pArt->m_nFilterResonance);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000035 , pArt->m_nLFOAmplitudeDepth);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000036 , pArt->m_nLFODelayTime);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000037 , pArt->m_nLFOFrequency);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000038 , pArt->m_nLFOPitchDepth);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000039 , pArt->m_nPan);
 
-		/* EG2 data */
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003e , pArt->m_sEG2.m_nAttack);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003f , pArt->m_sEG2.m_nDecay);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000040 , pArt->m_sEG2.m_nSustain);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000041 , pArt->m_sEG2.m_nRelease);
-			
-	}
+        /* EG1 data */
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003a , pArt->m_sEG1.m_nAttack);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003b , pArt->m_sEG1.m_nDecay);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003c , pArt->m_sEG1.m_nSustain);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003d , pArt->m_sEG1.m_nRelease);
 
-	/* dump the waves */
-	for (i = 0; i < pEAS->numSamples; i++)
-	{
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000042 , i);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000043 , pEAS->pSampleLen[i]);
-		EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000044 , pEAS->ppSamples[i]);
-	}
+        /* EG2 data */
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003e , pArt->m_sEG2.m_nAttack);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x0000003f , pArt->m_sEG2.m_nDecay);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000040 , pArt->m_sEG2.m_nSustain);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000041 , pArt->m_sEG2.m_nRelease);
+
+    }
+
+    /* dump the waves */
+    for (i = 0; i < pEAS->numSamples; i++)
+    {
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000042 , i);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000043 , pEAS->pSampleLen[i]);
+        EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x19299ed4, 0x00000044 , pEAS->ppSamples[i]);
+    }
 
 }
 #endif
