@@ -56,6 +56,7 @@ typedef struct
     EAS_I32         restTicks;                  /* ticks to rest after current note */
     EAS_I32         startLine;                  /* file offset at start of line (for repeats) */
     EAS_I32         repeatOffset;               /* file offset to start of repeat section */
+    EAS_I32         repeatTime;                 /* time at start of repeat section */
     S_METADATA_CB   metadata;                   /* metadata callback */
     EAS_I16         repeatCount;                /* repeat counter */
     EAS_U8          state;                      /* current state EAS_STATE_XXXX */

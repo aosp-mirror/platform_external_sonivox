@@ -396,6 +396,9 @@ static EAS_RESULT IMY_Event (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData, EAS_I
                 {
                     pData->repeatOffset = pData->startLine + (EAS_I32) pData->index;
 
+                    /* save current time and check it later to make sure the loop isn't zero length */
+                    pData->repeatTime = pData->time;
+
 #ifdef _DEBUG_IMELODY
                     { /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL, "Repeat offset = %d\n", pData->repeatOffset); */ }
 #endif
@@ -410,9 +413,11 @@ static EAS_RESULT IMY_Event (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData, EAS_I
 #ifdef _DEBUG_IMELODY
                 { /* dpp: EAS_ReportEx(_EAS_SEVERITY_DETAIL, "End repeat section, repeat offset = %d\n", pData->repeatOffset); */ }
 #endif
-                /* ignore invalid repeats */
-                if (pData->repeatCount >= 0)
-                {
+                /* ignore zero-length loops */
+                if (pData->repeatTime == pData->time) {
+                    pData->repeatCount = -1;
+                    pData->repeatOffset = -1;
+                } else if (pData->repeatCount >= 0) {
 
                     /* decrement repeat count (repeatCount == 0 means infinite loop) */
                     if (pData->repeatCount > 0)
