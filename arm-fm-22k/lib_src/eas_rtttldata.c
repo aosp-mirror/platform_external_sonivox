@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_rtttldata.c
  *
  * Contents and purpose:
  * RTTTL File Parser data module for static memory models
- *			
+ *
  * Copyright Sonic Network Inc. 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");

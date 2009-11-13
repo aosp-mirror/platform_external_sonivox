@@ -8,11 +8,11 @@
  * This is a sample version that reads from a filedescriptor.
  * The file locator (EAS_FILE_LOCATOR) handle passed to
  * HWOpenFile is the same one that is passed to EAS_OpenFile.
- * 
+ *
  * Modify this file to suit the needs of your particular system.
  *
  * EAS_MAX_FILE_HANDLES sets the maximum number of MIDI streams within
- * a MIDI type 1 file that can be played. 
+ * a MIDI type 1 file that can be played.
  *
  * EAS_HW_FILE is a structure to support the file I/O functions. It
  * comprises the file descriptor, the file read pointer, and
@@ -73,8 +73,8 @@
 // 100 max file handles == 3 * (nb tracks(32) + 1 for the segment) + 1 for jet file
 //                         3 == 1(playing segment) + 1(prepared segment)
 //                              + 1(after end of playing segment, before files closed)
-#define EAS_MAX_FILE_HANDLES    100 
-#endif 
+#define EAS_MAX_FILE_HANDLES    100
+#endif
 
 /*
  * this structure and the related function are here
@@ -118,7 +118,7 @@ EAS_RESULT EAS_HWInit (EAS_HW_DATA_HANDLE *pHWInstData)
         return EAS_ERROR_MALLOC_FAILED;
 
     EAS_HWMemSet(*pHWInstData, 0, sizeof(EAS_HW_INST_DATA));
-    
+
     file = (*pHWInstData)->files;
     for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
     {
@@ -184,7 +184,7 @@ void EAS_HWFree (EAS_HW_DATA_HANDLE hwInstData, void *p)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount) 
+void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
 {
     if (amount < 0)  {
       EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x1a54b6e8, 0x00000004 , amount);
@@ -201,7 +201,7 @@ void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount) 
+void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
 {
     if (amount < 0)  {
       EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x1a54b6e8, 0x00000005 , amount);
@@ -218,7 +218,7 @@ void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount) 
+EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount)
 {
     if (amount < 0) {
       EAS_ReportEx(_EAS_SEVERITY_NOFILTER, 0x1a54b6e8, 0x00000006 , amount);
@@ -389,7 +389,7 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
  *
  * EAS_HWGetDWord
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -422,7 +422,7 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -454,7 +454,7 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
     if (file->fd < 0)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* validate new position */	
+    /* validate new position */
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;
 
@@ -479,7 +479,7 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
     if (file->fd < 0)
         return EAS_ERROR_INVALID_HANDLE;
 
-    /* determine the file position */	
+    /* determine the file position */
     position += file->filePos;
     if ((position < 0) || (position > file->fileSize))
         return EAS_ERROR_FILE_SEEK;

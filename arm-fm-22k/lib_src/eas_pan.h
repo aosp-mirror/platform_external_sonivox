@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_pan.h
  *
  * Contents and purpose:
@@ -8,7 +8,7 @@
  *
  * NOTES:
  * The _CMX_PARSER and _MFI_PARSER preprocessor symbols determine
- * whether the parser works for those particular file formats. 
+ * whether the parser works for those particular file formats.
  *
  * Copyright Sonic Network Inc. 2005
 
@@ -39,23 +39,23 @@
 /*----------------------------------------------------------------------------
  * EAS_CalcPanControl()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Assign the left and right gain values corresponding to the given pan value.
  *
  * This routine uses sin/cos approximations for an equal power curve:
- * 
+ *
  * sin(x) = (2-4*c)*x^2 + c + x
  * cos(x) = (2-4*c)*x^2 + c - x
  *
  * where  c = 1/sqrt(2)
  * using the a0 + x*(a1 + x*a2) approach
  *
- * Inputs: 
- * pan			- pan value (-63 to + 63)
- * 
+ * Inputs:
+ * pan          - pan value (-63 to + 63)
+ *
  * Outputs:
- * pGainLeft	linear gain multiplier for left channel (15-bit fraction)
- * pGainRight	linear gain multiplier for left channel (15-bit fraction)
+ * pGainLeft    linear gain multiplier for left channel (15-bit fraction)
+ * pGainRight   linear gain multiplier for left channel (15-bit fraction)
  *
  * Side Effects:
  *----------------------------------------------------------------------------

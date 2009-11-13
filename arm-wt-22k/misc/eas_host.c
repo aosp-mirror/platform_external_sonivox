@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_host.c
  *
  * Contents and purpose:
@@ -68,14 +68,14 @@
 #include "eas_report.h"
 
 #ifndef EAS_MAX_FILE_HANDLES
-#define EAS_MAX_FILE_HANDLES	32
+#define EAS_MAX_FILE_HANDLES    32
 #endif
 
 #ifndef EAS_FILE_BUFFER_SIZE
-#define EAS_FILE_BUFFER_SIZE	32
+#define EAS_FILE_BUFFER_SIZE    32
 #endif
 
-/* 
+/*
  * this structure and the related function are here
  * to support the ability to create duplicate handles
  * and buffering into a single file. If the OS supports
@@ -84,17 +84,17 @@
  */
 typedef struct eas_hw_file_tag
 {
-	FILE *pFile;
-	EAS_I32 bytesInBuffer;
-	EAS_I32 readIndex;
-	EAS_I32 filePos;
-	EAS_BOOL dup;
-	EAS_U8 buffer[EAS_FILE_BUFFER_SIZE];
+    FILE *pFile;
+    EAS_I32 bytesInBuffer;
+    EAS_I32 readIndex;
+    EAS_I32 filePos;
+    EAS_BOOL dup;
+    EAS_U8 buffer[EAS_FILE_BUFFER_SIZE];
 } EAS_HW_FILE;
 
 typedef struct eas_hw_inst_data_tag
 {
-	EAS_HW_FILE files[EAS_MAX_FILE_HANDLES];
+    EAS_HW_FILE files[EAS_MAX_FILE_HANDLES];
 } EAS_HW_INST_DATA;
 
 /* local memory for files and streams */
@@ -112,16 +112,16 @@ EAS_HW_INST_DATA fileData;
 EAS_RESULT EAS_HWInit (EAS_HW_DATA_HANDLE *pHWInstData)
 {
 
-	/* need to track file opens for duplicate handles */
+    /* need to track file opens for duplicate handles */
 #ifndef _STATIC_MEMORY
-	*pHWInstData = malloc(sizeof(EAS_HW_INST_DATA));
-	if (!(*pHWInstData))
-		return EAS_ERROR_MALLOC_FAILED;
+    *pHWInstData = malloc(sizeof(EAS_HW_INST_DATA));
+    if (!(*pHWInstData))
+        return EAS_ERROR_MALLOC_FAILED;
 #else
-	*pHWInstData = &fileData;
+    *pHWInstData = &fileData;
 #endif
-	EAS_HWMemSet(*pHWInstData, 0, sizeof(EAS_HW_INST_DATA));
-	return EAS_SUCCESS;
+    EAS_HWMemSet(*pHWInstData, 0, sizeof(EAS_HW_INST_DATA));
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -136,9 +136,9 @@ EAS_RESULT EAS_HWShutdown (EAS_HW_DATA_HANDLE hwInstData)
 {
 
 #ifndef _STATIC_MEMORY
-	free(hwInstData);
+    free(hwInstData);
 #endif
-	return EAS_SUCCESS;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -156,9 +156,9 @@ EAS_RESULT EAS_HWShutdown (EAS_HW_DATA_HANDLE hwInstData)
 void *EAS_HWMalloc (EAS_HW_DATA_HANDLE hwInstData, EAS_I32 size)
 {
 #ifdef _STATIC_MEMORY
-	return NULL;
+    return NULL;
 #else
-	return malloc((EAS_U32)size);
+    return malloc((EAS_U32)size);
 #endif
 }
 
@@ -177,7 +177,7 @@ void *EAS_HWMalloc (EAS_HW_DATA_HANDLE hwInstData, EAS_I32 size)
 void EAS_HWFree(EAS_HW_DATA_HANDLE hwInstData, void *p)
 {
 #ifndef _STATIC_MEMORY
-	free(p);
+    free(p);
 #endif
 }
 
@@ -189,9 +189,9 @@ void EAS_HWFree(EAS_HW_DATA_HANDLE hwInstData, void *p)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount) 
+void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
 {
-	return memcpy(dest,src,(size_t) amount);
+    return memcpy(dest,src,(size_t) amount);
 }
 
 /*----------------------------------------------------------------------------
@@ -202,9 +202,9 @@ void *EAS_HWMemCpy (void *dest, const void *src, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount) 
+void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
 {
-	return memset(dest,val,(size_t) amount);
+    return memset(dest,val,(size_t) amount);
 }
 
 /*----------------------------------------------------------------------------
@@ -215,9 +215,9 @@ void *EAS_HWMemSet (void *dest, int val, EAS_I32 amount)
  *
  *----------------------------------------------------------------------------
 */
-EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount) 
+EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount)
 {
-	return (EAS_I32) memcmp(s1, s2, (size_t) amount);
+    return (EAS_I32) memcmp(s1, s2, (size_t) amount);
 }
 
 /*----------------------------------------------------------------------------
@@ -230,47 +230,47 @@ EAS_I32 EAS_HWMemCmp (const void *s1, const void *s2, EAS_I32 amount)
 */
 EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locator, EAS_FILE_HANDLE *pFile, EAS_FILE_MODE mode)
 {
-	EAS_HW_FILE *file;
-	int i;
+    EAS_HW_FILE *file;
+    int i;
 
-	/* set return value to NULL */
-	*pFile = NULL;
+    /* set return value to NULL */
+    *pFile = NULL;
 
-	/* only support read mode at this time */
-	if (mode != EAS_FILE_READ)
-		return EAS_ERROR_INVALID_FILE_MODE;
+    /* only support read mode at this time */
+    if (mode != EAS_FILE_READ)
+        return EAS_ERROR_INVALID_FILE_MODE;
 
-	/* find an empty entry in the file table */
-	file = hwInstData->files;
-	for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
-	{
-		/* is this slot being used? */
-		if (file->pFile == NULL)
-		{
-			/* open the file */
-			if (locator->path)
-				file->pFile = fopen((const char*) locator->path, "rb");
-			if (file->pFile == NULL)
-				return EAS_ERROR_FILE_OPEN_FAILED;
+    /* find an empty entry in the file table */
+    file = hwInstData->files;
+    for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
+    {
+        /* is this slot being used? */
+        if (file->pFile == NULL)
+        {
+            /* open the file */
+            if (locator->path)
+                file->pFile = fopen((const char*) locator->path, "rb");
+            if (file->pFile == NULL)
+                return EAS_ERROR_FILE_OPEN_FAILED;
 
-#ifdef DEBUG_FILE_IO			
-		 	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWOpenFile: Open file %d\n", i);
+#ifdef DEBUG_FILE_IO
+            EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWOpenFile: Open file %d\n", i);
 #endif
 
-			/* initialize some values */
-			file->bytesInBuffer = 0;
-			file->readIndex = 0;
-			file->filePos = 0;
-			file->dup = EAS_FALSE;
+            /* initialize some values */
+            file->bytesInBuffer = 0;
+            file->readIndex = 0;
+            file->filePos = 0;
+            file->dup = EAS_FALSE;
 
-			*pFile = file;
-			return EAS_SUCCESS;
-		}
-		file++;
-	}
+            *pFile = file;
+            return EAS_SUCCESS;
+        }
+        file++;
+    }
 
-	/* too many open files */
-	return EAS_ERROR_MAX_FILES_OPEN;
+    /* too many open files */
+    return EAS_ERROR_MAX_FILES_OPEN;
 }
 
 /*----------------------------------------------------------------------------
@@ -283,16 +283,16 @@ EAS_RESULT EAS_HWOpenFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_LOCATOR locat
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWFillBuffer (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file)
 {
-	/* reposition the file pointer */
-	if (fseek(file->pFile, file->filePos, SEEK_SET) != 0)
-		return EAS_ERROR_FILE_SEEK;
+    /* reposition the file pointer */
+    if (fseek(file->pFile, file->filePos, SEEK_SET) != 0)
+        return EAS_ERROR_FILE_SEEK;
 
-	/* read some data from the file */
-	file->bytesInBuffer = (EAS_I32) fread(file->buffer, 1, EAS_FILE_BUFFER_SIZE, file->pFile);
-	file->readIndex = 0;
-	if (file->bytesInBuffer == 0)
-		return EAS_EOF;
-	return EAS_SUCCESS;
+    /* read some data from the file */
+    file->bytesInBuffer = (EAS_I32) fread(file->buffer, 1, EAS_FILE_BUFFER_SIZE, file->pFile);
+    file->readIndex = 0;
+    if (file->bytesInBuffer == 0)
+        return EAS_EOF;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -305,82 +305,82 @@ EAS_RESULT EAS_HWFillBuffer (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, void *pBuffer, EAS_I32 n, EAS_I32 *pBytesRead)
 {
-	EAS_RESULT result;
-	EAS_I32 temp;
-	EAS_U8 *p = pBuffer;
-	EAS_I32 bytesLeft = n;
+    EAS_RESULT result;
+    EAS_I32 temp;
+    EAS_U8 *p = pBuffer;
+    EAS_I32 bytesLeft = n;
 
-	*pBytesRead = 0;
+    *pBytesRead = 0;
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWReadFile: Reading %d bytes from position %d\n", n, file->filePos);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWReadFile: Reading %d bytes from position %d\n", n, file->filePos);
 #endif
 
-	/* try to fulfill request from buffer */
-	for (;bytesLeft > 0;)
-	{
-		/* how many bytes can we get from buffer? */
-		temp = file->bytesInBuffer - file->readIndex;
-		if (temp > bytesLeft)
-			temp = bytesLeft;
-		
-		/* copy data from buffer */
-		EAS_HWMemCpy(p, &file->buffer[file->readIndex], temp);
-		*pBytesRead += temp;
-		file->readIndex += temp;
-		file->filePos += temp;
-		bytesLeft -= temp;
-		p += temp;
+    /* try to fulfill request from buffer */
+    for (;bytesLeft > 0;)
+    {
+        /* how many bytes can we get from buffer? */
+        temp = file->bytesInBuffer - file->readIndex;
+        if (temp > bytesLeft)
+            temp = bytesLeft;
 
-		/* don't refill buffer if request is bigger than buffer */
-		if ((bytesLeft == 0) || (bytesLeft >= EAS_FILE_BUFFER_SIZE))
-			break;
+        /* copy data from buffer */
+        EAS_HWMemCpy(p, &file->buffer[file->readIndex], temp);
+        *pBytesRead += temp;
+        file->readIndex += temp;
+        file->filePos += temp;
+        bytesLeft -= temp;
+        p += temp;
 
-		/* refill buffer */
-		if ((result = EAS_HWFillBuffer(hwInstData, file)) != EAS_SUCCESS)
-			return result;
-	}
+        /* don't refill buffer if request is bigger than buffer */
+        if ((bytesLeft == 0) || (bytesLeft >= EAS_FILE_BUFFER_SIZE))
+            break;
 
-	/* more to read? do unbuffered read directly to target memory */
-	if (bytesLeft)
-	{
+        /* refill buffer */
+        if ((result = EAS_HWFillBuffer(hwInstData, file)) != EAS_SUCCESS)
+            return result;
+    }
 
-		/* position the file pointer */
-		if (fseek(file->pFile, file->filePos, SEEK_SET) != 0)
-			return EAS_ERROR_FILE_SEEK;
+    /* more to read? do unbuffered read directly to target memory */
+    if (bytesLeft)
+    {
 
-		/* read data in the buffer */
-		/*lint -e{826} lint doesn't like this with STATIC_MEMORY defined for some reason */
-		temp = (EAS_I32) fread(p, 1, (size_t) bytesLeft, file->pFile);
-		*pBytesRead += temp;
-		file->filePos += temp;
+        /* position the file pointer */
+        if (fseek(file->pFile, file->filePos, SEEK_SET) != 0)
+            return EAS_ERROR_FILE_SEEK;
 
-		/* reset buffer info */
-		file->bytesInBuffer = 0;
-		file->readIndex = 0;
-	}
+        /* read data in the buffer */
+        /*lint -e{826} lint doesn't like this with STATIC_MEMORY defined for some reason */
+        temp = (EAS_I32) fread(p, 1, (size_t) bytesLeft, file->pFile);
+        *pBytesRead += temp;
+        file->filePos += temp;
+
+        /* reset buffer info */
+        file->bytesInBuffer = 0;
+        file->readIndex = 0;
+    }
 
 #ifdef DEBUG_FILE_IO
-	{
+    {
 #define BYTES_PER_LINE 16
-		char str[BYTES_PER_LINE * 3 + 1];
-		EAS_INT i;
-		for (i = 0; i < (n > BYTES_PER_LINE ? BYTES_PER_LINE : n) ; i ++)
-			sprintf(&str[i*3], "%02x ", ((EAS_U8*)pBuffer)[i]);
-		if (i)
-			EAS_ReportX(_EAS_SEVERITY_NOFILTER, "%s\n", str);
-	}
+        char str[BYTES_PER_LINE * 3 + 1];
+        EAS_INT i;
+        for (i = 0; i < (n > BYTES_PER_LINE ? BYTES_PER_LINE : n) ; i ++)
+            sprintf(&str[i*3], "%02x ", ((EAS_U8*)pBuffer)[i]);
+        if (i)
+            EAS_ReportX(_EAS_SEVERITY_NOFILTER, "%s\n", str);
+    }
 #endif
 
-	/* were n bytes read? */
-	if (*pBytesRead != n)
-		return EAS_EOF;
+    /* were n bytes read? */
+    if (*pBytesRead != n)
+        return EAS_EOF;
 
-	return EAS_SUCCESS;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -393,32 +393,32 @@ EAS_RESULT EAS_HWReadFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, void *p)
 {
-	EAS_RESULT result;
+    EAS_RESULT result;
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
-	/* use local buffer - do we have any data? */
-	if (file->readIndex >= file->bytesInBuffer)
-	{
-		if ((result = EAS_HWFillBuffer(hwInstData, file)) != EAS_SUCCESS)
-			return result;
+    /* use local buffer - do we have any data? */
+    if (file->readIndex >= file->bytesInBuffer)
+    {
+        if ((result = EAS_HWFillBuffer(hwInstData, file)) != EAS_SUCCESS)
+            return result;
 
-		/* if nothing to read, return EOF */
-		if (file->bytesInBuffer == 0)
-			return EAS_EOF;
-	}
+        /* if nothing to read, return EOF */
+        if (file->bytesInBuffer == 0)
+            return EAS_EOF;
+    }
 
-	/* get a character from the buffer */
-	*((EAS_U8*) p) = file->buffer[file->readIndex++];
+    /* get a character from the buffer */
+    *((EAS_U8*) p) = file->buffer[file->readIndex++];
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetByte: Reading from position %d, byte = 0x%02x\n", file->filePos, *(EAS_U8*)p);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetByte: Reading from position %d, byte = 0x%02x\n", file->filePos, *(EAS_U8*)p);
 #endif
 
-	file->filePos++;
-	return EAS_SUCCESS;
+    file->filePos++;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -430,25 +430,25 @@ EAS_RESULT EAS_HWGetByte (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
 */
 EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, void *p, EAS_BOOL msbFirst)
 {
-	EAS_RESULT result;
-	EAS_I32 count;
-	EAS_U8 c[2];
+    EAS_RESULT result;
+    EAS_I32 count;
+    EAS_U8 c[2];
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetWord: Reading 2 bytes from position %d\n", file->filePos);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetWord: Reading 2 bytes from position %d\n", file->filePos);
 #endif
 
-	/* read 2 bytes from the file */
-	if ((result = EAS_HWReadFile(hwInstData, file, c, 2, &count)) != EAS_SUCCESS)
-		return result;
+    /* read 2 bytes from the file */
+    if ((result = EAS_HWReadFile(hwInstData, file, c, 2, &count)) != EAS_SUCCESS)
+        return result;
 
-	/* order them as requested */
-	if (msbFirst)
-		*((EAS_U16*) p) = ((EAS_U16) c[0] << 8) | c[1];
-	else
-		*((EAS_U16*) p) = ((EAS_U16) c[1] << 8) | c[0];
+    /* order them as requested */
+    if (msbFirst)
+        *((EAS_U16*) p) = ((EAS_U16) c[0] << 8) | c[1];
+    else
+        *((EAS_U16*) p) = ((EAS_U16) c[1] << 8) | c[0];
 
-	return EAS_SUCCESS;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -460,32 +460,32 @@ EAS_RESULT EAS_HWGetWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, v
 */
 EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, void *p, EAS_BOOL msbFirst)
 {
-	EAS_RESULT result;
-	EAS_I32 count;
-	EAS_U8 c[4];
+    EAS_RESULT result;
+    EAS_I32 count;
+    EAS_U8 c[4];
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetDWord: Reading 4 bytes from position %d\n", file->filePos);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWGetDWord: Reading 4 bytes from position %d\n", file->filePos);
 #endif
 
-	/* read 4 bytes from the file */
-	if ((result = EAS_HWReadFile(hwInstData, file, c, 4, &count)) != EAS_SUCCESS)
-		return result;
+    /* read 4 bytes from the file */
+    if ((result = EAS_HWReadFile(hwInstData, file, c, 4, &count)) != EAS_SUCCESS)
+        return result;
 
-	/* order them as requested */
-	if (msbFirst)
-		*((EAS_U32*) p) = ((EAS_U32) c[0] << 24) | ((EAS_U32) c[1] << 16) | ((EAS_U32) c[2] << 8) | c[3];
-	else
-		*((EAS_U32*) p) = ((EAS_U32) c[3] << 24) | ((EAS_U32) c[2] << 16) | ((EAS_U32) c[1] << 8) | c[0];
-	
-	return EAS_SUCCESS;
+    /* order them as requested */
+    if (msbFirst)
+        *((EAS_U32*) p) = ((EAS_U32) c[0] << 24) | ((EAS_U32) c[1] << 16) | ((EAS_U32) c[2] << 8) | c[3];
+    else
+        *((EAS_U32*) p) = ((EAS_U32) c[3] << 24) | ((EAS_U32) c[2] << 16) | ((EAS_U32) c[1] << 8) | c[0];
+
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
  *
  * EAS_HWFilePos
  *
- * Returns the current location in the file 
+ * Returns the current location in the file
  *
  *----------------------------------------------------------------------------
 */
@@ -493,12 +493,12 @@ EAS_RESULT EAS_HWGetDWord (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pPosition)
 {
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
-	
-	*pPosition = file->filePos;
-	return EAS_SUCCESS;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
+
+    *pPosition = file->filePos;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -512,30 +512,30 @@ EAS_RESULT EAS_HWFilePos (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, E
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 position)
 {
-	EAS_I32 newIndex;
+    EAS_I32 newIndex;
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeek: Seeking to new position %d\n", file->filePos);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeek: Seeking to new position %d\n", file->filePos);
 #endif
 
-	/* is new position in current buffer? */
-	newIndex = position - file->filePos + file->readIndex;
-	if ((newIndex >= 0) && (newIndex < file->bytesInBuffer))
-	{
-		file->readIndex = newIndex;
-		file->filePos = position;
-		return EAS_SUCCESS;
-	}
+    /* is new position in current buffer? */
+    newIndex = position - file->filePos + file->readIndex;
+    if ((newIndex >= 0) && (newIndex < file->bytesInBuffer))
+    {
+        file->readIndex = newIndex;
+        file->filePos = position;
+        return EAS_SUCCESS;
+    }
 
-	/* save new position and reset buffer info so EAS_HWGetByte doesn't fail */
-	file->filePos = position;
-	file->bytesInBuffer = 0;
-	file->readIndex = 0;
-	return EAS_SUCCESS;
+    /* save new position and reset buffer info so EAS_HWGetByte doesn't fail */
+    file->filePos = position;
+    file->bytesInBuffer = 0;
+    file->readIndex = 0;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -549,30 +549,30 @@ EAS_RESULT EAS_HWFileSeek (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, 
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 position)
 {
-	EAS_I32 temp;
+    EAS_I32 temp;
 
 #ifdef DEBUG_FILE_IO
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeekOfs: Seeking to new position %d\n", file->filePos + position);
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "EAS_HWFileSeekOfs: Seeking to new position %d\n", file->filePos + position);
 #endif
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
-	/* is new position in current buffer? */
-	temp = position + file->readIndex;
-	if ((temp >= 0) && (temp < file->bytesInBuffer))
-	{
-		file->readIndex = temp;
-		file->filePos += position;
-		return EAS_SUCCESS;
-	}
+    /* is new position in current buffer? */
+    temp = position + file->readIndex;
+    if ((temp >= 0) && (temp < file->bytesInBuffer))
+    {
+        file->readIndex = temp;
+        file->filePos += position;
+        return EAS_SUCCESS;
+    }
 
-	/* save new position and reset buffer info so EAS_HWGetByte doesn't fail */
-	file->filePos += position;
-	file->bytesInBuffer = 0;
-	file->readIndex = 0;
-	return EAS_SUCCESS;
+    /* save new position and reset buffer info so EAS_HWGetByte doesn't fail */
+    file->filePos += position;
+    file->bytesInBuffer = 0;
+    file->readIndex = 0;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -586,21 +586,21 @@ EAS_RESULT EAS_HWFileSeekOfs (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fil
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_I32 *pLength)
 {
-	long pos;
+    long pos;
 
-	/* check handle integrity */	
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
-	if ((pos = ftell(file->pFile)) == -1L)
-		return EAS_ERROR_FILE_LENGTH;
-	if (fseek(file->pFile, 0L, SEEK_END) != 0)
-		return EAS_ERROR_FILE_LENGTH;
-	if ((*pLength = ftell(file->pFile)) == -1L)
-		return EAS_ERROR_FILE_LENGTH;
-	if (fseek(file->pFile, pos, SEEK_SET) != 0)
-		return EAS_ERROR_FILE_LENGTH;
-	return EAS_SUCCESS;
+    if ((pos = ftell(file->pFile)) == -1L)
+        return EAS_ERROR_FILE_LENGTH;
+    if (fseek(file->pFile, 0L, SEEK_END) != 0)
+        return EAS_ERROR_FILE_LENGTH;
+    if ((*pLength = ftell(file->pFile)) == -1L)
+        return EAS_ERROR_FILE_LENGTH;
+    if (fseek(file->pFile, pos, SEEK_SET) != 0)
+        return EAS_ERROR_FILE_LENGTH;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -613,41 +613,41 @@ EAS_RESULT EAS_HWFileLength (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file
 */
 EAS_RESULT EAS_HWDupHandle (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file, EAS_FILE_HANDLE* pDupFile)
 {
-	EAS_HW_FILE *dupfile;
-	int i;
+    EAS_HW_FILE *dupfile;
+    int i;
 
-	/* check handle integrity */
-	*pDupFile = NULL;
-	if (file->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    *pDupFile = NULL;
+    if (file->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
-	/* find an empty entry in the file table */
-	dupfile = hwInstData->files;
-	for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
-	{
-		/* is this slot being used? */
-		if (dupfile->pFile == NULL)
-		{
+    /* find an empty entry in the file table */
+    dupfile = hwInstData->files;
+    for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
+    {
+        /* is this slot being used? */
+        if (dupfile->pFile == NULL)
+        {
 
-			/* copy info from the handle to be duplicated */
-			dupfile->filePos = file->filePos;
-			dupfile->pFile = file->pFile;
+            /* copy info from the handle to be duplicated */
+            dupfile->filePos = file->filePos;
+            dupfile->pFile = file->pFile;
 
-			/* set the duplicate handle flag */
-			dupfile->dup = file->dup = EAS_TRUE;
+            /* set the duplicate handle flag */
+            dupfile->dup = file->dup = EAS_TRUE;
 
-			/* initialize some values */
-			dupfile->bytesInBuffer = 0;
-			dupfile->readIndex = 0;
+            /* initialize some values */
+            dupfile->bytesInBuffer = 0;
+            dupfile->readIndex = 0;
 
-			*pDupFile = dupfile;
-			return EAS_SUCCESS;
-		}
-		dupfile++;
-	}
+            *pDupFile = dupfile;
+            return EAS_SUCCESS;
+        }
+        dupfile++;
+    }
 
-	/* too many open files */
-	return EAS_ERROR_MAX_FILES_OPEN;
+    /* too many open files */
+    return EAS_ERROR_MAX_FILES_OPEN;
 }
 
 /*----------------------------------------------------------------------------
@@ -660,56 +660,56 @@ EAS_RESULT EAS_HWDupHandle (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file,
 */
 EAS_RESULT EAS_HWCloseFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file1)
 {
-	EAS_HW_FILE *file2,*dupFile;
-	int i;
+    EAS_HW_FILE *file2,*dupFile;
+    int i;
 
-	/* check handle integrity */	
-	if (file1->pFile == NULL)
-		return EAS_ERROR_INVALID_HANDLE;
+    /* check handle integrity */
+    if (file1->pFile == NULL)
+        return EAS_ERROR_INVALID_HANDLE;
 
-	/* check for duplicate handle */
-	if (file1->dup)
-	{
-		dupFile = NULL;
-		file2 = hwInstData->files;
-		for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
-		{
-			/* check for duplicate */
-			if ((file1 != file2) && (file2->pFile == file1->pFile))
-			{
-				/* is there more than one duplicate? */
-				if (dupFile != NULL)
-				{
-					/* clear this entry and return */
-					file1->pFile = NULL;
-					return EAS_SUCCESS;
-				}
+    /* check for duplicate handle */
+    if (file1->dup)
+    {
+        dupFile = NULL;
+        file2 = hwInstData->files;
+        for (i = 0; i < EAS_MAX_FILE_HANDLES; i++)
+        {
+            /* check for duplicate */
+            if ((file1 != file2) && (file2->pFile == file1->pFile))
+            {
+                /* is there more than one duplicate? */
+                if (dupFile != NULL)
+                {
+                    /* clear this entry and return */
+                    file1->pFile = NULL;
+                    return EAS_SUCCESS;
+                }
 
-				/* this is the first duplicate found */
-				dupFile = file2;
-			}
-			file2++;
-		}
+                /* this is the first duplicate found */
+                dupFile = file2;
+            }
+            file2++;
+        }
 
-		/* there is only one duplicate, clear the dup flag */
-		if (dupFile)
-			dupFile->dup = EAS_FALSE;
-		else
-			/* if we get here, there's a serious problem */
-			return EAS_ERROR_HANDLE_INTEGRITY;
+        /* there is only one duplicate, clear the dup flag */
+        if (dupFile)
+            dupFile->dup = EAS_FALSE;
+        else
+            /* if we get here, there's a serious problem */
+            return EAS_ERROR_HANDLE_INTEGRITY;
 
-		/* clear this entry and return */
-		file1->pFile = NULL;
-		return EAS_SUCCESS;
-	}
+        /* clear this entry and return */
+        file1->pFile = NULL;
+        return EAS_SUCCESS;
+    }
 
-	/* no duplicates - close the file */
-	if (fclose(file1->pFile) != 0)
-		return EAS_ERROR_CLOSE_FAILED;
+    /* no duplicates - close the file */
+    if (fclose(file1->pFile) != 0)
+        return EAS_ERROR_CLOSE_FAILED;
 
-	/* clear this entry and return */
-	file1->pFile = NULL;
-	return EAS_SUCCESS;
+    /* clear this entry and return */
+    file1->pFile = NULL;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -723,8 +723,8 @@ EAS_RESULT EAS_HWCloseFile (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE file1
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWVibrate (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 {
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "Vibrate state: %d\n", state);
-	return EAS_SUCCESS;
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "Vibrate state: %d\n", state);
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -738,8 +738,8 @@ EAS_RESULT EAS_HWVibrate (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWLED (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 {
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "LED state: %d\n", state);
-	return EAS_SUCCESS;
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "LED state: %d\n", state);
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -753,8 +753,8 @@ EAS_RESULT EAS_HWLED (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_RESULT EAS_HWBackLight (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 {
-	EAS_ReportX(_EAS_SEVERITY_NOFILTER, "Backlight state: %d\n", state);
-	return EAS_SUCCESS;
+    EAS_ReportX(_EAS_SEVERITY_NOFILTER, "Backlight state: %d\n", state);
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
@@ -782,6 +782,6 @@ EAS_RESULT EAS_HWBackLight (EAS_HW_DATA_HANDLE hwInstData, EAS_BOOL state)
 /*lint -esym(715, hwInstData) hwInstData available for customer use */
 EAS_BOOL EAS_HWYield (EAS_HW_DATA_HANDLE hwInstData)
 {
-	/* put your code here */
-	return EAS_FALSE;
+    /* put your code here */
+    return EAS_FALSE;
 }

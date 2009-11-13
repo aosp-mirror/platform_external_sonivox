@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_miditypes.h
  *
  * Contents and purpose:
@@ -41,29 +41,29 @@
  *
  *----------------------------------------------------------------------------
 */
- 
+
 typedef struct s_midi_stream_tag
 {
-	EAS_BOOL8			byte3;				/* flag indicates 3rd byte expected */
-	EAS_BOOL8			pending;			/* flag indicates more data expected */
-	EAS_U8				sysExState;			/* maintains the SysEx state */
-	EAS_U8				runningStatus;		/* last running status received */
-	EAS_U8				status;				/* status byte */
-	EAS_U8				d1;					/* first data byte */
-	EAS_U8				d2;					/* second data byte */
-	EAS_U8				flags;				/* flags - see below for definition */
-#ifdef JET_INTERFACE	
-	EAS_U32				jetData;			/* JET data */
+    EAS_BOOL8           byte3;              /* flag indicates 3rd byte expected */
+    EAS_BOOL8           pending;            /* flag indicates more data expected */
+    EAS_U8              sysExState;         /* maintains the SysEx state */
+    EAS_U8              runningStatus;      /* last running status received */
+    EAS_U8              status;             /* status byte */
+    EAS_U8              d1;                 /* first data byte */
+    EAS_U8              d2;                 /* second data byte */
+    EAS_U8              flags;              /* flags - see below for definition */
+#ifdef JET_INTERFACE
+    EAS_U32             jetData;            /* JET data */
 #endif
 } S_MIDI_STREAM;
 
 /* flags for S_MIDI_STREAM.flags */
-#define MIDI_FLAG_GM_ON			0x01		/* GM System On message received */
-#define MIDI_FLAG_FIRST_NOTE	0x02		/* first note received */
+#define MIDI_FLAG_GM_ON         0x01        /* GM System On message received */
+#define MIDI_FLAG_FIRST_NOTE    0x02        /* first note received */
 
 /* flags for S_MIDI_STREAM.jetFlags */
-#define MIDI_FLAGS_JET_MUTE		0x00000001	/* track is muted */
-#define MIDI_FLAGS_JET_CB		0x00000002	/* JET callback enabled */
+#define MIDI_FLAGS_JET_MUTE     0x00000001  /* track is muted */
+#define MIDI_FLAGS_JET_CB       0x00000002  /* JET callback enabled */
 
 /*----------------------------------------------------------------------------
  *
@@ -78,10 +78,10 @@ typedef struct s_midi_stream_tag
 
 typedef struct s_smf_stream_tag
 {
-	EAS_FILE_HANDLE		fileHandle;			/* host wrapper file handle */
-	EAS_U32				ticks;				/* time of next event in stream */
-	EAS_I32 			startFilePos;		/* start location of track within file */
-	S_MIDI_STREAM 		midiStream;			/* MIDI stream state */
+    EAS_FILE_HANDLE     fileHandle;         /* host wrapper file handle */
+    EAS_U32             ticks;              /* time of next event in stream */
+    EAS_I32             startFilePos;       /* start location of track within file */
+    S_MIDI_STREAM       midiStream;         /* MIDI stream state */
 } S_SMF_STREAM;
 
 /*----------------------------------------------------------------------------
@@ -96,27 +96,27 @@ typedef struct s_smf_stream_tag
 typedef struct s_smf_data_tag
 {
 #ifdef _CHECKED_BUILD
-	EAS_U32				handleCheck;		/* signature check for checked build */
+    EAS_U32             handleCheck;        /* signature check for checked build */
 #endif
-	S_SMF_STREAM		*streams;			/* pointer to individual streams in file */
-	S_SMF_STREAM		*nextStream;		/* pointer to next stream with event */
-	S_SYNTH				*pSynth;			/* pointer to synth */
-	EAS_FILE_HANDLE		fileHandle;			/* file handle */
-	S_METADATA_CB		metadata;			/* metadata callback */
-	EAS_I32				fileOffset;			/* for embedded files */
-	EAS_I32				time;				/* current time in milliseconds/256 */
-	EAS_U16				numStreams;			/* actual number of streams */
-	EAS_U16				tickConv;			/* current MIDI tick to msec conversion */
-	EAS_U16				ppqn;				/* ticks per quarter note */
-	EAS_U8				state;				/* current state EAS_STATE_XXXX */
-	EAS_U8				flags;				/* flags - see definitions below */
+    S_SMF_STREAM        *streams;           /* pointer to individual streams in file */
+    S_SMF_STREAM        *nextStream;        /* pointer to next stream with event */
+    S_SYNTH             *pSynth;            /* pointer to synth */
+    EAS_FILE_HANDLE     fileHandle;         /* file handle */
+    S_METADATA_CB       metadata;           /* metadata callback */
+    EAS_I32             fileOffset;         /* for embedded files */
+    EAS_I32             time;               /* current time in milliseconds/256 */
+    EAS_U16             numStreams;         /* actual number of streams */
+    EAS_U16             tickConv;           /* current MIDI tick to msec conversion */
+    EAS_U16             ppqn;               /* ticks per quarter note */
+    EAS_U8              state;              /* current state EAS_STATE_XXXX */
+    EAS_U8              flags;              /* flags - see definitions below */
 } S_SMF_DATA;
 
-#define SMF_FLAGS_CHASE_MODE		0x01	/* chase mode - skip to first note */
-#define SMF_FLAGS_HAS_TIME_SIG		0x02	/* time signature encountered at time 0 */
-#define SMF_FLAGS_HAS_TEMPO			0x04	/* tempo encountered at time 0  */
-#define SMF_FLAGS_HAS_GM_ON			0x08	/* GM System On encountered at time 0 */
-#define SMF_FLAGS_JET_STREAM		0x80	/* JET in use - keep strict timing */
+#define SMF_FLAGS_CHASE_MODE        0x01    /* chase mode - skip to first note */
+#define SMF_FLAGS_HAS_TIME_SIG      0x02    /* time signature encountered at time 0 */
+#define SMF_FLAGS_HAS_TEMPO         0x04    /* tempo encountered at time 0  */
+#define SMF_FLAGS_HAS_GM_ON         0x08    /* GM System On encountered at time 0 */
+#define SMF_FLAGS_JET_STREAM        0x80    /* JET in use - keep strict timing */
 
 /* combo flags indicate setup bar */
 #define SMF_FLAGS_SETUP_BAR (SMF_FLAGS_HAS_TIME_SIG | SMF_FLAGS_HAS_TEMPO | SMF_FLAGS_HAS_GM_ON)
@@ -128,10 +128,10 @@ typedef struct s_smf_data_tag
 typedef struct s_interactive_midi_tag
 {
 #ifdef _CHECKED_BUILD
-	EAS_U32				handleCheck;		/* signature check for checked build */
+    EAS_U32             handleCheck;        /* signature check for checked build */
 #endif
-	S_SYNTH		*pSynth;			/* pointer to synth */
-	S_MIDI_STREAM		stream;				/* stream data */
+    S_SYNTH     *pSynth;            /* pointer to synth */
+    S_MIDI_STREAM       stream;             /* stream data */
 } S_INTERACTIVE_MIDI;
 
 #endif /* #ifndef _EAS_MIDITYPES_H */

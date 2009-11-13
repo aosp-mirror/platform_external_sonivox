@@ -24,7 +24,7 @@
  * Articulations
  *----------------------------------------------------------------------------
 */
-const S_ARTICULATION eas_articulations[] = 
+const S_ARTICULATION eas_articulations[] =
 {
     { /* articulation 0 */
         { 32767, 31730, 0, 31730 },
@@ -957,7 +957,7 @@ const S_ARTICULATION eas_articulations[] =
  * Regions
  *----------------------------------------------------------------------------
 */
-const S_WT_REGION eas_regions[] = 
+const S_WT_REGION eas_regions[] =
 {
     { { 0, 27, 27 }, -4068, 16422, 0, 0, 81, 0 }, /* region 0 */
     { { 0, 28, 28 }, -4768, 32767, 0, 0, 40, 0 }, /* region 1 */
@@ -1342,7 +1342,7 @@ const S_WT_REGION eas_regions[] =
  * Programs
  *----------------------------------------------------------------------------
 */
-const S_PROGRAM eas_programs[] = 
+const S_PROGRAM eas_programs[] =
 {
     { 7864320, 0 } /* program 0 */
 }; /* end Programs */
@@ -1381,7 +1381,7 @@ const S_BANK eas_banks[] =
  *----------------------------------------------------------------------------
 */
 
-const EAS_SAMPLE eas_samples[] = 
+const EAS_SAMPLE eas_samples[] =
 {
        0,    0,   -3,   -4,   -6,   -8,  -10,  -12,  -12,  -11,   -8,   -3,    3,    7,   10,   14,
       16,   16,   15,   12,    9,    4,   -4,  -12,  -18,  -21,  -21,  -19,  -18,  -15,  -10,   -3,
@@ -14639,7 +14639,7 @@ const EAS_SAMPLE eas_samples[] =
      127,  127
 };
 
-const EAS_U32 eas_sampleLengths[] = 
+const EAS_U32 eas_sampleLengths[] =
 {
     16820, 16708, 16592, 11754, 10954, 10295, 9922, 7489,
     5779, 5462, 4452, 3779, 3115, 3093, 3057, 3024,
@@ -14662,7 +14662,7 @@ const EAS_U32 eas_sampleLengths[] =
     22, 21, 21, 21, 21, 20
 };
 
-const EAS_U32 eas_sampleOffsets[] = 
+const EAS_U32 eas_sampleOffsets[] =
 {
     0x00000000, 0x000041b4, 0x000082f8, 0x0000c3c8, 0x0000f1b2, 0x00011c7c, 0x000144b3, 0x00016b75,
     0x000188b6, 0x00019f49, 0x0001b49f, 0x0001c603, 0x0001d4c6, 0x0001e0f1, 0x0001ed06, 0x0001f8f7,
@@ -14689,7 +14689,7 @@ const EAS_U32 eas_sampleOffsets[] =
  * S_EAS
  *----------------------------------------------------------------------------
 */
-const S_EAS easSoundLib = 
+const S_EAS easSoundLib =
 {
     0x01534145,
     0x0010ac44,

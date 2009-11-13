@@ -1,13 +1,13 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_smfdata.c
  *
  * Contents and purpose:
  * SMF File Parser
  *
- * This file contains data definitions for the SMF parser.  
- *			
+ * This file contains data definitions for the SMF parser.
+ *
  * Copyright Sonic Network Inc. 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,17 +50,17 @@ static S_SMF_STREAM eas_SMFStreams[MAX_SMF_STREAMS];
 */
 S_SMF_DATA eas_SMFData =
 {
-	eas_SMFStreams,		/* pointer to individual streams in file */
-	0,					/* pointer to next stream with event */
-	0,					/* pointer to synth */
-	0,					/* file handle */
-	{ 0, 0, 0, 0},		/* metadata callback */
-	0,					/* file offset */
-	0,					/* current time in milliseconds/256 */
-	0,					/* actual number of streams */
-	0,					/* current MIDI tick to msec conversion */
-	0,					/* ticks per quarter note */
-	0,					/* current state EAS_STATE_XXXX */
-	0					/* flags */
+    eas_SMFStreams,     /* pointer to individual streams in file */
+    0,                  /* pointer to next stream with event */
+    0,                  /* pointer to synth */
+    0,                  /* file handle */
+    { 0, 0, 0, 0},      /* metadata callback */
+    0,                  /* file offset */
+    0,                  /* current time in milliseconds/256 */
+    0,                  /* actual number of streams */
+    0,                  /* current MIDI tick to msec conversion */
+    0,                  /* ticks per quarter note */
+    0,                  /* current state EAS_STATE_XXXX */
+    0                   /* flags */
 };
 

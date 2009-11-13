@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_report.c
  *
  * Contents and purpose:
@@ -23,8 +23,8 @@
  *
  *----------------------------------------------------------------------------
  * Revision Control:
- *	 $Revision: 659 $
- *	 $Date: 2007-04-24 13:36:35 -0700 (Tue, 24 Apr 2007) $
+ *   $Revision: 659 $
+ *   $Date: 2007-04-24 13:36:35 -0700 (Tue, 24 Apr 2007) $
  *----------------------------------------------------------------------------
 */
 
@@ -143,37 +143,37 @@ S_DEBUG_MESSAGES debugMessages[] =
 */
 void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
 {
-	va_list vargs;
-	int i;
+    va_list vargs;
+    int i;
 
-	/* check severity level */
-	if (severity > severityLevel)
-		return;
+    /* check severity level */
+    if (severity > severityLevel)
+        return;
 
-	/* find the error message and output to stdout */
-	/*lint -e{661} we check for NULL pointer - no fence post error here */
-	for (i = 0; debugMessages[i].m_pDebugMsg; i++)
-	{
-		if ((debugMessages[i].m_nHashCode == hashCode) &&
-		(debugMessages[i].m_nSerialNum == serialNum))
-		{
-			/*lint -e{826} <allow variable args> */
-			va_start(vargs, serialNum);
-			if (debugFile)
-			{
-				vfprintf(debugFile, debugMessages[i].m_pDebugMsg, vargs);
-				if (flush)
-					fflush(debugFile);
-			}
-			else
-			{
-				vprintf(debugMessages[i].m_pDebugMsg, vargs);
-			}
-			va_end(vargs);
-			return;
-		}
-	}
-	printf("Unrecognized error: Severity=%d; HashCode=%lu; SerialNum=%d\n", severity, hashCode, serialNum);
+    /* find the error message and output to stdout */
+    /*lint -e{661} we check for NULL pointer - no fence post error here */
+    for (i = 0; debugMessages[i].m_pDebugMsg; i++)
+    {
+        if ((debugMessages[i].m_nHashCode == hashCode) &&
+        (debugMessages[i].m_nSerialNum == serialNum))
+        {
+            /*lint -e{826} <allow variable args> */
+            va_start(vargs, serialNum);
+            if (debugFile)
+            {
+                vfprintf(debugFile, debugMessages[i].m_pDebugMsg, vargs);
+                if (flush)
+                    fflush(debugFile);
+            }
+            else
+            {
+                vprintf(debugMessages[i].m_pDebugMsg, vargs);
+            }
+            va_end(vargs);
+            return;
+        }
+    }
+    printf("Unrecognized error: Severity=%d; HashCode=%lu; SerialNum=%d\n", severity, hashCode, serialNum);
 } /* end EAS_ReportEx */
 
 #else
@@ -186,25 +186,25 @@ void EAS_ReportEx (int severity, unsigned long hashCode, int serialNum, ...)
 */
 void EAS_Report (int severity, const char *fmt, ...)
 {
-	va_list vargs;
+    va_list vargs;
 
-	/* check severity level */
-	if (severity > severityLevel)
-		return;
+    /* check severity level */
+    if (severity > severityLevel)
+        return;
 
-	/*lint -e{826} <allow variable args> */
-	va_start(vargs, fmt);
-	if (debugFile)
-	{
-		vfprintf(debugFile, fmt, vargs);
-		if (flush)
-			fflush(debugFile);
-	}
-	else
-	{
-		vprintf(fmt, vargs);
-	}
-	va_end(vargs);
+    /*lint -e{826} <allow variable args> */
+    va_start(vargs, fmt);
+    if (debugFile)
+    {
+        vfprintf(debugFile, fmt, vargs);
+        if (flush)
+            fflush(debugFile);
+    }
+    else
+    {
+        vprintf(fmt, vargs);
+    }
+    va_end(vargs);
 } /* end EAS_Report */
 
 /*----------------------------------------------------------------------------
@@ -216,25 +216,25 @@ void EAS_Report (int severity, const char *fmt, ...)
 */
 void EAS_ReportX (int severity, const char *fmt, ...)
 {
-	va_list vargs;
-	
-	/* check severity level */
-	if (severity > severityLevel)
-		return;
+    va_list vargs;
 
-	/*lint -e{826} <allow variable args> */
-	va_start(vargs, fmt);
-	if (debugFile)
-	{
-		vfprintf(debugFile, fmt, vargs);
-		if (flush)
-			fflush(debugFile);
-	}
-	else
-	{
-		vprintf(fmt, vargs);
-	}
-	va_end(vargs);
+    /* check severity level */
+    if (severity > severityLevel)
+        return;
+
+    /*lint -e{826} <allow variable args> */
+    va_start(vargs, fmt);
+    if (debugFile)
+    {
+        vfprintf(debugFile, fmt, vargs);
+        if (flush)
+            fflush(debugFile);
+    }
+    else
+    {
+        vprintf(fmt, vargs);
+    }
+    va_end(vargs);
 } /* end EAS_ReportX */
 #endif
 
@@ -247,7 +247,7 @@ void EAS_ReportX (int severity, const char *fmt, ...)
 
 void EAS_SetDebugLevel (int severity)
 {
-	severityLevel = severity;
+    severityLevel = severity;
 } /* end EAS_SetDebugLevel */
 
 /*----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ void EAS_SetDebugLevel (int severity)
 */
 void EAS_SetDebugFile (void *file, int flushAfterWrite)
 {
-	debugFile = (FILE*) file;
-	flush = flushAfterWrite;
+    debugFile = (FILE*) file;
+    flush = flushAfterWrite;
 } /* end EAS_SetDebugFile */
 
