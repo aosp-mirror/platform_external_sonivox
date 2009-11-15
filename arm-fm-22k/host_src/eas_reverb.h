@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_reverb.h
  *
  * Contents and purpose:
@@ -30,24 +30,24 @@
 
 #ifndef _EAS_REVERB_H
 #define _EAS_REVERB_H
-									
+
 
 /* enumerated parameter settings for Reverb effect */
 typedef enum
 {
-	EAS_PARAM_REVERB_BYPASS,
-	EAS_PARAM_REVERB_PRESET,
-	EAS_PARAM_REVERB_WET,
-	EAS_PARAM_REVERB_DRY
+    EAS_PARAM_REVERB_BYPASS,
+    EAS_PARAM_REVERB_PRESET,
+    EAS_PARAM_REVERB_WET,
+    EAS_PARAM_REVERB_DRY
 } E_REVERB_PARAMS;
 
 
 typedef enum
 {
-	EAS_PARAM_REVERB_LARGE_HALL,
-	EAS_PARAM_REVERB_HALL,
-	EAS_PARAM_REVERB_CHAMBER,
-	EAS_PARAM_REVERB_ROOM,
+    EAS_PARAM_REVERB_LARGE_HALL,
+    EAS_PARAM_REVERB_HALL,
+    EAS_PARAM_REVERB_CHAMBER,
+    EAS_PARAM_REVERB_ROOM,
 } E_REVERB_PRESETS;
 
 

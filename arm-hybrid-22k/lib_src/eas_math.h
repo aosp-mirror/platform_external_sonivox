@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_math.h
  *
  * Contents and purpose:
@@ -33,27 +33,27 @@
 
 
 /** coefs for pan, generates sin, cos */
-#define COEFF_PAN_G2 	-27146		/* -0.82842712474619 = 2 - 4/sqrt(2) */
-#define COEFF_PAN_G0	23170		/* 0.707106781186547 = 1/sqrt(2) */
+#define COEFF_PAN_G2    -27146      /* -0.82842712474619 = 2 - 4/sqrt(2) */
+#define COEFF_PAN_G0    23170       /* 0.707106781186547 = 1/sqrt(2) */
 
 /*
-coefficients for approximating 
+coefficients for approximating
 2^x = gn2toX0 + gn2toX1*x + gn2toX2*x^2 + gn2toX3*x^3
 where x is a int.frac number representing number of octaves.
 Actually, we approximate only the 2^(frac) using the power series
 and implement the 2^(int) as a shift, so that
-2^x == 2^(int.frac) == 2^(int) * 2^(fract) 
-	== (gn2toX0 + gn2toX1*x + gn2toX2*x^2 + gn2toX3*x^3) << (int)
+2^x == 2^(int.frac) == 2^(int) * 2^(fract)
+    == (gn2toX0 + gn2toX1*x + gn2toX2*x^2 + gn2toX3*x^3) << (int)
 
 The gn2toX.. were generated using a best fit for a 3rd
 order polynomial, instead of taking the coefficients from
 a truncated Taylor (or Maclaurin?) series.
 */
 
-#define GN2_TO_X0	32768	/*	1					*/
-#define GN2_TO_X1	22833	/*	0.696807861328125	*/
-#define GN2_TO_X2	7344	/*	0.22412109375		*/
-#define GN2_TO_X3	2588	/*	0.0789794921875		*/
+#define GN2_TO_X0   32768   /*  1                   */
+#define GN2_TO_X1   22833   /*  0.696807861328125   */
+#define GN2_TO_X2   7344    /*  0.22412109375       */
+#define GN2_TO_X3   2588    /*  0.0789794921875     */
 
 /*----------------------------------------------------------------------------
  * Fixed Point Math
@@ -66,23 +66,23 @@ a truncated Taylor (or Maclaurin?) series.
 
 /* Fixed point multiply 0.15 x 0.15 = 0.15 returned as 32-bits */
 #define FMUL_15x15(a,b) \
-	/*lint -e(704) <avoid multiply for performance>*/ \
-	(((EAS_I32)(a) * (EAS_I32)(b)) >> 15)
+    /*lint -e(704) <avoid multiply for performance>*/ \
+    (((EAS_I32)(a) * (EAS_I32)(b)) >> 15)
 
 /* Fixed point multiply 0.7 x 0.7 = 0.15 returned as 32-bits */
 #define FMUL_7x7(a,b) \
-	/*lint -e(704) <avoid multiply for performance>*/ \
-	(((EAS_I32)(a) * (EAS_I32)(b) ) << 1)
+    /*lint -e(704) <avoid multiply for performance>*/ \
+    (((EAS_I32)(a) * (EAS_I32)(b) ) << 1)
 
 /* Fixed point multiply 0.8 x 0.8 = 0.15 returned as 32-bits */
 #define FMUL_8x8(a,b) \
-	/*lint -e(704) <avoid multiply for performance>*/ \
-	(((EAS_I32)(a) * (EAS_I32)(b) ) >> 1)
+    /*lint -e(704) <avoid multiply for performance>*/ \
+    (((EAS_I32)(a) * (EAS_I32)(b) ) >> 1)
 
 /* Fixed point multiply 0.8 x 1.15 = 0.15 returned as 32-bits */
 #define FMUL_8x15(a,b) \
-	/*lint -e(704) <avoid divide for performance>*/ \
-	(((EAS_I32)((a) << 7) * (EAS_I32)(b)) >> 15)
+    /*lint -e(704) <avoid divide for performance>*/ \
+    (((EAS_I32)((a) << 7) * (EAS_I32)(b)) >> 15)
 
 /* macros for fractional phase accumulator */
 /*
@@ -90,79 +90,79 @@ Note: changed the _U32 to _I32 on 03/14/02. This should not
 affect the phase calculations, and should allow us to reuse these
 macros for other audio sample related math.
 */
-#define HARDWARE_BIT_WIDTH		32		
+#define HARDWARE_BIT_WIDTH      32
 
-#define NUM_PHASE_INT_BITS		1
-#define NUM_PHASE_FRAC_BITS		15
+#define NUM_PHASE_INT_BITS      1
+#define NUM_PHASE_FRAC_BITS     15
 
-#define PHASE_FRAC_MASK			(EAS_U32) ((0x1L << NUM_PHASE_FRAC_BITS) -1)
+#define PHASE_FRAC_MASK         (EAS_U32) ((0x1L << NUM_PHASE_FRAC_BITS) -1)
 
-#define GET_PHASE_INT_PART(x)	(EAS_U32)((EAS_U32)(x) >> NUM_PHASE_FRAC_BITS)
-#define GET_PHASE_FRAC_PART(x)	(EAS_U32)((EAS_U32)(x) & PHASE_FRAC_MASK)
+#define GET_PHASE_INT_PART(x)   (EAS_U32)((EAS_U32)(x) >> NUM_PHASE_FRAC_BITS)
+#define GET_PHASE_FRAC_PART(x)  (EAS_U32)((EAS_U32)(x) & PHASE_FRAC_MASK)
 
-#define DEFAULT_PHASE_FRAC		0
-#define DEFAULT_PHASE_INT		0
+#define DEFAULT_PHASE_FRAC      0
+#define DEFAULT_PHASE_INT       0
 
 /*
-Linear interpolation calculates: 
+Linear interpolation calculates:
 output = (1-frac) * sample[n] + (frac) * sample[n+1]
 
-where conceptually	0 <= frac < 1
+where conceptually  0 <= frac < 1
 
 For a fixed point implementation, frac is actually an integer value
 with an implied binary point one position to the left. The value of
 one (unity) is given by PHASE_ONE
 one half and one quarter are useful for 4-point linear interp.
 */
-#define PHASE_ONE				(EAS_I32) (0x1L << NUM_PHASE_FRAC_BITS)
+#define PHASE_ONE               (EAS_I32) (0x1L << NUM_PHASE_FRAC_BITS)
 
-/* 
+/*
  Multiply the signed audio sample by the unsigned fraction.
 -  a is the signed audio sample
 -  b is the unsigned fraction (cast to signed int as long as coef
-	uses (n-1) or less bits, where n == hardware bit width)
+    uses (n-1) or less bits, where n == hardware bit width)
 */
-#define MULT_AUDIO_COEF(audio,coef) 		/*lint -e704 <avoid divide for performance>*/ \
-			(EAS_I32)(									\
-			(											\
-				((EAS_I32)(audio)) * ((EAS_I32)(coef))	\
-			)											\
-			>> NUM_PHASE_FRAC_BITS						\
-										)				\
-										/* lint +704 <restore checking>*/
+#define MULT_AUDIO_COEF(audio,coef)         /*lint -e704 <avoid divide for performance>*/ \
+            (EAS_I32)(                                  \
+            (                                           \
+                ((EAS_I32)(audio)) * ((EAS_I32)(coef))  \
+            )                                           \
+            >> NUM_PHASE_FRAC_BITS                      \
+                                        )               \
+                                        /* lint +704 <restore checking>*/
 
 /* wet / dry calculation macros */
-#define	NUM_WET_DRY_FRAC_BITS		7	// 15
-#define NUM_WET_DRY_INT_BITS		9	// 1
+#define NUM_WET_DRY_FRAC_BITS       7   // 15
+#define NUM_WET_DRY_INT_BITS        9   // 1
 
 /* define a 1.0 */
-#define WET_DRY_ONE					(EAS_I32) ((0x1L << NUM_WET_DRY_FRAC_BITS))
-#define WET_DRY_MINUS_ONE			(EAS_I32) (~WET_DRY_ONE)
-#define WET_DRY_FULL_SCALE			(EAS_I32) (WET_DRY_ONE - 1)
+#define WET_DRY_ONE                 (EAS_I32) ((0x1L << NUM_WET_DRY_FRAC_BITS))
+#define WET_DRY_MINUS_ONE           (EAS_I32) (~WET_DRY_ONE)
+#define WET_DRY_FULL_SCALE          (EAS_I32) (WET_DRY_ONE - 1)
 
 #define MULT_AUDIO_WET_DRY_COEF(audio,coef) /*lint -e(702) <avoid divide for performance>*/ \
-			(EAS_I32)(										\
-			(												\
-				((EAS_I32)(audio)) * ((EAS_I32)(coef))		\
-			)												\
-			>> NUM_WET_DRY_FRAC_BITS						\
-													 )
+            (EAS_I32)(                                      \
+            (                                               \
+                ((EAS_I32)(audio)) * ((EAS_I32)(coef))      \
+            )                                               \
+            >> NUM_WET_DRY_FRAC_BITS                        \
+                                                     )
 
 /* Envelope 1 (EG1) calculation macros */
-#define	NUM_EG1_INT_BITS			1
-#define NUM_EG1_FRAC_BITS			15
+#define NUM_EG1_INT_BITS            1
+#define NUM_EG1_FRAC_BITS           15
 
 /* the max positive gain used in the synth for EG1 */
 /* SYNTH_FULL_SCALE_EG1_GAIN must match the value in the dls2eas
 converter, otherwise, the values we read from the .eas file are bogus. */
-#define SYNTH_FULL_SCALE_EG1_GAIN	(EAS_I32) ((0x1L << NUM_EG1_FRAC_BITS) -1)
+#define SYNTH_FULL_SCALE_EG1_GAIN   (EAS_I32) ((0x1L << NUM_EG1_FRAC_BITS) -1)
 
 /* define a 1.0 */
-#define EG1_ONE						(EAS_I32) ((0x1L << NUM_EG1_FRAC_BITS))
-#define EG1_MINUS_ONE				(EAS_I32) (~SYNTH_FULL_SCALE_EG1_GAIN)
+#define EG1_ONE                     (EAS_I32) ((0x1L << NUM_EG1_FRAC_BITS))
+#define EG1_MINUS_ONE               (EAS_I32) (~SYNTH_FULL_SCALE_EG1_GAIN)
 
-#define EG1_HALF					(EAS_I32) (EG1_ONE/2)
-#define EG1_MINUS_HALF				(EAS_I32) (EG1_MINUS_ONE/2)
+#define EG1_HALF                    (EAS_I32) (EG1_ONE/2)
+#define EG1_MINUS_HALF              (EAS_I32) (EG1_MINUS_ONE/2)
 
 /*
 We implement the EG1 using a linear gain value, which means that the
@@ -177,13 +177,13 @@ Therefore, we need the following macro to implement the multiplication
 (i.e., exponential damping) during the Decay and Release segments of
 the EG1
 */
-#define MULT_EG1_EG1(gain,damping)		/*lint -e(704) <avoid divide for performance>*/ \
-			(EAS_I32)(										\
-			(												\
-				((EAS_I32)(gain)) * ((EAS_I32)(damping))	\
-			)												\
-			>> NUM_EG1_FRAC_BITS							\
-										)
+#define MULT_EG1_EG1(gain,damping)      /*lint -e(704) <avoid divide for performance>*/ \
+            (EAS_I32)(                                      \
+            (                                               \
+                ((EAS_I32)(gain)) * ((EAS_I32)(damping))    \
+            )                                               \
+            >> NUM_EG1_FRAC_BITS                            \
+                                        )
 
 // Use the following macro specifically for the filter, when multiplying
 // the b1 coefficient. The 0 <= |b1| < 2, which therefore might overflow
@@ -196,17 +196,17 @@ the EG1
 // an extra factor of 2. Rather than multiply by an extra factor of 2,
 // we can instead shift the result right by one less, hence the
 // modified shift right value of (NUM_EG1_FRAC_BITS -1)
-#define MULT_EG1_EG1_X2(gain,damping) 		/*lint -e(702) <avoid divide for performance>*/ \
-			(EAS_I32)(										\
-			(												\
-				((EAS_I32)(gain)) * ((EAS_I32)(damping))	\
-			)												\
-			>> (NUM_EG1_FRAC_BITS -1)						\
-										)
+#define MULT_EG1_EG1_X2(gain,damping)       /*lint -e(702) <avoid divide for performance>*/ \
+            (EAS_I32)(                                      \
+            (                                               \
+                ((EAS_I32)(gain)) * ((EAS_I32)(damping))    \
+            )                                               \
+            >> (NUM_EG1_FRAC_BITS -1)                       \
+                                        )
 
-#define	SATURATE_EG1(x)		/*lint -e{734} saturation operation */				\
-	((EAS_I32)(x) > SYNTH_FULL_SCALE_EG1_GAIN)	? (SYNTH_FULL_SCALE_EG1_GAIN) :	\
-	((EAS_I32)(x) < EG1_MINUS_ONE)				? (EG1_MINUS_ONE) :	(x);
+#define SATURATE_EG1(x)     /*lint -e{734} saturation operation */              \
+    ((EAS_I32)(x) > SYNTH_FULL_SCALE_EG1_GAIN)  ? (SYNTH_FULL_SCALE_EG1_GAIN) : \
+    ((EAS_I32)(x) < EG1_MINUS_ONE)              ? (EG1_MINUS_ONE) : (x);
 
 
 /* use "digital cents" == "dents" instead of cents */
@@ -217,20 +217,20 @@ for the 2^x calculation, because right shift a negative values MUST
 be sign extended, or else the 2^x calculation is wrong */
 
 /* use "digital cents" == "dents" instead of cents */
-#define NUM_DENTS_FRAC_BITS		12
-#define	NUM_DENTS_INT_BITS		(HARDWARE_BIT_WIDTH - NUM_DENTS_FRAC_BITS)
+#define NUM_DENTS_FRAC_BITS     12
+#define NUM_DENTS_INT_BITS      (HARDWARE_BIT_WIDTH - NUM_DENTS_FRAC_BITS)
 
-#define DENTS_FRAC_MASK				(EAS_I32) ((0x1L << NUM_DENTS_FRAC_BITS) -1)
+#define DENTS_FRAC_MASK             (EAS_I32) ((0x1L << NUM_DENTS_FRAC_BITS) -1)
 
-#define GET_DENTS_INT_PART(x)		/*lint -e(704) <avoid divide for performance>*/	\
-							(EAS_I32)((EAS_I32)(x) >> NUM_DENTS_FRAC_BITS)
-							
-#define GET_DENTS_FRAC_PART(x)	(EAS_I32)((EAS_I32)(x) & DENTS_FRAC_MASK)
+#define GET_DENTS_INT_PART(x)       /*lint -e(704) <avoid divide for performance>*/ \
+                            (EAS_I32)((EAS_I32)(x) >> NUM_DENTS_FRAC_BITS)
 
-#define DENTS_ONE				(EAS_I32) (0x1L << NUM_DENTS_FRAC_BITS)
+#define GET_DENTS_FRAC_PART(x)  (EAS_I32)((EAS_I32)(x) & DENTS_FRAC_MASK)
+
+#define DENTS_ONE               (EAS_I32) (0x1L << NUM_DENTS_FRAC_BITS)
 
 /* use CENTS_TO_DENTS to convert a value in cents to dents */
-#define CENTS_TO_DENTS (EAS_I32) (DENTS_ONE * (0x1L << NUM_EG1_FRAC_BITS) / 1200L)							\
+#define CENTS_TO_DENTS (EAS_I32) (DENTS_ONE * (0x1L << NUM_EG1_FRAC_BITS) / 1200L)                          \
 
 
 /*
@@ -251,9 +251,9 @@ by dividing its input by 1200.
 
 So, in order to convert the LFO gain value in dB to something
 that our existing 2^x approximation can use, multiply the LFO gain
-by log2(10) * 1200 / 20 
+by log2(10) * 1200 / 20
 
-The divide by 20 helps convert dB to linear gain, and we might 
+The divide by 20 helps convert dB to linear gain, and we might
 as well incorporate that operation into this conversion.
 Of course, we need to keep some fractional bits, so multiply
 the constant by NUM_EG1_FRAC_BITS
@@ -261,64 +261,64 @@ the constant by NUM_EG1_FRAC_BITS
 
 /* use LFO_GAIN_TO_CENTS to convert the LFO gain value to cents */
 #if 0
-#define	DOUBLE_LOG2_10	(double) (3.32192809488736)	/* log2(10) */
+#define DOUBLE_LOG2_10  (double) (3.32192809488736) /* log2(10) */
 
-#define	DOUBLE_LFO_GAIN_TO_CENTS	(double)				\
-	(														\
-				(DOUBLE_LOG2_10) *							\
-				1200.0	/									\
-				20.0										\
-	)
+#define DOUBLE_LFO_GAIN_TO_CENTS    (double)                \
+    (                                                       \
+                (DOUBLE_LOG2_10) *                          \
+                1200.0  /                                   \
+                20.0                                        \
+    )
 
-#define	LFO_GAIN_TO_CENTS	(EAS_I32)						\
-	(														\
-				DOUBLE_LFO_GAIN_TO_CENTS *					\
-				(0x1L << NUM_EG1_FRAC_BITS)					\
-	)
+#define LFO_GAIN_TO_CENTS   (EAS_I32)                       \
+    (                                                       \
+                DOUBLE_LFO_GAIN_TO_CENTS *                  \
+                (0x1L << NUM_EG1_FRAC_BITS)                 \
+    )
 #endif
 
 #define LFO_GAIN_TO_CENTS (EAS_I32) (1671981156L >> (23 - NUM_EG1_FRAC_BITS))
 
 
-#define MULT_DENTS_COEF(dents,coef) 	/*lint -e704 <avoid divide for performance>*/	\
-			(EAS_I32)(									\
-			(											\
-				((EAS_I32)(dents)) * ((EAS_I32)(coef))	\
-			)											\
-			>> NUM_DENTS_FRAC_BITS						\
-										)				\
-										/* lint +e704 <restore checking>*/
+#define MULT_DENTS_COEF(dents,coef)     /*lint -e704 <avoid divide for performance>*/   \
+            (EAS_I32)(                                  \
+            (                                           \
+                ((EAS_I32)(dents)) * ((EAS_I32)(coef))  \
+            )                                           \
+            >> NUM_DENTS_FRAC_BITS                      \
+                                        )               \
+                                        /* lint +e704 <restore checking>*/
 
 /* we use 16-bits in the PC per audio sample */
-#define	BITS_PER_AUDIO_SAMPLE	16	
+#define BITS_PER_AUDIO_SAMPLE   16
 
 /* we define 1 as 1.0 - 1 LSbit */
-#define DISTORTION_ONE			(EAS_I32)((0x1L << (BITS_PER_AUDIO_SAMPLE-1)) -1)
-#define DISTORTION_MINUS_ONE	(EAS_I32)(~DISTORTION_ONE)
+#define DISTORTION_ONE          (EAS_I32)((0x1L << (BITS_PER_AUDIO_SAMPLE-1)) -1)
+#define DISTORTION_MINUS_ONE    (EAS_I32)(~DISTORTION_ONE)
 
 /* drive coef is given as int.frac */
-#define NUM_DRIVE_COEF_INT_BITS		1
-#define NUM_DRIVE_COEF_FRAC_BITS	4
+#define NUM_DRIVE_COEF_INT_BITS     1
+#define NUM_DRIVE_COEF_FRAC_BITS    4
 
-#define MULT_AUDIO_DRIVE(audio,drive) 		/*lint -e(702) <avoid divide for performance>*/ \
-			(EAS_I32)	(								\
-			(											\
-				((EAS_I32)(audio)) * ((EAS_I32)(drive))	\
-			)											\
-			>> NUM_DRIVE_COEF_FRAC_BITS					\
-												)
+#define MULT_AUDIO_DRIVE(audio,drive)       /*lint -e(702) <avoid divide for performance>*/ \
+            (EAS_I32)   (                               \
+            (                                           \
+                ((EAS_I32)(audio)) * ((EAS_I32)(drive)) \
+            )                                           \
+            >> NUM_DRIVE_COEF_FRAC_BITS                 \
+                                                )
 
-#define MULT_AUDIO_AUDIO(audio1,audio2) 		/*lint -e(702) <avoid divide for performance>*/ \
-			(EAS_I32)	(									\
-			(												\
-				((EAS_I32)(audio1)) * ((EAS_I32)(audio2))	\
-			)												\
-			>> (BITS_PER_AUDIO_SAMPLE-1)					\
-													)
+#define MULT_AUDIO_AUDIO(audio1,audio2)         /*lint -e(702) <avoid divide for performance>*/ \
+            (EAS_I32)   (                                   \
+            (                                               \
+                ((EAS_I32)(audio1)) * ((EAS_I32)(audio2))   \
+            )                                               \
+            >> (BITS_PER_AUDIO_SAMPLE-1)                    \
+                                                    )
 
-#define	SATURATE(x)															\
-	((((EAS_I32)(x)) > DISTORTION_ONE)		? (DISTORTION_ONE) :			\
-	(((EAS_I32)(x)) < DISTORTION_MINUS_ONE)	? (DISTORTION_MINUS_ONE) :	((EAS_I32)(x)));
+#define SATURATE(x)                                                         \
+    ((((EAS_I32)(x)) > DISTORTION_ONE)      ? (DISTORTION_ONE) :            \
+    (((EAS_I32)(x)) < DISTORTION_MINUS_ONE) ? (DISTORTION_MINUS_ONE) :  ((EAS_I32)(x)));
 
 
 
@@ -329,7 +329,7 @@ the constant by NUM_EG1_FRAC_BITS
  * Calculate 2^x
  *
  * Inputs:
- * nCents - 	measured in cents
+ * nCents -     measured in cents
  *
  * Outputs:
  * nResult - int.frac result (where frac has NUM_DENTS_FRAC_BITS)
@@ -371,7 +371,7 @@ EAS_U16 EAS_LogToLinear16 (EAS_I32 nGain);
  * volume - 100 = 0dB, 99 = -1dB, 0 = -inf
  *
  * Outputs:
- * Returns a 16-bit linear value 
+ * Returns a 16-bit linear value
  *----------------------------------------------------------------------------
 */
 EAS_I16 EAS_VolumeToGain (EAS_INT volume);
@@ -379,12 +379,12 @@ EAS_I16 EAS_VolumeToGain (EAS_INT volume);
 /*----------------------------------------------------------------------------
  * EAS_fsqrt()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Calculates the square root of a 32-bit fixed point value
  *
  * Inputs:
  * n = value of interest
- *		
+ *
  * Outputs:
  * returns the square root of n
  *
@@ -395,12 +395,12 @@ EAS_U16 EAS_fsqrt (EAS_U32 n);
 /*----------------------------------------------------------------------------
  * EAS_flog2()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Calculates the log2 of a 32-bit fixed point value
  *
  * Inputs:
  * n = value of interest
- *		
+ *
  * Outputs:
  * returns the log2 of n
  *

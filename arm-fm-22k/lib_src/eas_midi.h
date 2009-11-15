@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_midi.h
  *
  * Contents and purpose:
@@ -34,11 +34,11 @@
 /*----------------------------------------------------------------------------
  * EAS_InitMIDIStream()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Initializes the MIDI stream state for parsing.
  *
  * Inputs:
- *		
+ *
  * Outputs:
  * returns EAS_RESULT (EAS_SUCCESS is OK)
  *
@@ -51,13 +51,13 @@ void EAS_InitMIDIStream (S_MIDI_STREAM *pMIDIStream);
 /*----------------------------------------------------------------------------
  * EAS_ParseMIDIStream()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Parses a MIDI input stream character by character. Characters are pushed (rather than pulled)
  * so the interface works equally well for both file and stream I/O.
  *
  * Inputs:
- * c			- character from MIDI stream
- *		
+ * c            - character from MIDI stream
+ *
  * Outputs:
  * returns EAS_RESULT (EAS_SUCCESS is OK)
  *

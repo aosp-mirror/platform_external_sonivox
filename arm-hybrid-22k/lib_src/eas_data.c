@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_data.c
  *
  * Contents and purpose:
  * Contains a data allocation for synthesizer
- *			
+ *
  * Copyright Sonic Network Inc. 2004
 
  * Licensed under the Apache License, Version 2.0 (the "License");

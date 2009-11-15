@@ -63,49 +63,49 @@
 /* operator structure for FM engine */
 typedef struct
 {
-	EAS_U32		phase; 				/* current waveform phase */
-    EAS_U16		gain;				/* current internal gain */
-    EAS_U16		outputGain;			/* current output gain */
+    EAS_U32     phase;              /* current waveform phase */
+    EAS_U16     gain;               /* current internal gain */
+    EAS_U16     outputGain;         /* current output gain */
 } S_FM_ENG_OPER;
 
 typedef struct
 {
-	S_FM_ENG_OPER	oper[4];		/* operator data */
-    EAS_I16			op1Out;			/* op1 output for feedback loop */
-    EAS_I16			op3Out;			/* op3 output for feedback loop */
-    EAS_U16			voiceGain;		/* LFO + channel parameters */
+    S_FM_ENG_OPER   oper[4];        /* operator data */
+    EAS_I16         op1Out;         /* op1 output for feedback loop */
+    EAS_I16         op3Out;         /* op3 output for feedback loop */
+    EAS_U16         voiceGain;      /* LFO + channel parameters */
 #if (NUM_OUTPUT_CHANNELS == 2)
-	EAS_U16			gainLeft;		/* left gain multiplier */
-	EAS_U16			gainRight;		/* right gain multiplier */
-#endif	
-	EAS_U8			flags;			/* mode bits and noise waveform flags */
-	EAS_U8			feedback;		/* feedback for Op1 and Op3 */
+    EAS_U16         gainLeft;       /* left gain multiplier */
+    EAS_U16         gainRight;      /* right gain multiplier */
+#endif
+    EAS_U8          flags;          /* mode bits and noise waveform flags */
+    EAS_U8          feedback;       /* feedback for Op1 and Op3 */
 } S_FM_ENG_VOICE;
 
 typedef struct
 {
-	EAS_U16			gain[4];		/* initial operator gain value */
-	EAS_U16			outputGain[4];	/* initial operator output gain value */
-	EAS_U16			voiceGain;		/* initial voice gain */
-	EAS_U8			flags;			/* mode bits and noise waveform flags */
-	EAS_U8			feedback;		/* feedback for Op1 and Op3 */
+    EAS_U16         gain[4];        /* initial operator gain value */
+    EAS_U16         outputGain[4];  /* initial operator output gain value */
+    EAS_U16         voiceGain;      /* initial voice gain */
+    EAS_U8          flags;          /* mode bits and noise waveform flags */
+    EAS_U8          feedback;       /* feedback for Op1 and Op3 */
 #if (NUM_OUTPUT_CHANNELS == 2)
-	EAS_I8			pan;			/* pan value +/-64 */
+    EAS_I8          pan;            /* pan value +/-64 */
 #endif
 } S_FM_VOICE_CONFIG;
 
 typedef struct
 {
-	EAS_U16			gain[4];		/* new operator gain value */
-	EAS_I16			pitch[4];		/* new pitch value */
-	EAS_U16			voiceGain;		/* new voice gain */
+    EAS_U16         gain[4];        /* new operator gain value */
+    EAS_I16         pitch[4];       /* new pitch value */
+    EAS_U16         voiceGain;      /* new voice gain */
 } S_FM_VOICE_FRAME;
 
 /* bit definitions for S_FM_ENG_VOICE.flags */
-#define FLAG_FM_ENG_VOICE_OP1_NOISE		0x10	/* operator 1 source is PRNG */
-#define FLAG_FM_ENG_VOICE_OP2_NOISE		0x20	/* operator 2 source is PRNG */
-#define FLAG_FM_ENG_VOICE_OP3_NOISE		0x40	/* operator 3 source is PRNG */
-#define FLAG_FM_ENG_VOICE_OP4_NOISE		0x80	/* operator 4 source is PRNG */
+#define FLAG_FM_ENG_VOICE_OP1_NOISE     0x10    /* operator 1 source is PRNG */
+#define FLAG_FM_ENG_VOICE_OP2_NOISE     0x20    /* operator 2 source is PRNG */
+#define FLAG_FM_ENG_VOICE_OP3_NOISE     0x40    /* operator 3 source is PRNG */
+#define FLAG_FM_ENG_VOICE_OP4_NOISE     0x80    /* operator 4 source is PRNG */
 
 #ifdef FM_OFFBOARD
 extern EAS_BOOL FM_StartFrame (EAS_FRAME_BUFFER_HANDLE pFrameBuffer);

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_xmfdata.h
  *
  * Contents and purpose:
@@ -44,12 +44,12 @@
 
 typedef struct
 {
-	EAS_FILE_HANDLE		fileHandle;
-	EAS_I32				fileOffset;
-	EAS_VOID_PTR		pSMFData;
-	EAS_I32				midiOffset;
-	EAS_I32				dlsOffset;
-	S_DLS				*pDLS;
+    EAS_FILE_HANDLE     fileHandle;
+    EAS_I32             fileOffset;
+    EAS_VOID_PTR        pSMFData;
+    EAS_I32             midiOffset;
+    EAS_I32             dlsOffset;
+    S_DLS               *pDLS;
 } S_XMF_DATA;
 
 #endif

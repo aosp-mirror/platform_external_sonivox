@@ -1,13 +1,13 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_rtttldata.h
  *
  * Contents and purpose:
  * SMF File Parser
  *
- * This file contains data declarations for the RTTTL parser.  
- *			
+ * This file contains data declarations for the RTTTL parser.
+ *
  * Copyright Sonic Network Inc. 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@
 
 
 /* maximum line size as specified in iMelody V1.2 spec */
-#define MAX_LINE_SIZE			75
+#define MAX_LINE_SIZE           75
 
 /*----------------------------------------------------------------------------
  *
@@ -48,21 +48,21 @@
 
 typedef struct
 {
-	EAS_FILE_HANDLE	fileHandle;				/* file handle */
-	S_SYNTH *pSynth;					/* synthesizer handle */
-	S_METADATA_CB	metadata;				/* metadata callback */
-	EAS_I32		fileOffset;					/* offset to start of data */
-	EAS_I32		time;						/* current time in 256ths of a msec */
-	EAS_I32		tick;						/* length of 32nd note in 256th of a msec */
-	EAS_I32		restTicks;					/* ticks to rest after current note */
-	EAS_I32		repeatOffset;				/* file offset to start of repeat section */
-	EAS_U8		repeatCount;				/* repeat counter */
-	EAS_I8		dataByte;					/* storage for characters that are "put back" */
-	EAS_U8		state;						/* current state EAS_STATE_XXXX */
-	EAS_I8		style;						/* from STYLE */
-	EAS_U8		note;						/* MIDI note number */
-	EAS_U8		octave;						/* decault octave prefix */
-	EAS_I8		duration;					/* default note duration */
+    EAS_FILE_HANDLE fileHandle;             /* file handle */
+    S_SYNTH *pSynth;                    /* synthesizer handle */
+    S_METADATA_CB   metadata;               /* metadata callback */
+    EAS_I32     fileOffset;                 /* offset to start of data */
+    EAS_I32     time;                       /* current time in 256ths of a msec */
+    EAS_I32     tick;                       /* length of 32nd note in 256th of a msec */
+    EAS_I32     restTicks;                  /* ticks to rest after current note */
+    EAS_I32     repeatOffset;               /* file offset to start of repeat section */
+    EAS_U8      repeatCount;                /* repeat counter */
+    EAS_I8      dataByte;                   /* storage for characters that are "put back" */
+    EAS_U8      state;                      /* current state EAS_STATE_XXXX */
+    EAS_I8      style;                      /* from STYLE */
+    EAS_U8      note;                       /* MIDI note number */
+    EAS_U8      octave;                     /* decault octave prefix */
+    EAS_I8      duration;                   /* default note duration */
 } S_RTTTL_DATA;
 
 #endif

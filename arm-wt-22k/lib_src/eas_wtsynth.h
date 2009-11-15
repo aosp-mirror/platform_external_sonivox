@@ -1,11 +1,11 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_wtsynth.h
  *
  * Contents and purpose:
  * This file defines the interface for synthesizer engine
- *			
+ *
  * Copyright Sonic Network Inc. 2004
 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,22 +34,22 @@
 #include "eas_wtengine.h"
 
 /* adjust the filter cutoff frequency to the sample rate */
-#if	defined (_SAMPLE_RATE_8000)
-#define FILTER_CUTOFF_FREQ_ADJUST		0
+#if defined (_SAMPLE_RATE_8000)
+#define FILTER_CUTOFF_FREQ_ADJUST       0
 #elif defined (_SAMPLE_RATE_16000)
-#define FILTER_CUTOFF_FREQ_ADJUST		1200
+#define FILTER_CUTOFF_FREQ_ADJUST       1200
 #elif defined (_SAMPLE_RATE_20000)
-#define FILTER_CUTOFF_FREQ_ADJUST		1586
+#define FILTER_CUTOFF_FREQ_ADJUST       1586
 #elif defined (_SAMPLE_RATE_22050)
-#define FILTER_CUTOFF_FREQ_ADJUST		1756
+#define FILTER_CUTOFF_FREQ_ADJUST       1756
 #elif defined (_SAMPLE_RATE_24000)
-#define FILTER_CUTOFF_FREQ_ADJUST		1902
+#define FILTER_CUTOFF_FREQ_ADJUST       1902
 #elif defined (_SAMPLE_RATE_32000)
-#define FILTER_CUTOFF_FREQ_ADJUST		2400
+#define FILTER_CUTOFF_FREQ_ADJUST       2400
 #elif defined (_SAMPLE_RATE_44100)
-#define FILTER_CUTOFF_FREQ_ADJUST		2956
+#define FILTER_CUTOFF_FREQ_ADJUST       2956
 #elif defined (_SAMPLE_RATE_48000)
-#define FILTER_CUTOFF_FREQ_ADJUST		3102
+#define FILTER_CUTOFF_FREQ_ADJUST       3102
 #else
 #error "_SAMPLE_RATE_XXXXX must be defined to valid rate"
 #endif

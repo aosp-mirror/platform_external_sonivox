@@ -1,13 +1,13 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_imelodydata.c
  *
  * Contents and purpose:
  * SMF File Parser
  *
- * This file contains data definitions for the SMF parser.  
- *			
+ * This file contains data definitions for the SMF parser.
+ *
  * Copyright Sonic Network Inc. 2005
 
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -73,7 +73,7 @@ static EAS_BOOL bSaturated = EAS_FALSE;
 */
 EAS_BOOL FM_CheckSaturation ()
 {
-	EAS_BOOL bTemp;
+    EAS_BOOL bTemp;
     bTemp = bSaturated;
     bSaturated = EAS_FALSE;
     return bTemp;
@@ -95,21 +95,21 @@ EAS_BOOL FM_CheckSaturation ()
 */
 EAS_INLINE EAS_I16 FM_Saturate (EAS_I32 nValue)
 {
-	if (nValue > _EAS_MAX_OUTPUT)
-	{
+    if (nValue > _EAS_MAX_OUTPUT)
+    {
 #if defined(_SATURATION_MONITOR)
-		bSaturated = EAS_TRUE;
+        bSaturated = EAS_TRUE;
 #endif
-		return _EAS_MAX_OUTPUT;
-	}
-	if (nValue < _EAS_MIN_OUTPUT)
-	{
+        return _EAS_MAX_OUTPUT;
+    }
+    if (nValue < _EAS_MIN_OUTPUT)
+    {
 #if defined(_SATURATION_MONITOR)
-		bSaturated = EAS_TRUE;
+        bSaturated = EAS_TRUE;
 #endif
-		return _EAS_MIN_OUTPUT;
-	}
-	return (EAS_I16) nValue;
+        return _EAS_MIN_OUTPUT;
+    }
+    return (EAS_I16) nValue;
 }
 
 /*----------------------------------------------------------------------------
@@ -128,8 +128,8 @@ EAS_INLINE EAS_I16 FM_Saturate (EAS_I32 nValue)
 */
 EAS_INLINE EAS_I16 FM_Noise (EAS_U32 *pnSeed)
 {
-	*pnSeed = *pnSeed * 214013L + 2531011L;
-	return (EAS_I16) ((*pnSeed >> 15) & 0xffff);
+    *pnSeed = *pnSeed * 214013L + 2531011L;
+    return (EAS_I16) ((*pnSeed >> 15) & 0xffff);
 }
 
 /*----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ EAS_INLINE EAS_I16 FM_Noise (EAS_U32 *pnSeed)
  * Transform pitch cents to linear phase increment
  *
  * Inputs:
- * nCents - 	measured in cents
+ * nCents -     measured in cents
  * psEASData - pointer to overall EAS data structure
  *
  * Outputs:
@@ -151,54 +151,54 @@ EAS_INLINE EAS_I16 FM_Noise (EAS_U32 *pnSeed)
 */
 static EAS_I32 FM_PhaseInc (EAS_I32 nCents)
 {
-	EAS_I32 nDents;
-	EAS_I32 nExponentInt, nExponentFrac;
-	EAS_I32 nTemp1, nTemp2;
-	EAS_I32	nResult;
+    EAS_I32 nDents;
+    EAS_I32 nExponentInt, nExponentFrac;
+    EAS_I32 nTemp1, nTemp2;
+    EAS_I32 nResult;
 
-	/* convert cents to dents */
-	nDents = FMUL_15x15(nCents, CENTS_TO_DENTS);
-	nExponentInt = GET_DENTS_INT_PART(nDents) + (32 - SINE_TABLE_SIZE_IN_BITS - NUM_EG1_FRAC_BITS);
-	nExponentFrac = GET_DENTS_FRAC_PART(nDents);
+    /* convert cents to dents */
+    nDents = FMUL_15x15(nCents, CENTS_TO_DENTS);
+    nExponentInt = GET_DENTS_INT_PART(nDents) + (32 - SINE_TABLE_SIZE_IN_BITS - NUM_EG1_FRAC_BITS);
+    nExponentFrac = GET_DENTS_FRAC_PART(nDents);
 
-	/* implement 2^(fracPart) as a power series */
-	nTemp1 = GN2_TO_X2 + MULT_DENTS_COEF(nExponentFrac, GN2_TO_X3);
-	nTemp2 = GN2_TO_X1 + MULT_DENTS_COEF(nExponentFrac, nTemp1);
-	nTemp1 = GN2_TO_X0 + MULT_DENTS_COEF(nExponentFrac, nTemp2);
+    /* implement 2^(fracPart) as a power series */
+    nTemp1 = GN2_TO_X2 + MULT_DENTS_COEF(nExponentFrac, GN2_TO_X3);
+    nTemp2 = GN2_TO_X1 + MULT_DENTS_COEF(nExponentFrac, nTemp1);
+    nTemp1 = GN2_TO_X0 + MULT_DENTS_COEF(nExponentFrac, nTemp2);
 
-	/*
-	implement 2^(intPart) as 
-	a left shift for intPart >= 0 or
-	a left shift for intPart <  0
-	*/
-	if (nExponentInt >= 0)
-	{
-		/* left shift for positive exponents */
-		/*lint -e{703} <avoid multiply for performance>*/
-		nResult = nTemp1 << nExponentInt;
-	}
-	else
-	{
-		/* right shift for negative exponents */
-		nExponentInt = -nExponentInt;
-		nResult = nTemp1 >> nExponentInt;
-	}
+    /*
+    implement 2^(intPart) as
+    a left shift for intPart >= 0 or
+    a left shift for intPart <  0
+    */
+    if (nExponentInt >= 0)
+    {
+        /* left shift for positive exponents */
+        /*lint -e{703} <avoid multiply for performance>*/
+        nResult = nTemp1 << nExponentInt;
+    }
+    else
+    {
+        /* right shift for negative exponents */
+        nExponentInt = -nExponentInt;
+        nResult = nTemp1 >> nExponentInt;
+    }
 
-	return nResult;
+    return nResult;
 }
 
-#if	(NUM_OUTPUT_CHANNELS == 2)
+#if (NUM_OUTPUT_CHANNELS == 2)
 /*----------------------------------------------------------------------------
  * FM_CalculatePan()
  *----------------------------------------------------------------------------
- * Purpose: 
+ * Purpose:
  * Assign the left and right gain values corresponding to the given pan value.
  *
- * Inputs: 
+ * Inputs:
  * psVoice - ptr to the voice we have assigned for this channel
  * psArticulation - ptr to this voice's articulation
  * psEASData - pointer to overall EAS data structure
- * 
+ *
  * Outputs:
  *
  * Side Effects:
@@ -207,49 +207,49 @@ static EAS_I32 FM_PhaseInc (EAS_I32 nCents)
 */
 static void FM_CalculatePan (EAS_I16 pan, EAS_U16 *pGainLeft, EAS_U16 *pGainRight)
 {
-	EAS_I32	nTemp;
-	EAS_INT nNetAngle;
+    EAS_I32 nTemp;
+    EAS_INT nNetAngle;
 
-	/*
-	Implement the following
-	sin(x) = (2-4*c)*x^2 + c + x
-	cos(x) = (2-4*c)*x^2 + c - x
+    /*
+    Implement the following
+    sin(x) = (2-4*c)*x^2 + c + x
+    cos(x) = (2-4*c)*x^2 + c - x
 
-	  where  c = 1/sqrt(2)
-	using the a0 + x*(a1 + x*a2) approach
-	*/
+      where  c = 1/sqrt(2)
+    using the a0 + x*(a1 + x*a2) approach
+    */
 
-	/*
-	Get the Midi CC10 pan value for this voice's channel
-	convert the pan value to an "angle" representation suitable for
-	our sin, cos calculator. This representation is NOT necessarily the same
-	as the transform in the GM manuals because of our sin, cos calculator.
-	"angle" = (CC10 - 64)/128
-	*/
-	/*lint -e{703} <avoid multiply for performance reasons>*/
-	nNetAngle = ((EAS_I32) pan) << (NUM_EG1_FRAC_BITS -7);
+    /*
+    Get the Midi CC10 pan value for this voice's channel
+    convert the pan value to an "angle" representation suitable for
+    our sin, cos calculator. This representation is NOT necessarily the same
+    as the transform in the GM manuals because of our sin, cos calculator.
+    "angle" = (CC10 - 64)/128
+    */
+    /*lint -e{703} <avoid multiply for performance reasons>*/
+    nNetAngle = ((EAS_I32) pan) << (NUM_EG1_FRAC_BITS -7);
 
-	/* calculate sin */
-	nTemp = EG1_ONE + FMUL_15x15(COEFF_PAN_G2, nNetAngle);
-	nTemp = COEFF_PAN_G0 + FMUL_15x15(nTemp, nNetAngle);
-	
-	if (nTemp > SYNTH_FULL_SCALE_EG1_GAIN)
-		nTemp = SYNTH_FULL_SCALE_EG1_GAIN;
-	else if (nTemp < 0)
-		nTemp = 0;
+    /* calculate sin */
+    nTemp = EG1_ONE + FMUL_15x15(COEFF_PAN_G2, nNetAngle);
+    nTemp = COEFF_PAN_G0 + FMUL_15x15(nTemp, nNetAngle);
 
-	*pGainRight = (EAS_U16) nTemp;
+    if (nTemp > SYNTH_FULL_SCALE_EG1_GAIN)
+        nTemp = SYNTH_FULL_SCALE_EG1_GAIN;
+    else if (nTemp < 0)
+        nTemp = 0;
 
-	/* calculate cos */
-	nTemp = -EG1_ONE + FMUL_15x15(COEFF_PAN_G2, nNetAngle);
-	nTemp = COEFF_PAN_G0 + FMUL_15x15(nTemp, nNetAngle);
-	
-	if (nTemp > SYNTH_FULL_SCALE_EG1_GAIN)
-		nTemp = SYNTH_FULL_SCALE_EG1_GAIN;
-	else if (nTemp < 0)
-		nTemp = 0;
-	
-	*pGainLeft = (EAS_U16) nTemp;
+    *pGainRight = (EAS_U16) nTemp;
+
+    /* calculate cos */
+    nTemp = -EG1_ONE + FMUL_15x15(COEFF_PAN_G2, nNetAngle);
+    nTemp = COEFF_PAN_G0 + FMUL_15x15(nTemp, nNetAngle);
+
+    if (nTemp > SYNTH_FULL_SCALE_EG1_GAIN)
+        nTemp = SYNTH_FULL_SCALE_EG1_GAIN;
+    else if (nTemp < 0)
+        nTemp = 0;
+
+    *pGainLeft = (EAS_U16) nTemp;
 }
 #endif /* #if (NUM_OUTPUT_CHANNELS == 2) */
 
@@ -270,99 +270,99 @@ static void FM_CalculatePan (EAS_I16 pan, EAS_U16 *pGainLeft, EAS_U16 *pGainRigh
  *----------------------------------------------------------------------------
 */
 void FM_Operator (
-		S_FM_ENG_OPER *p,
-		EAS_I32 numSamplesToAdd,
-		EAS_PCM *pBuffer,
-		EAS_PCM *pModBuffer,
-		EAS_BOOL mix,
-		EAS_U16 gainTarget,
-		EAS_I16 pitch,
-		EAS_U8 feedback, 
-		EAS_I16 *pLastOutput)
+        S_FM_ENG_OPER *p,
+        EAS_I32 numSamplesToAdd,
+        EAS_PCM *pBuffer,
+        EAS_PCM *pModBuffer,
+        EAS_BOOL mix,
+        EAS_U16 gainTarget,
+        EAS_I16 pitch,
+        EAS_U8 feedback,
+        EAS_I16 *pLastOutput)
 {
-	EAS_I32 gain;
-	EAS_I32 gainInc;
-	EAS_U32 phase;
-	EAS_U32 phaseInc;
-	EAS_U32 phaseTemp;
-	EAS_I32 temp;
-	EAS_I32 temp2;
+    EAS_I32 gain;
+    EAS_I32 gainInc;
+    EAS_U32 phase;
+    EAS_U32 phaseInc;
+    EAS_U32 phaseTemp;
+    EAS_I32 temp;
+    EAS_I32 temp2;
 
-	/* establish local gain variable */
-	gain = (EAS_I32) p->gain << 16;
+    /* establish local gain variable */
+    gain = (EAS_I32) p->gain << 16;
 
-	/* calculate gain increment */
-	/*lint -e{703} use shift for performance */
-	gainInc = ((EAS_I32) gainTarget - (EAS_I32) p->gain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
+    /* calculate gain increment */
+    /*lint -e{703} use shift for performance */
+    gainInc = ((EAS_I32) gainTarget - (EAS_I32) p->gain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
 
-	/* establish local phase variables */
-	phase = p->phase;
+    /* establish local phase variables */
+    phase = p->phase;
 
-	/* calculate the new phase increment */
-	phaseInc = (EAS_U32) FM_PhaseInc(pitch);
+    /* calculate the new phase increment */
+    phaseInc = (EAS_U32) FM_PhaseInc(pitch);
 
-	/* restore final output from previous frame for feedback loop */
-	if (pLastOutput)
-		temp = *pLastOutput;
-	else
-		temp = 0;
+    /* restore final output from previous frame for feedback loop */
+    if (pLastOutput)
+        temp = *pLastOutput;
+    else
+        temp = 0;
 
-	/* generate a buffer of samples */
-	while (numSamplesToAdd--)
-	{
+    /* generate a buffer of samples */
+    while (numSamplesToAdd--)
+    {
 
-		/* incorporate modulation */
-		if (pModBuffer)
-		{
-			/*lint -e{701} use shift for performance */
-			temp = *pModBuffer++ << FM_MODULATOR_INPUT_SHIFT;
-		}
-		
-		/* incorporate feedback */
-		else
-		{
-			/*lint -e{703} use shift for performance */
-			temp = (temp * (EAS_I32) feedback) << FM_FEEDBACK_SHIFT;
-		}
-		
-		/*lint -e{737} <use this behavior to avoid extra mask step> */
-		phaseTemp = phase + temp;
+        /* incorporate modulation */
+        if (pModBuffer)
+        {
+            /*lint -e{701} use shift for performance */
+            temp = *pModBuffer++ << FM_MODULATOR_INPUT_SHIFT;
+        }
 
-		/* fetch sample from wavetable */
-		temp = sineTable[phaseTemp >> (32 - SINE_TABLE_SIZE_IN_BITS)];
+        /* incorporate feedback */
+        else
+        {
+            /*lint -e{703} use shift for performance */
+            temp = (temp * (EAS_I32) feedback) << FM_FEEDBACK_SHIFT;
+        }
 
-		/* increment operator phase */
-		phase += phaseInc;
+        /*lint -e{737} <use this behavior to avoid extra mask step> */
+        phaseTemp = phase + temp;
 
-		/* internal gain for modulation effects */
-		temp = FMUL_15x15(temp, (gain >> 16));
+        /* fetch sample from wavetable */
+        temp = sineTable[phaseTemp >> (32 - SINE_TABLE_SIZE_IN_BITS)];
 
-		/* output gain calculation */
-		temp2 = FMUL_15x15(temp, p->outputGain);
+        /* increment operator phase */
+        phase += phaseInc;
 
-		/* saturating add to buffer */
-		if (mix)
-		{
-			temp2 += *pBuffer;
-			*pBuffer++ = FM_Saturate(temp2);
-		}
-		
-		/* output to buffer */
-		else
-			*pBuffer++ = (EAS_I16) temp2;
+        /* internal gain for modulation effects */
+        temp = FMUL_15x15(temp, (gain >> 16));
 
-		/* increment gain */
-		gain += gainInc;
+        /* output gain calculation */
+        temp2 = FMUL_15x15(temp, p->outputGain);
 
-	}
+        /* saturating add to buffer */
+        if (mix)
+        {
+            temp2 += *pBuffer;
+            *pBuffer++ = FM_Saturate(temp2);
+        }
 
-	/* save phase and gain */
-	p->phase = phase;
-	p->gain = gainTarget;
+        /* output to buffer */
+        else
+            *pBuffer++ = (EAS_I16) temp2;
 
-	/* save last output for feedback in next frame */
-	if (pLastOutput)
-		*pLastOutput = (EAS_I16) temp;
+        /* increment gain */
+        gain += gainInc;
+
+    }
+
+    /* save phase and gain */
+    p->phase = phase;
+    p->gain = gainTarget;
+
+    /* save last output for feedback in next frame */
+    if (pLastOutput)
+        *pLastOutput = (EAS_I16) temp;
 }
 
 /*----------------------------------------------------------------------------
@@ -382,85 +382,85 @@ void FM_Operator (
  *----------------------------------------------------------------------------
 */
 void FM_NoiseOperator (
-		S_FM_ENG_OPER *p,
-		EAS_I32 numSamplesToAdd,
-		EAS_PCM *pBuffer,
-		EAS_BOOL mix,
-		EAS_U16 gainTarget,
-		EAS_U8 feedback, 
-		EAS_I16 *pLastOutput)
+        S_FM_ENG_OPER *p,
+        EAS_I32 numSamplesToAdd,
+        EAS_PCM *pBuffer,
+        EAS_BOOL mix,
+        EAS_U16 gainTarget,
+        EAS_U8 feedback,
+        EAS_I16 *pLastOutput)
 {
-	EAS_I32 gain;
-	EAS_I32 gainInc;
-	EAS_U32 phase;
-	EAS_I32 temp;
-	EAS_I32 temp2;
+    EAS_I32 gain;
+    EAS_I32 gainInc;
+    EAS_U32 phase;
+    EAS_I32 temp;
+    EAS_I32 temp2;
 
-	/* establish local gain variable */
-	gain = (EAS_I32) p->gain << 16;
+    /* establish local gain variable */
+    gain = (EAS_I32) p->gain << 16;
 
-	/* calculate gain increment */
-	/*lint -e{703} use shift for performance */
-	gainInc = ((EAS_I32) gainTarget - (EAS_I32) p->gain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
+    /* calculate gain increment */
+    /*lint -e{703} use shift for performance */
+    gainInc = ((EAS_I32) gainTarget - (EAS_I32) p->gain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
 
-	/* establish local phase variables */
-	phase = p->phase;
+    /* establish local phase variables */
+    phase = p->phase;
 
-	/* establish local phase variables */
-	phase = p->phase;
+    /* establish local phase variables */
+    phase = p->phase;
 
-	/* recall last sample for filter Z-1 term */
-	temp = 0;
-	if (pLastOutput)
-		temp = *pLastOutput;
+    /* recall last sample for filter Z-1 term */
+    temp = 0;
+    if (pLastOutput)
+        temp = *pLastOutput;
 
-	/* generate a buffer of samples */
-	while (numSamplesToAdd--)
-	{
+    /* generate a buffer of samples */
+    while (numSamplesToAdd--)
+    {
 
-		/* if using filter */
-		if (pLastOutput)
-		{
-			/* use PRNG for noise */
-			temp2 = FM_Noise(&phase);
-			
-			/*lint -e{704} use shift for performance */
-			temp += ((temp2 -temp) * feedback) >> 8;
-		}
-		else
-		{
-			temp = FM_Noise(&phase);
-		}
-		
-		/* internal gain for modulation effects */
-		temp2 = FMUL_15x15(temp, (gain >> 16));
+        /* if using filter */
+        if (pLastOutput)
+        {
+            /* use PRNG for noise */
+            temp2 = FM_Noise(&phase);
 
-		/* output gain calculation */
-		temp2 = FMUL_15x15(temp2, p->outputGain);
+            /*lint -e{704} use shift for performance */
+            temp += ((temp2 -temp) * feedback) >> 8;
+        }
+        else
+        {
+            temp = FM_Noise(&phase);
+        }
 
-		/* saturating add to buffer */
-		if (mix)
-		{
-			temp2 += *pBuffer;
-			*pBuffer++ = FM_Saturate(temp2);
-		}
-		
-		/* output to buffer */
-		else
-			*pBuffer++ = (EAS_I16) temp2;
+        /* internal gain for modulation effects */
+        temp2 = FMUL_15x15(temp, (gain >> 16));
 
-		/* increment gain */
-		gain += gainInc;
+        /* output gain calculation */
+        temp2 = FMUL_15x15(temp2, p->outputGain);
 
-	}
+        /* saturating add to buffer */
+        if (mix)
+        {
+            temp2 += *pBuffer;
+            *pBuffer++ = FM_Saturate(temp2);
+        }
 
-	/* save phase and gain */
-	p->phase = phase;
-	p->gain = gainTarget;
-	
-	/* save last output for feedback in next frame */
-	if (pLastOutput)
-		*pLastOutput = (EAS_I16) temp;
+        /* output to buffer */
+        else
+            *pBuffer++ = (EAS_I16) temp2;
+
+        /* increment gain */
+        gain += gainInc;
+
+    }
+
+    /* save phase and gain */
+    p->phase = phase;
+    p->gain = gainTarget;
+
+    /* save last output for feedback in next frame */
+    if (pLastOutput)
+        *pLastOutput = (EAS_I16) temp;
 }
 
 /*----------------------------------------------------------------------------
@@ -470,9 +470,9 @@ void FM_NoiseOperator (
  * Receives parameters to start a new voice.
  *
  * Inputs:
- * voiceNum		- voice number to start
- * vCfg			- configuration data
- * pMixBuffer	- pointer to host supplied buffer
+ * voiceNum     - voice number to start
+ * vCfg         - configuration data
+ * pMixBuffer   - pointer to host supplied buffer
  *
  * Outputs:
  *
@@ -488,37 +488,37 @@ void FM_NoiseOperator (
 /*lint -esym(715, pFrameBuffer) pFrameBuffer not used in test version - see above */
 void FM_ConfigVoice (EAS_I32 voiceNum, S_FM_VOICE_CONFIG *vCfg, EAS_FRAME_BUFFER_HANDLE pFrameBuffer)
 {
-	S_FM_ENG_VOICE *pVoice;
-	EAS_INT i;
+    S_FM_ENG_VOICE *pVoice;
+    EAS_INT i;
 
-	/* establish pointer to voice data */
-	pVoice = &voices[voiceNum];
+    /* establish pointer to voice data */
+    pVoice = &voices[voiceNum];
 
-	/* save data */
-	pVoice->feedback = vCfg->feedback;
-	pVoice->flags = vCfg->flags;
-	pVoice->voiceGain = vCfg->voiceGain;
+    /* save data */
+    pVoice->feedback = vCfg->feedback;
+    pVoice->flags = vCfg->flags;
+    pVoice->voiceGain = vCfg->voiceGain;
 
-	/* initialize Z-1 terms */
-	pVoice->op1Out = 0;
-	pVoice->op3Out = 0;
+    /* initialize Z-1 terms */
+    pVoice->op1Out = 0;
+    pVoice->op3Out = 0;
 
-	/* initialize operators */
-	for (i = 0; i < 4; i++)
-	{
-		/* save operator data */
-		pVoice->oper[i].gain = vCfg->gain[i];
-		pVoice->oper[i].outputGain = vCfg->outputGain[i];
-		pVoice->oper[i].outputGain = vCfg->outputGain[i];
+    /* initialize operators */
+    for (i = 0; i < 4; i++)
+    {
+        /* save operator data */
+        pVoice->oper[i].gain = vCfg->gain[i];
+        pVoice->oper[i].outputGain = vCfg->outputGain[i];
+        pVoice->oper[i].outputGain = vCfg->outputGain[i];
 
-		/* initalize operator */
-		pVoice->oper[i].phase = 0;
-	}
+        /* initalize operator */
+        pVoice->oper[i].phase = 0;
+    }
 
-	/* calculate pan */
+    /* calculate pan */
 #if NUM_OUTPUT_CHANNELS == 2
-	FM_CalculatePan(vCfg->pan, &pVoice->gainLeft, &pVoice->gainRight);
-#endif	
+    FM_CalculatePan(vCfg->pan, &pVoice->gainLeft, &pVoice->gainRight);
+#endif
 }
 
 /*----------------------------------------------------------------------------
@@ -544,177 +544,177 @@ void FM_ConfigVoice (EAS_I32 voiceNum, S_FM_VOICE_CONFIG *vCfg, EAS_FRAME_BUFFER
 */
 /*lint -esym(715, pOut) pOut not used in test version - see above */
 void FM_ProcessVoice (
-		EAS_I32 voiceNum,
-		S_FM_VOICE_FRAME *pFrame,
-		EAS_I32 numSamplesToAdd, 
-		EAS_PCM *pTempBuffer, 
-		EAS_PCM *pBuffer,
-		EAS_I32 *pMixBuffer,
-		EAS_FRAME_BUFFER_HANDLE pFrameBuffer)
+        EAS_I32 voiceNum,
+        S_FM_VOICE_FRAME *pFrame,
+        EAS_I32 numSamplesToAdd,
+        EAS_PCM *pTempBuffer,
+        EAS_PCM *pBuffer,
+        EAS_I32 *pMixBuffer,
+        EAS_FRAME_BUFFER_HANDLE pFrameBuffer)
 {
-	S_FM_ENG_VOICE *p;
-	EAS_PCM *pOutBuf;
-	EAS_PCM *pMod;
-	EAS_BOOL mix;
-	EAS_U8 feedback1; 
-	EAS_U8 feedback3;
-	EAS_U8 mode;
+    S_FM_ENG_VOICE *p;
+    EAS_PCM *pOutBuf;
+    EAS_PCM *pMod;
+    EAS_BOOL mix;
+    EAS_U8 feedback1;
+    EAS_U8 feedback3;
+    EAS_U8 mode;
 
-	/* establish pointer to voice data */
-	p = &voices[voiceNum];
-	mode = p->flags & 0x07;
+    /* establish pointer to voice data */
+    p = &voices[voiceNum];
+    mode = p->flags & 0x07;
 
-	/* lookup feedback values */
-	feedback1 = fmScaleTable[p->feedback >> 4];
-	feedback3 = fmScaleTable[p->feedback & 0x0f];
+    /* lookup feedback values */
+    feedback1 = fmScaleTable[p->feedback >> 4];
+    feedback3 = fmScaleTable[p->feedback & 0x0f];
 
-	/* operator 3 is on output bus in modes 0, 1, and 3 */	
-	if ((mode == 0) || (mode == 1) || (mode == 3))
-		pOutBuf = pBuffer;
-	else
-		pOutBuf = pTempBuffer;
-	
-	if (p->flags & FLAG_FM_ENG_VOICE_OP3_NOISE)
-	{
-		FM_NoiseOperator(
-				p->oper + 2,
-				numSamplesToAdd,
-				pOutBuf,
-				EAS_FALSE,
-				pFrame->gain[2],
-				feedback3,
-				&p->op3Out);
-	}
-	else
-	{
-		FM_Operator(
-				p->oper + 2,
-				numSamplesToAdd,
-				pOutBuf,
-				0,
-				EAS_FALSE,
-				pFrame->gain[2],
-				pFrame->pitch[2],
-				feedback3,
-				&p->op3Out);
-	}
+    /* operator 3 is on output bus in modes 0, 1, and 3 */
+    if ((mode == 0) || (mode == 1) || (mode == 3))
+        pOutBuf = pBuffer;
+    else
+        pOutBuf = pTempBuffer;
 
-	/* operator 4 is on output bus in modes 0, 1, and 2 */
-	if (mode < 3)
-		pOutBuf = pBuffer;
-	else
-		pOutBuf = pTempBuffer;
+    if (p->flags & FLAG_FM_ENG_VOICE_OP3_NOISE)
+    {
+        FM_NoiseOperator(
+                p->oper + 2,
+                numSamplesToAdd,
+                pOutBuf,
+                EAS_FALSE,
+                pFrame->gain[2],
+                feedback3,
+                &p->op3Out);
+    }
+    else
+    {
+        FM_Operator(
+                p->oper + 2,
+                numSamplesToAdd,
+                pOutBuf,
+                0,
+                EAS_FALSE,
+                pFrame->gain[2],
+                pFrame->pitch[2],
+                feedback3,
+                &p->op3Out);
+    }
 
-	/* operator 4 is modulated in modes 2, 4, and 5 */
-	if ((mode == 2) || (mode == 4) || (mode == 5))
-		pMod = pTempBuffer;
-	else
-		pMod = 0;
-	
-	/* operator 4 is in mix mode in modes 0 and 1 */
-	mix = (mode < 2);
+    /* operator 4 is on output bus in modes 0, 1, and 2 */
+    if (mode < 3)
+        pOutBuf = pBuffer;
+    else
+        pOutBuf = pTempBuffer;
 
-	if (p->flags & FLAG_FM_ENG_VOICE_OP4_NOISE)
-	{
-		FM_NoiseOperator(
-				p->oper + 3,
-				numSamplesToAdd,
-				pOutBuf,
-				mix,
-				pFrame->gain[3],
-				0,
-				0);
-	}
-	else
-	{
-		FM_Operator(
-				p->oper + 3,
-				numSamplesToAdd,
-				pOutBuf,
-				pMod,
-				mix,
-				pFrame->gain[3],
-				pFrame->pitch[3],
-				0,
-				0);
-	}
+    /* operator 4 is modulated in modes 2, 4, and 5 */
+    if ((mode == 2) || (mode == 4) || (mode == 5))
+        pMod = pTempBuffer;
+    else
+        pMod = 0;
 
-	/* operator 1 is on output bus in mode 0 */
-	if (mode == 0)
-		pOutBuf = pBuffer;
-	else
-		pOutBuf = pTempBuffer;
+    /* operator 4 is in mix mode in modes 0 and 1 */
+    mix = (mode < 2);
 
-	/* operator 1 is modulated in modes 3 and 4 */
-	if ((mode == 3) || (mode == 4))
-		pMod = pTempBuffer;
-	else
-		pMod = 0;
-	
-	/* operator 1 is in mix mode in modes 0 and 5 */
-	mix = ((mode == 0) || (mode == 5));
+    if (p->flags & FLAG_FM_ENG_VOICE_OP4_NOISE)
+    {
+        FM_NoiseOperator(
+                p->oper + 3,
+                numSamplesToAdd,
+                pOutBuf,
+                mix,
+                pFrame->gain[3],
+                0,
+                0);
+    }
+    else
+    {
+        FM_Operator(
+                p->oper + 3,
+                numSamplesToAdd,
+                pOutBuf,
+                pMod,
+                mix,
+                pFrame->gain[3],
+                pFrame->pitch[3],
+                0,
+                0);
+    }
 
-	if (p->flags & FLAG_FM_ENG_VOICE_OP1_NOISE)
-	{
-		FM_NoiseOperator(
-				p->oper,
-				numSamplesToAdd,
-				pOutBuf,
-				mix,
-				pFrame->gain[0],
-				feedback1,
-				&p->op1Out);
-	}
-	else
-	{
-		FM_Operator(
-				p->oper,
-				numSamplesToAdd,
-				pOutBuf,
-				pMod,
-				mix,
-				pFrame->gain[0],
-				pFrame->pitch[0],
-				feedback1,
-				&p->op1Out);
-	}
+    /* operator 1 is on output bus in mode 0 */
+    if (mode == 0)
+        pOutBuf = pBuffer;
+    else
+        pOutBuf = pTempBuffer;
 
-	/* operator 2 is modulated in all modes except 0 */
-	if (mode != 0)
-		pMod = pTempBuffer;
-	else
-		pMod = 0;
-	
-	/* operator 1 is in mix mode in modes 0 -3 */
-	mix = (mode < 4);
-	
-	if (p->flags & FLAG_FM_ENG_VOICE_OP2_NOISE)
-	{
-		FM_NoiseOperator(
-				p->oper + 1,
-				numSamplesToAdd,
-				pBuffer,
-				mix,
-				pFrame->gain[1],
-				0,
-				0);
-	}
-	else
-	{
-		FM_Operator(
-				p->oper + 1,
-				numSamplesToAdd,
-				pBuffer,
-				pMod,
-				mix,
-				pFrame->gain[1],
-				pFrame->pitch[1],
-				0,
-				0);
-	}
+    /* operator 1 is modulated in modes 3 and 4 */
+    if ((mode == 3) || (mode == 4))
+        pMod = pTempBuffer;
+    else
+        pMod = 0;
 
-	/* mix voice output to synthesizer output buffer */
-	FM_SynthMixVoice(p, pFrame->voiceGain, numSamplesToAdd, pBuffer, pMixBuffer);
+    /* operator 1 is in mix mode in modes 0 and 5 */
+    mix = ((mode == 0) || (mode == 5));
+
+    if (p->flags & FLAG_FM_ENG_VOICE_OP1_NOISE)
+    {
+        FM_NoiseOperator(
+                p->oper,
+                numSamplesToAdd,
+                pOutBuf,
+                mix,
+                pFrame->gain[0],
+                feedback1,
+                &p->op1Out);
+    }
+    else
+    {
+        FM_Operator(
+                p->oper,
+                numSamplesToAdd,
+                pOutBuf,
+                pMod,
+                mix,
+                pFrame->gain[0],
+                pFrame->pitch[0],
+                feedback1,
+                &p->op1Out);
+    }
+
+    /* operator 2 is modulated in all modes except 0 */
+    if (mode != 0)
+        pMod = pTempBuffer;
+    else
+        pMod = 0;
+
+    /* operator 1 is in mix mode in modes 0 -3 */
+    mix = (mode < 4);
+
+    if (p->flags & FLAG_FM_ENG_VOICE_OP2_NOISE)
+    {
+        FM_NoiseOperator(
+                p->oper + 1,
+                numSamplesToAdd,
+                pBuffer,
+                mix,
+                pFrame->gain[1],
+                0,
+                0);
+    }
+    else
+    {
+        FM_Operator(
+                p->oper + 1,
+                numSamplesToAdd,
+                pBuffer,
+                pMod,
+                mix,
+                pFrame->gain[1],
+                pFrame->pitch[1],
+                0,
+                0);
+    }
+
+    /* mix voice output to synthesizer output buffer */
+    FM_SynthMixVoice(p, pFrame->voiceGain, numSamplesToAdd, pBuffer, pMixBuffer);
 }
 
 /*----------------------------------------------------------------------------
@@ -736,50 +736,50 @@ void FM_ProcessVoice (
 */
 void FM_SynthMixVoice(S_FM_ENG_VOICE *p,  EAS_U16 nGainTarget, EAS_I32 numSamplesToAdd, EAS_PCM *pInputBuffer, EAS_I32 *pBuffer)
 {
-	EAS_I32 nGain;
-	EAS_I32 nGainInc;
-	EAS_I32 nTemp;
+    EAS_I32 nGain;
+    EAS_I32 nGainInc;
+    EAS_I32 nTemp;
 
-	/* restore previous gain */
-	/*lint -e{703} <use shift for performance> */
-	nGain = (EAS_I32) p->voiceGain << 16;
+    /* restore previous gain */
+    /*lint -e{703} <use shift for performance> */
+    nGain = (EAS_I32) p->voiceGain << 16;
 
-	/* calculate gain increment */
-	/*lint -e{703} <use shift for performance> */
-	nGainInc = ((EAS_I32) nGainTarget - (EAS_I32) p->voiceGain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
+    /* calculate gain increment */
+    /*lint -e{703} <use shift for performance> */
+    nGainInc = ((EAS_I32) nGainTarget - (EAS_I32) p->voiceGain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
 
-	/* mix the output buffer */
-	while (numSamplesToAdd--)
-	{
-		/* output gain calculation */
-		nTemp = *pInputBuffer++;
-		
-		/* sum to output buffer */
+    /* mix the output buffer */
+    while (numSamplesToAdd--)
+    {
+        /* output gain calculation */
+        nTemp = *pInputBuffer++;
+
+        /* sum to output buffer */
 #if (NUM_OUTPUT_CHANNELS == 2)
 
-		/*lint -e{704} <use shift for performance> */
-		nTemp = ((EAS_I32) nTemp * (nGain >> 16)) >> FM_GAIN_SHIFT;
+        /*lint -e{704} <use shift for performance> */
+        nTemp = ((EAS_I32) nTemp * (nGain >> 16)) >> FM_GAIN_SHIFT;
 
-		/*lint -e{704} <use shift for performance> */
-		{
-			EAS_I32 nTemp2;
-			nTemp = nTemp >> FM_STEREO_PRE_GAIN_SHIFT;
-			nTemp2 = (nTemp * p->gainLeft) >> FM_STEREO_POST_GAIN_SHIFT;
-			*pBuffer++ += nTemp2;
-			nTemp2 = (nTemp * p->gainRight) >> FM_STEREO_POST_GAIN_SHIFT;
-			*pBuffer++ += nTemp2;
-		}
+        /*lint -e{704} <use shift for performance> */
+        {
+            EAS_I32 nTemp2;
+            nTemp = nTemp >> FM_STEREO_PRE_GAIN_SHIFT;
+            nTemp2 = (nTemp * p->gainLeft) >> FM_STEREO_POST_GAIN_SHIFT;
+            *pBuffer++ += nTemp2;
+            nTemp2 = (nTemp * p->gainRight) >> FM_STEREO_POST_GAIN_SHIFT;
+            *pBuffer++ += nTemp2;
+        }
 #else
-		/*lint -e{704} <use shift for performance> */
-		nTemp = ((EAS_I32) nTemp * (nGain >> 16)) >> FM_MONO_GAIN_SHIFT;
-		*pBuffer++ += nTemp;
+        /*lint -e{704} <use shift for performance> */
+        nTemp = ((EAS_I32) nTemp * (nGain >> 16)) >> FM_MONO_GAIN_SHIFT;
+        *pBuffer++ += nTemp;
 #endif
 
-		/* increment gain for anti-zipper filter */
-		nGain += nGainInc;
-	}
+        /* increment gain for anti-zipper filter */
+        nGain += nGainInc;
+    }
 
-	/* save gain */
-	p->voiceGain = nGainTarget;
+    /* save gain */
+    p->voiceGain = nGainTarget;
 }
 

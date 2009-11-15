@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
  *
- * File: 
+ * File:
  * eas_report.h
  *
  * Contents and purpose:
@@ -51,9 +51,9 @@ extern "C" {
 /* structure for included debug message header files */
 typedef struct
 {
-	unsigned long m_nHashCode;
-	int m_nSerialNum;
-	char *m_pDebugMsg;
+    unsigned long m_nHashCode;
+    int m_nSerialNum;
+    char *m_pDebugMsg;
 } S_DEBUG_MESSAGES;
 
 /* debug message handling prototypes */
