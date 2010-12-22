@@ -1651,8 +1651,8 @@ EAS_PUBLIC EAS_RESULT EAS_State (EAS_DATA_HANDLE pEASData, EAS_HANDLE pStream, E
     if (pStream->repeatCount && (*pState == EAS_STATE_STOPPED))
         *pState = EAS_STATE_PLAY;
 
-    /* if we're not ready or playing, we don't need to hide state from host */
-    if (*pState > EAS_STATE_PLAY)
+    /* if we're not paused or pausing, we don't need to hide state from host */
+    if (*pState != EAS_STATE_PAUSED && *pState != EAS_STATE_PAUSING)
         return EAS_SUCCESS;
 
     /* if stream is about to be paused, report it as paused */
