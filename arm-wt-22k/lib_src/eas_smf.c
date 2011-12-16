@@ -281,6 +281,11 @@ EAS_RESULT SMF_Event (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData, EAS_INT pars
     if (pSMFData->state >= EAS_STATE_OPEN)
         return EAS_SUCCESS;
 
+    if (!pSMFData->nextStream) {
+        return EAS_ERROR_FILE_FORMAT;
+    }
+
+
     /* get current ticks */
     ticks = pSMFData->nextStream->ticks;
 
