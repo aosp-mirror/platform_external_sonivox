@@ -89,8 +89,12 @@ asm_flags := \
 	--defsym FILTER_ENABLED=1 \
 	--defsym SAMPLES_8_BIT=1
 
-LOCAL_CFLAGS+= -D NATIVE_EAS_KERNEL \
+LOCAL_ASFLAGS := \
 	$(foreach f,$(asm_flags),-Wa,"$(f)")
+
+asm_flags :=
+
+LOCAL_CFLAGS += -D NATIVE_EAS_KERNEL
 
 LOCAL_COPY_HEADERS += lib_src/ARM_synth_constants_gnu.inc
 endif
@@ -101,4 +105,3 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_LDLIBS := -lpthread
 
 include $(BUILD_SHARED_LIBRARY)
-
