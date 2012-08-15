@@ -630,8 +630,11 @@ EAS_PUBLIC EAS_RESULT EAS_OpenFile (EAS_DATA_HANDLE pEASData, EAS_FILE_LOCATOR l
 
     /* allocate a stream */
     if ((streamNum = EAS_AllocateStream(pEASData)) < 0)
+    {
+        /* Closing the opened file as stream allocation failed */
+        EAS_HWCloseFile(pEASData->hwInstData, fileHandle);
         return EAS_ERROR_MAX_STREAMS_OPEN;
-
+    }
     /* check Configuration Module for file parsers */
     pParserModule = NULL;
     *ppStream = NULL;
@@ -645,6 +648,9 @@ EAS_PUBLIC EAS_RESULT EAS_OpenFile (EAS_DATA_HANDLE pEASData, EAS_FILE_LOCATOR l
         /* see if this parser recognizes it */
         if ((result = (*pParserModule->pfCheckFileType)(pEASData, fileHandle, &streamHandle, 0L)) != EAS_SUCCESS)
         {
+            /* Closing the opened file as file type check failed */
+            EAS_HWCloseFile(pEASData->hwInstData, fileHandle);
+
             { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "CheckFileType returned error %ld\n", result); */ }
             return result;
         }
@@ -661,7 +667,12 @@ EAS_PUBLIC EAS_RESULT EAS_OpenFile (EAS_DATA_HANDLE pEASData, EAS_FILE_LOCATOR l
 
         /* rewind the file for the next parser */
         if ((result = EAS_HWFileSeek(pEASData->hwInstData, fileHandle, 0L)) != EAS_SUCCESS)
+        {
+            /* Closing the opened file as file seek failed */
+            EAS_HWCloseFile(pEASData->hwInstData, fileHandle);
+
             return result;
+         }
     }
 
     /* no parser was able to recognize the file, close it and return an error */
