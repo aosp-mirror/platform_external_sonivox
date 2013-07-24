@@ -54,8 +54,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <signal.h>
-#define LOG_TAG "Sonivox"
-#include <utils/Log.h>
+#include <pthread.h>
 #include <media/MediaPlayerInterface.h>
 #endif
 
