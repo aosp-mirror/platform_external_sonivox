@@ -102,6 +102,4 @@ endif
 LOCAL_SHARED_LIBRARIES := \
 	libutils libcutils
 
-LOCAL_LDLIBS := -lpthread
-
 include $(BUILD_SHARED_LIBRARY)
