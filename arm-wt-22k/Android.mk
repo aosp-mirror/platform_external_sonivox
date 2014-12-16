@@ -38,11 +38,11 @@ LOCAL_SRC_FILES = \
 	lib_src/jet.c \
 	host_src/eas_config.c \
 	host_src/eas_hostmm.c \
-	host_src/eas_main.c \
-	host_src/eas_report.c \
-	host_src/eas_wave.c
+	host_src/eas_report.c
 
 # not using these modules
+#	host_src/eas_main.c \
+#	host_src/eas_wave.c \
 #	lib_src/eas_wavefile.c \
 #	lib_src/eas_wavefiledata.c \
 
