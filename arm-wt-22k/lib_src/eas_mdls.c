@@ -938,7 +938,7 @@ static EAS_RESULT Parse_wave (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
     }
 
     // limit to reasonable size
-    if (dataSize > MAX_DLS_WAVE_SIZE)
+    if (dataSize < 0 || dataSize > MAX_DLS_WAVE_SIZE)
     {
         return EAS_ERROR_SOUND_LIBRARY;
     }
