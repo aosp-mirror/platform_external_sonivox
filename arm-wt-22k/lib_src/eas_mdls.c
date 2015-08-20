@@ -139,6 +139,14 @@ extern double log10(double x);
 #define DLS_MAX_INST_COUNT      256
 #define MAX_DLS_WAVE_SIZE       (1024*1024)
 
+#ifndef EAS_U32_MAX
+#define EAS_U32_MAX             (4294967295U)
+#endif
+
+#ifndef EAS_I32_MAX
+#define EAS_I32_MAX             (2147483647)
+#endif
+
 /*------------------------------------
  * typedefs
  *------------------------------------
@@ -1126,6 +1134,14 @@ static EAS_RESULT Parse_wsmp (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WS
         /* get loop length */
         if ((result = EAS_HWGetDWord(pDLSData->hwInstData, pDLSData->fileHandle, &p->loopLength, EAS_FALSE)) != EAS_SUCCESS)
             return result;
+
+        /* ensure no overflow */
+        if (p->loopLength
+            && ((p->loopStart > EAS_U32_MAX - p->loopLength)
+                || (p->loopStart + p->loopLength > EAS_U32_MAX / sizeof(EAS_SAMPLE))))
+        {
+            return EAS_FAILURE;
+        }
     }
 
     return EAS_SUCCESS;
@@ -1272,7 +1288,15 @@ static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
 
     /* for looped samples, copy the last sample to the end */
     if (pWsmp->loopLength)
+    {
+        if (pDLSData->wavePoolSize < sizeof(EAS_SAMPLE)
+            || (pWsmp->loopStart + pWsmp->loopLength) * sizeof(EAS_SAMPLE) > pDLSData->wavePoolSize - sizeof(EAS_SAMPLE))
+        {
+            return EAS_FAILURE;
+        }
+
         pSample[pWsmp->loopStart + pWsmp->loopLength] = pSample[pWsmp->loopStart];
+    }
 
     return EAS_SUCCESS;
 }
