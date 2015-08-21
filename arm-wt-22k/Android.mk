@@ -93,7 +93,8 @@ LOCAL_ASFLAGS := \
 	$(foreach f,$(asm_flags),-Wa,"$(f)")
 
 # .s files not ported for Clang assembler yet.
-LOCAL_CLANG_ASFLAGS += -no-integrated-as
+LOCAL_CLANG_ASFLAGS_arm += -no-integrated-as
+LOCAL_CLANG_ASFLAGS_arm64 += -no-integrated-as
 
 asm_flags :=
 
