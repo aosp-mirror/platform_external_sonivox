@@ -1676,6 +1676,10 @@ static EAS_RESULT Parse_rgn (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I
     /* parse wlnk chunk */
     if ((result = Parse_wlnk(pDLSData, wlnkPos, &waveIndex)) != EAS_SUCCESS)
         return result;
+    if (waveIndex >= pDLSData->waveCount)
+    {
+        return EAS_FAILURE;
+    }
     pWsmp = &pDLSData->wsmpData[waveIndex];
 
     /* if there is any articulation data, parse it */
