@@ -416,7 +416,7 @@ static EAS_RESULT Parse_ptbl (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
 static EAS_RESULT Parse_wave (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_U16 waveIndex);
 static EAS_RESULT Parse_wsmp (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WSMP_DATA *p);
 static EAS_RESULT Parse_fmt (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WSMP_DATA *p);
-static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_WSMP_DATA *p, EAS_SAMPLE *pSample);
+static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_WSMP_DATA *p, EAS_SAMPLE *pSample, EAS_U32 sampleLen);
 static EAS_RESULT Parse_lins(SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size);
 static EAS_RESULT Parse_ins (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size);
 static EAS_RESULT Parse_insh (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_U32 *pRgnCount, EAS_U32 *pLocale);
@@ -1031,7 +1031,7 @@ static EAS_RESULT Parse_wave (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
     }
 
     /* allocate memory and read in the sample data */
-    pSample = pDLSData->pDLS->pDLSSamples + pDLSData->wavePoolOffset;
+    pSample = (EAS_U8*)pDLSData->pDLS->pDLSSamples + pDLSData->wavePoolOffset;
     pDLSData->pDLS->pDLSSampleOffsets[waveIndex] = pDLSData->wavePoolOffset;
     pDLSData->pDLS->pDLSSampleLen[waveIndex] = (EAS_U32) size;
     pDLSData->wavePoolOffset += (EAS_U32) size;
@@ -1041,7 +1041,7 @@ static EAS_RESULT Parse_wave (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
         return EAS_ERROR_SOUND_LIBRARY;
     }
 
-    if ((result = Parse_data(pDLSData, dataPos, dataSize, p, pSample)) != EAS_SUCCESS)
+    if ((result = Parse_data(pDLSData, dataPos, dataSize, p, pSample, (EAS_U32)size)) != EAS_SUCCESS)
         return result;
 
     return EAS_SUCCESS;
@@ -1233,7 +1233,7 @@ static EAS_RESULT Parse_fmt (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, S_WSM
  *
  *----------------------------------------------------------------------------
 */
-static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_WSMP_DATA *pWsmp, EAS_SAMPLE *pSample)
+static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I32 size, S_WSMP_DATA *pWsmp, EAS_SAMPLE *pSample, EAS_U32 sampleLen)
 {
     EAS_RESULT result;
     EAS_U8 convBuf[SAMPLE_CONVERT_CHUNK_SIZE];
@@ -1289,8 +1289,8 @@ static EAS_RESULT Parse_data (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_
     /* for looped samples, copy the last sample to the end */
     if (pWsmp->loopLength)
     {
-        if (pDLSData->wavePoolSize < sizeof(EAS_SAMPLE)
-            || (pWsmp->loopStart + pWsmp->loopLength) * sizeof(EAS_SAMPLE) > pDLSData->wavePoolSize - sizeof(EAS_SAMPLE))
+        if (sampleLen < sizeof(EAS_SAMPLE)
+            || (pWsmp->loopStart + pWsmp->loopLength) * sizeof(EAS_SAMPLE) > sampleLen - sizeof(EAS_SAMPLE))
         {
             return EAS_FAILURE;
         }
@@ -1746,6 +1746,17 @@ static EAS_RESULT Parse_rgn (SDLS_SYNTHESIZER_DATA *pDLSData, EAS_I32 pos, EAS_I
         }
 
         Convert_rgn(pDLSData, regionIndex, artIndex, (EAS_U16) waveIndex, pWsmp);
+
+        /* ensure loopStart and loopEnd fall in the range */
+        if (pWsmp->loopLength != 0)
+        {
+            EAS_U32 sampleLen = pDLSData->pDLS->pDLSSampleLen[waveIndex];
+            if (sampleLen < sizeof(EAS_SAMPLE)
+                || (pWsmp->loopStart + pWsmp->loopLength) * sizeof(EAS_SAMPLE) > sampleLen - sizeof(EAS_SAMPLE))
+            {
+                return EAS_FAILURE;
+            }
+        }
     }
 
     /* if local articulation, bump count */
