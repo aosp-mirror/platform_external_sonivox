@@ -28,6 +28,8 @@
 */
 
 // includes
+#include "log/log.h"
+
 #include "eas_data.h"
 #include "eas_report.h"
 #include "eas_host.h"
@@ -466,6 +468,10 @@ EAS_BOOL WT_CheckSampleEnd (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame, E
             pWTIntFrame->numSamples = 1 + (numSamples / pWTIntFrame->frame.phaseIncrement);
         } else {
             pWTIntFrame->numSamples = numSamples;
+        }
+        if (pWTIntFrame->numSamples < 0) {
+            ALOGE("b/26366256");
+            pWTIntFrame->numSamples = 0;
         }
 
         /* sound will be done this frame */
