@@ -33,6 +33,7 @@
  *------------------------------------
 */
 #include "log/log.h"
+#include <cutils/log.h>
 
 #include "eas_types.h"
 #include "eas_math.h"
@@ -92,6 +93,7 @@ void WT_VoiceGain (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pMixBuffer = pWTIntFrame->pMixBuffer;
@@ -190,6 +192,7 @@ void WT_Interpolate (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
@@ -287,6 +290,7 @@ void WT_InterpolateNoLoop (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
@@ -379,6 +383,7 @@ void WT_VoiceFilter (S_FILTER_CONTROL *pFilter, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pAudioBuffer = pWTIntFrame->pAudioBuffer;
@@ -446,6 +451,7 @@ void WT_VoiceFilter (S_FILTER_CONTROL *pFilter, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
@@ -593,6 +599,7 @@ void WT_InterpolateMono (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     numSamples = pWTIntFrame->numSamples;
     if (numSamples <= 0) {
         ALOGE("b/26366256");
+        android_errorWriteLog(0x534e4554, "26366256");
         return;
     }
     pMixBuffer = pWTIntFrame->pMixBuffer;
