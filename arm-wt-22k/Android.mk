@@ -53,7 +53,7 @@ LOCAL_CFLAGS+= -O2 -D UNIFIED_DEBUG_MESSAGES -D EAS_WT_SYNTH \
 	-D _8_BIT_SAMPLES -D _FILTER_ENABLED \
 	-D DLS_SYNTHESIZER \
 	-D _REVERB_ENABLED \
-	-Wno-unused-parameter \
+	-Wno-unused-parameter -Werror \
 
 # not using these options
 # -D _WAVE_PARSER
