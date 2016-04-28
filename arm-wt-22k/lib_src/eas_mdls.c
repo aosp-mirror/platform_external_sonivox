@@ -322,6 +322,7 @@ static const S_CONNECTION connTable[] =
 
 static const S_DLS_ART_VALUES defaultArt =
 {
+    {
     0,              /* not modified */
     -851,           /* Mod LFO frequency: 5 Hz */
     -7973,          /* Mod LFO delay: 10 milliseconds */
@@ -379,6 +380,7 @@ static const S_DLS_ART_VALUES defaultArt =
     1000,           /* Default CC91 to reverb send: 100.0% */
     0,              /* Default chorus send: 0.0% */
     1000            /* Default CC93 to chorus send: 100.0% */
+    }
 };
 
 /*------------------------------------
@@ -565,7 +567,7 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
     }
 
     /* must have a ptbl chunk */
-    if ((ptblSize == 0) || (ptblSize > DLS_MAX_WAVE_COUNT * sizeof(POOLCUE) + sizeof(POOLTABLE)))
+    if ((ptblSize == 0) || (ptblSize > (EAS_I32) (DLS_MAX_WAVE_COUNT * sizeof(POOLCUE) + sizeof(POOLTABLE))))
     {
         { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No ptbl chunk found"); */ }
         return EAS_ERROR_UNRECOGNIZED_FORMAT;
