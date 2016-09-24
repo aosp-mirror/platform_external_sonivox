@@ -101,7 +101,7 @@ asm_flags :=
 LOCAL_CFLAGS_arm += -D NATIVE_EAS_KERNEL
 
 LOCAL_SHARED_LIBRARIES := \
-	libutils libcutils
+	liblog libutils libcutils
 
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/lib_src/ARM_synth_constants_gnu.inc
 
