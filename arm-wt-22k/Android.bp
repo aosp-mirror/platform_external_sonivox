@@ -79,8 +79,6 @@ cc_library_shared {
 
     shared_libs: [
         "liblog",
-        "libutils",
-        "libcutils",
     ],
 
     arch: {
