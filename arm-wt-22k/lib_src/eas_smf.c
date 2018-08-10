@@ -29,6 +29,9 @@
  *----------------------------------------------------------------------------
 */
 
+#define LOG_TAG "Sonivox"
+#include "log/log.h"
+
 #include "eas_data.h"
 #include "eas_miditypes.h"
 #include "eas_parser.h"
@@ -126,7 +129,8 @@ EAS_RESULT SMF_CheckFileType (S_EAS_DATA *pEASData, EAS_FILE_HANDLE fileHandle, 
         if ((result = EAS_HWReadFile(pEASData->hwInstData, fileHandle, header, sizeof(header), &count)) != EAS_SUCCESS)
             return result;
 
-        /* check for 'MTrk' - return if no match */
+        /* check for 'MThd' - If no match then return SUCCESS with NULL handle
+         * to indicate not an SMF file. */
         if ((header[0] != 'M') || (header[1] != 'T') || (header[2] != 'h') || (header[3] != 'd'))
             return EAS_SUCCESS;
     }
@@ -833,6 +837,22 @@ static EAS_RESULT SMF_ParseMetaEvent (S_EAS_DATA *pEASData, S_SMF_DATA *pSMFData
     /* get the current file position so we can skip the event */
     if ((result = EAS_HWFilePos(pEASData->hwInstData, pSMFStream->fileHandle, &pos)) != EAS_SUCCESS)
         return result;
+
+    /* prevent a large unsigned length from being treated as a negative length */
+    if ((EAS_I32) len < 0) {
+        /* note that EAS_I32 is a long, which can be 64-bits on some computers */
+        ALOGE("%s() negative len = %ld", __func__, (long) len);
+        android_errorWriteLog(0x534e4554, "68953854");
+        return EAS_ERROR_FILE_FORMAT;
+    }
+    /* prevent numeric overflow caused by a very large len, assume pos > 0 */
+    const EAS_I32 EAS_I32_MAX = 0x7FFFFFFF;
+    if ((EAS_I32) len > (EAS_I32_MAX - pos)) {
+        ALOGE("%s() too large len = %ld", __func__, (long) len);
+        android_errorWriteLog(0x534e4554, "68953854");
+        return EAS_ERROR_FILE_FORMAT;
+    }
+
     pos += (EAS_I32) len;
 
     /* end of track? */
