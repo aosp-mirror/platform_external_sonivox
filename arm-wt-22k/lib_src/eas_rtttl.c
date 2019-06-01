@@ -334,8 +334,12 @@ static EAS_RESULT RTTTL_Event (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData, EAS
                 }
 
                 /* loop back to start of notes */
+                if (pData->notePlayedSinceRepeat == 0) {
+                    return EAS_ERROR_FILE_FORMAT;
+                }
                 if ((result = EAS_HWFileSeek(pEASData->hwInstData, pData->fileHandle, pData->repeatOffset)) != EAS_SUCCESS)
                     return result;
+                pData->notePlayedSinceRepeat = 0;
                 continue;
             }
 
@@ -444,6 +448,7 @@ static EAS_RESULT RTTTL_Event (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData, EAS
         /* end of event */
         else if ((c == ',') && note)
         {
+            pData->notePlayedSinceRepeat = 1;
 
             /* handle note events */
             if (note != RTTTL_REST)
@@ -1102,6 +1107,7 @@ static EAS_RESULT RTTTL_ParseHeader (S_EAS_DATA *pEASData, S_RTTTL_DATA* pData, 
     if ((result = EAS_HWFilePos(pEASData->hwInstData, pData->fileHandle, &pData->repeatOffset)) != EAS_SUCCESS)
         return result;
 
+    pData->notePlayedSinceRepeat = 0;
     return EAS_SUCCESS;
 }
 
