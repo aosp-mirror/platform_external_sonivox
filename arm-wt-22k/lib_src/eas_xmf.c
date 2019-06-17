@@ -176,19 +176,26 @@ static EAS_RESULT XMF_CheckFileType (S_EAS_DATA *pEASData, EAS_FILE_HANDLE fileH
 
     pXMFData->fileHandle = fileHandle;
     pXMFData->fileOffset = offset;
-    *ppHandle = pXMFData;
 
     /* locate the SMF and DLS contents */
     if ((result = XMF_FindFileContents(pEASData->hwInstData, pXMFData)) != EAS_SUCCESS)
     {
         { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "No SMF data found in XMF file\n"); */ }
+        EAS_HWFree(pEASData->hwInstData, pXMFData);
         return result;
     }
 
     /* let the SMF parser take over */
-    if ((result = EAS_HWFileSeek(pEASData->hwInstData, fileHandle, pXMFData->midiOffset)) != EAS_SUCCESS)
+    if ((result = EAS_HWFileSeek(pEASData->hwInstData, fileHandle, pXMFData->midiOffset)) != EAS_SUCCESS) {
+        EAS_HWFree(pEASData->hwInstData, pXMFData);
         return result;
-    return SMF_CheckFileType(pEASData, fileHandle, &pXMFData->pSMFData, pXMFData->midiOffset);
+    }
+    if ((result = SMF_CheckFileType(pEASData, fileHandle, &pXMFData->pSMFData, pXMFData->midiOffset)) != EAS_SUCCESS) {
+        EAS_HWFree(pEASData->hwInstData, pXMFData);
+        return result;
+    }
+    *ppHandle = pXMFData;
+    return EAS_SUCCESS;
 }
 
 /*----------------------------------------------------------------------------
