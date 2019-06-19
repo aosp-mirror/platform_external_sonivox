@@ -115,4 +115,12 @@ cc_library {
             clang_asflags: ["-no-integrated-as"],
         },
     },
+    sanitize: {
+        cfi: true,
+        misc_undefined: [
+            "bounds",
+            "unsigned-integer-overflow",
+            "signed-integer-overflow",
+        ],
+    }
 }
