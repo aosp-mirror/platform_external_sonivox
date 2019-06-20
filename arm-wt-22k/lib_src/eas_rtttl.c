@@ -953,6 +953,15 @@ static EAS_RESULT RTTTL_GetNumber (EAS_HW_DATA_HANDLE hwInstData, S_RTTTL_DATA *
         if (IsDigit(c))
         {
             pData->dataByte = 0;
+            if (temp > 100) {
+                // This is just to prevent overflows in case of a really large number
+                // in the file, but rather than allowing the number to grow up to INT_MAX,
+                // we limit it to a much smaller number since the numbers in an RTTTL file
+                // are supposed to be at most in the hundreds, not millions or billions.
+                // There are more specific checks in the callers of this function to enforce
+                // the various limits for notes, octaves, tempo, etc.
+                return EAS_FAILURE;
+            }
             temp = temp * 10 + c - '0';
             *pValue = temp;
         }
