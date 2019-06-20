@@ -99,12 +99,10 @@ void WT_VoiceGain (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     pMixBuffer = pWTIntFrame->pMixBuffer;
     pInputBuffer = pWTIntFrame->pAudioBuffer;
 
-    /*lint -e{703} <avoid multiply for performance>*/
-    gainIncrement = (pWTIntFrame->frame.gainTarget - pWTIntFrame->prevGain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
+    gainIncrement = (pWTIntFrame->frame.gainTarget - pWTIntFrame->prevGain) * (1 << (16 - SYNTH_UPDATE_PERIOD_IN_BITS));
     if (gainIncrement < 0)
         gainIncrement++;
-    /*lint -e{703} <avoid multiply for performance>*/
-    gain = pWTIntFrame->prevGain << 16;
+    gain = pWTIntFrame->prevGain * (1 << 16);
 
 #if (NUM_OUTPUT_CHANNELS == 2)
     gainLeft = pWTVoice->gainLeft;
@@ -605,10 +603,10 @@ void WT_InterpolateMono (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     pMixBuffer = pWTIntFrame->pMixBuffer;
 
     /* calculate gain increment */
-    gainIncrement = (pWTIntFrame->gainTarget - pWTIntFrame->prevGain) << (16 - SYNTH_UPDATE_PERIOD_IN_BITS);
+    gainIncrement = (pWTIntFrame->gainTarget - pWTIntFrame->prevGain) * (1 << (16 - SYNTH_UPDATE_PERIOD_IN_BITS));
     if (gainIncrement < 0)
         gainIncrement++;
-    gain = pWTIntFrame->prevGain << 16;
+    gain = pWTIntFrame->prevGain * (1 << 16);
 
     pCurrentPhaseInt = pWTVoice->pPhaseAccum;
     currentPhaseFrac = pWTVoice->phaseFrac;
