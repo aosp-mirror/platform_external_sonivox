@@ -867,8 +867,9 @@ static EAS_RESULT SMF_ParseMetaEvent (S_EAS_DATA *pEASData, S_SMF_DATA *pSMFData
     {
         /* read the 3-byte timebase value */
         temp = 0;
-        while (len--)
+        while (len)
         {
+            len--;
             if ((result = EAS_HWGetByte(pEASData->hwInstData, pSMFStream->fileHandle, &c)) != EAS_SUCCESS)
                 return result;
             temp = (temp << 8) | c;
@@ -956,8 +957,9 @@ static EAS_RESULT SMF_ParseSysEx (S_EAS_DATA *pEASData, S_SMF_DATA *pSMFData, S_
     }
 
     /* feed the SysEx to the stream parser */
-    while (len--)
+    while (len)
     {
+        len--;
         if ((result = EAS_HWGetByte(pEASData->hwInstData, pSMFStream->fileHandle, &c)) != EAS_SUCCESS)
             return result;
         if ((result = EAS_ParseMIDIStream(pEASData, pSMFData->pSynth, &pSMFStream->midiStream, c, parserMode)) != EAS_SUCCESS)
