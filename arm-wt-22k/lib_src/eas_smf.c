@@ -874,8 +874,20 @@ static EAS_RESULT SMF_ParseMetaEvent (S_EAS_DATA *pEASData, S_SMF_DATA *pSMFData
                 return result;
             temp = (temp << 8) | c;
         }
-
-        pSMFData->tickConv = (EAS_U16) (((temp * 1024) / pSMFData->ppqn + 500) / 1000);
+        {
+            // pSMFData->tickConv = (EAS_U16) (((temp * 1024) / pSMFData->ppqn + 500) / 1000);
+            uint64_t temp64;
+            if (__builtin_mul_overflow(temp, 1024, &temp64) ||
+                    pSMFData->ppqn == 0 ||
+                    (temp64 /= pSMFData->ppqn, false) ||
+                    __builtin_add_overflow(temp64, 500, &temp64) ||
+                    (temp64 /= 1000, false) ||
+                    temp64 > 65535) {
+                pSMFData->tickConv = 65535;
+            } else {
+                pSMFData->tickConv = (EAS_U16) temp64;
+            }
+        }
         pSMFData->flags |= SMF_FLAGS_HAS_TEMPO;
     }
 
