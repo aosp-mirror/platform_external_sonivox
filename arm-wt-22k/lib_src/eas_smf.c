@@ -877,7 +877,7 @@ static EAS_RESULT SMF_ParseMetaEvent (S_EAS_DATA *pEASData, S_SMF_DATA *pSMFData
         {
             // pSMFData->tickConv = (EAS_U16) (((temp * 1024) / pSMFData->ppqn + 500) / 1000);
             uint64_t temp64;
-            if (__builtin_mul_overflow(temp, 1024, &temp64) ||
+            if (__builtin_mul_overflow(temp, 1024u, &temp64) ||
                     pSMFData->ppqn == 0 ||
                     (temp64 /= pSMFData->ppqn, false) ||
                     __builtin_add_overflow(temp64, 500, &temp64) ||
