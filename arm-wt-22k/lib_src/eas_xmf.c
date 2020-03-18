@@ -559,7 +559,7 @@ static EAS_RESULT XMF_FindFileContents (EAS_HW_DATA_HANDLE hwInstData, S_XMF_DAT
     if (treeEnd < treeStart || treeEnd >= fileLength)
         return EAS_ERROR_FILE_FORMAT;
 
-    if ((result = XMF_ReadNode(hwInstData, pXMFData, treeStart, treeEnd, &length, node_depth)) != EAS_SUCCESS)
+    if ((result = XMF_ReadNode(hwInstData, pXMFData, treeStart, treeEnd + 1, &length, node_depth)) != EAS_SUCCESS)
         return result;
 
     /* check for SMF data */
