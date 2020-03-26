@@ -114,6 +114,7 @@ EAS_RESULT SMF_CheckFileType (S_EAS_DATA *pEASData, EAS_FILE_HANDLE fileHandle, 
     if ((result = EAS_HWFileSeek(pEASData->hwInstData, fileHandle, offset)) != EAS_SUCCESS)
         return result;
 
+#ifdef FILE_HEADER_SEARCH
     /* search through file for header - slow method */
     if (pEASData->searchHeaderFlag)
     {
@@ -123,7 +124,9 @@ EAS_RESULT SMF_CheckFileType (S_EAS_DATA *pEASData, EAS_FILE_HANDLE fileHandle, 
     }
 
     /* read the first 4 bytes of the file - quick method */
-    else {
+    else
+#endif
+    {
         EAS_U8 header[4];
         EAS_I32 count;
         if ((result = EAS_HWReadFile(pEASData->hwInstData, fileHandle, header, sizeof(header), &count)) != EAS_SUCCESS)
