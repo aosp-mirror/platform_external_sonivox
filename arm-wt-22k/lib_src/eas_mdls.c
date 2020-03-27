@@ -466,6 +466,7 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
     EAS_RESULT result;
     SDLS_SYNTHESIZER_DATA dls;
     EAS_U32 temp;
+    uint32_t chunk_type;
     EAS_I32 pos;
     EAS_I32 chunkPos;
     EAS_I32 size;
@@ -495,11 +496,11 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
     /* seek to start of DLS and read in RIFF tag and set processor endian flag */
     if ((result = EAS_HWFileSeek(dls.hwInstData, dls.fileHandle, offset)) != EAS_SUCCESS)
         return result;
-    if ((result = EAS_HWReadFile(dls.hwInstData, dls.fileHandle, &temp, sizeof(temp), &size)) != EAS_SUCCESS)
+    if ((result = EAS_HWReadFile(dls.hwInstData, dls.fileHandle, &chunk_type, sizeof(chunk_type), &size)) != EAS_SUCCESS)
         return result;
 
     /* check for processor endian-ness */
-    dls.bigEndian = (temp == CHUNK_RIFF);
+    dls.bigEndian = (chunk_type == CHUNK_RIFF);
 
     /* first chunk should be DLS */
     pos = offset;
