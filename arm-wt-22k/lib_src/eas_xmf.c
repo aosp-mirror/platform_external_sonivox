@@ -697,7 +697,7 @@ static EAS_RESULT XMF_ReadNode (EAS_HW_DATA_HANDLE hwInstData, S_XMF_DATA *pXMFD
         if (chunkType == XMF_RIFF_CHUNK)
         {
             /* skip length */
-            if ((result = EAS_HWFileSeekOfs(hwInstData, pXMFData->fileHandle, sizeof(EAS_I32))) != EAS_SUCCESS)
+            if ((result = EAS_HWFileSeekOfs(hwInstData, pXMFData->fileHandle, 4)) != EAS_SUCCESS)
                 return result;
 
             /* get RIFF file type */
