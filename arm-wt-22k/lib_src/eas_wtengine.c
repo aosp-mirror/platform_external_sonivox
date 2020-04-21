@@ -60,6 +60,10 @@ extern void WT_Interpolate (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame);
 extern void WT_VoiceFilter (S_FILTER_CONTROL*pFilter, S_WT_INT_FRAME *pWTIntFrame);
 #endif
 
+// The PRNG in WT_NoiseGenerator relies on modulo math
+#undef  NO_INT_OVERFLOW_CHECKS
+#define NO_INT_OVERFLOW_CHECKS __attribute__((no_sanitize("integer")))
+
 #if defined(_OPTIMIZED_MONO) || !defined(NATIVE_EAS_KERNEL) || defined(_16_BIT_SAMPLES)
 /*----------------------------------------------------------------------------
  * WT_VoiceGain
@@ -436,7 +440,7 @@ void WT_VoiceFilter (S_FILTER_CONTROL *pFilter, S_WT_INT_FRAME *pWTIntFrame)
  * or more.
  *----------------------------------------------------------------------------
 */
- void WT_NoiseGenerator (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
+ void NO_INT_OVERFLOW_CHECKS WT_NoiseGenerator (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
  {
     EAS_PCM *pOutputBuffer;
     EAS_I32 phaseInc;
