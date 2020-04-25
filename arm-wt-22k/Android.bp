@@ -1,5 +1,5 @@
-cc_library {
-    name: "libsonivox",
+cc_defaults {
+    name: "libsonivox-defaults",
     srcs: [
         "lib_src/eas_data.c",
         "lib_src/eas_dlssynth.c",
@@ -30,7 +30,6 @@ cc_library {
         "lib_src/eas_xmf.c",
         "lib_src/eas_xmfdata.c",
         "lib_src/wt_22khz.c",
-        "lib_src/jet.c",
         "host_src/eas_config.c",
         "host_src/eas_hostmm.c",
         "host_src/eas_report.c",
@@ -114,3 +113,23 @@ cc_library {
         ],
     }
 }
+
+cc_library {
+    name: "libsonivoxwithoutjet",
+    defaults: ["libsonivox-defaults"],
+    apex_available: ["com.android.media"],
+}
+
+cc_library {
+    name: "libsonivox",
+    defaults: ["libsonivox-defaults"],
+    srcs: [
+        "lib_src/jet.c",
+    ],
+
+    cflags: [
+        "-DJET_INTERFACE",
+    ],
+}
+
+
