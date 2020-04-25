@@ -79,8 +79,13 @@ const S_FILE_PARSER_INTERFACE EAS_SMF_Parser =
     SMF_State,
     SMF_Close,
     SMF_Reset,
+#ifdef JET_INTERFACE
     SMF_Pause,
     SMF_Resume,
+#else
+    NULL,
+    NULL,
+#endif
     NULL,
     SMF_SetData,
     SMF_GetData,
@@ -528,6 +533,7 @@ EAS_RESULT SMF_Reset (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
     return EAS_SUCCESS;
 }
 
+#ifdef JET_INTERFACE
 /*----------------------------------------------------------------------------
  * SMF_Pause()
  *----------------------------------------------------------------------------
@@ -591,6 +597,7 @@ EAS_RESULT SMF_Resume (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
     pSMFData->state = EAS_STATE_PLAY;
     return EAS_SUCCESS;
 }
+#endif
 
 /*----------------------------------------------------------------------------
  * SMF_SetData()

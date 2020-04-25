@@ -105,8 +105,13 @@ const S_FILE_PARSER_INTERFACE EAS_RTTTL_Parser =
     RTTTL_State,
     RTTTL_Close,
     RTTTL_Reset,
+#ifdef JET_INTERFACE
     RTTTL_Pause,
     RTTTL_Resume,
+#else
+    NULL,
+    NULL,
+#endif
     NULL,
     RTTTL_SetData,
     RTTTL_GetData,
@@ -626,6 +631,7 @@ static EAS_RESULT RTTTL_Reset (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
     return EAS_SUCCESS;
 }
 
+#ifdef JET_INTERFACE
 /*----------------------------------------------------------------------------
  * RTTTL_Pause()
  *----------------------------------------------------------------------------
@@ -689,6 +695,7 @@ static EAS_RESULT RTTTL_Resume (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
     pData->state = EAS_STATE_PLAY;
     return EAS_SUCCESS;
 }
+#endif
 
 /*----------------------------------------------------------------------------
  * RTTTL_SetData()
