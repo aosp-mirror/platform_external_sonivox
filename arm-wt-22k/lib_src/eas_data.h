@@ -31,8 +31,6 @@
 #ifndef _EAS_DATA_H
 #define _EAS_DATA_H
 
-#define JET_INTERFACE
-
 #include "eas_types.h"
 #include "eas_synthcfg.h"
 #include "eas.h"
