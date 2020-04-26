@@ -87,8 +87,13 @@ const S_FILE_PARSER_INTERFACE EAS_XMF_Parser =
     XMF_State,
     XMF_Close,
     XMF_Reset,
+#ifdef JET_INTERFACE
     XMF_Pause,
     XMF_Resume,
+#else
+    NULL,
+    NULL,
+#endif
     NULL,
     XMF_SetData,
     XMF_GetData,
@@ -381,6 +386,7 @@ static EAS_RESULT XMF_Reset (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
     return SMF_Reset(pEASData, ((S_XMF_DATA*) pInstData)->pSMFData);
 }
 
+#ifdef JET_INTERFACE
 /*----------------------------------------------------------------------------
  * XMF_Pause()
  *----------------------------------------------------------------------------
@@ -424,6 +430,7 @@ static EAS_RESULT XMF_Resume (S_EAS_DATA *pEASData, EAS_VOID_PTR pInstData)
 {
     return SMF_Resume(pEASData, ((S_XMF_DATA*) pInstData)->pSMFData);
 }
+#endif
 
 /*----------------------------------------------------------------------------
  * XMF_SetData()
