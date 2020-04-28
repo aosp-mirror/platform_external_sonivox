@@ -117,7 +117,10 @@ cc_defaults {
 cc_library {
     name: "libsonivoxwithoutjet",
     defaults: ["libsonivox-defaults"],
-    apex_available: ["com.android.media"],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.media",
+    ],
 }
 
 cc_library {
