@@ -70,6 +70,14 @@ cc_defaults {
         "liblog",
     ],
 
+    host_supported: true,
+
+    target: {
+        darwin: {
+            enabled: false,
+        },
+    },
+
     arch: {
         arm: {
             instruction_set: "arm",
