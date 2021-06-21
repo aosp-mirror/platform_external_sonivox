@@ -1,3 +1,20 @@
+package {
+    default_applicable_licenses: ["external_sonivox_arm-wt-22k_license"],
+}
+
+// Added automatically by a large-scale-change
+// See: http://go/android-license-faq
+license {
+    name: "external_sonivox_arm-wt-22k_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Apache-2.0",
+    ],
+    license_text: [
+        "NOTICE",
+    ],
+}
+
 cc_defaults {
     name: "libsonivox-defaults",
     srcs: [
@@ -70,6 +87,14 @@ cc_defaults {
         "liblog",
     ],
 
+    host_supported: true,
+
+    target: {
+        darwin: {
+            enabled: false,
+        },
+    },
+
     arch: {
         arm: {
             instruction_set: "arm",
@@ -86,22 +111,15 @@ cc_defaults {
                 // In order to use #include instead of .include
                 "-xassembler-with-cpp",
 
-                "-Wa,--defsym,SAMPLE_RATE_22050=1",
-                "-Wa,--defsym,STEREO_OUTPUT=1",
-                "-Wa,--defsym,FILTER_ENABLED=1",
-                "-Wa,--defsym,SAMPLES_16_BIT=1",
+                "-DSAMPLE_RATE_22050=1",
+                "-DSTEREO_OUTPUT=1",
+                "-DFILTER_ENABLED=1",
+                "-DSAMPLES_16_BIT=1",
             ],
 
             cflags: [
                 "-DNATIVE_EAS_KERNEL",
             ],
-
-            // .s files not ported for Clang assembler yet.
-            clang_asflags: ["-no-integrated-as"],
-        },
-        arm64: {
-            // .s files not ported for Clang assembler yet.
-            clang_asflags: ["-no-integrated-as"],
         },
     },
     sanitize: {
@@ -135,5 +153,3 @@ cc_library {
         "-DJET_INTERFACE",
     ],
 }
-
-
