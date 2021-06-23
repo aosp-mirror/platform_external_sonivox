@@ -31,6 +31,8 @@
 #ifndef _EAS_DATA_H
 #define _EAS_DATA_H
 
+#include <stdint.h>
+
 #include "eas_types.h"
 #include "eas_synthcfg.h"
 #include "eas.h"
