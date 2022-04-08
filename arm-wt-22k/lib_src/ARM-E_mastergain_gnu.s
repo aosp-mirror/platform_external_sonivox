@@ -40,6 +40,7 @@
 	.arm
 	.text
 
+	.func	SynthMasterGain
 SynthMasterGain:
 
 	.global	SynthMasterGain	@ allow other files to use this function
@@ -101,6 +102,8 @@ loop:
 	BX		lr
 
 @*****************************************************************************
+
+	.endfunc		@ end of function/procedure
 
 	.end		@ end of assembly code
 

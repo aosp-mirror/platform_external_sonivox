@@ -55,6 +55,7 @@ tmp2	.req	r10
 @RestoreRegs	RLIST	{r4-r10, pc}
 
 
+	.func	WT_VoiceFilter
 WT_VoiceFilter:
 
 	STMFD	sp!, {r4-r10, lr}
@@ -111,7 +112,7 @@ FilterLoop:
 
 	MOV		z1, tmp1, ASR #14				@ shift result to low word
 	
-	LDRSHGT	tmp0, [pBuffer, #NEXT_OUTPUT_PCM]	@ fetch next sample
+	LDRGTSH	tmp0, [pBuffer, #NEXT_OUTPUT_PCM]	@ fetch next sample
 
 	STRH	z1, [pBuffer], #NEXT_OUTPUT_PCM	@ write back to buffer
 
@@ -128,5 +129,6 @@ FilterLoop:
 	LDMFD	sp!,{r4-r10, lr}
 	BX		lr
 
+	.endfunc
 	.end
 
