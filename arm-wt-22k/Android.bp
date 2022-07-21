@@ -18,9 +18,13 @@ license {
 cc_defaults {
     name: "libsonivox-defaults",
     srcs: [
+        "lib_src/eas_chorus.c",
+        "lib_src/eas_chorusdata.c",
         "lib_src/eas_data.c",
         "lib_src/eas_dlssynth.c",
         "lib_src/eas_flog.c",
+        "lib_src/eas_ima_tables.c",
+        "lib_src/eas_imaadpcm.c",
         "lib_src/eas_imelody.c",
         "lib_src/eas_imelodydata.c",
         "lib_src/eas_math.c",
@@ -50,6 +54,12 @@ cc_defaults {
         "host_src/eas_config.c",
         "host_src/eas_hostmm.c",
         "host_src/eas_report.c",
+
+        // not using these modules
+        //"host_src/eas_main.c",
+        //"host_src/eas_wave.c",
+        //"lib_src/eas_wavefile.c",
+        //"lib_src/eas_wavefiledata.c",
     ],
 
     cflags: [
