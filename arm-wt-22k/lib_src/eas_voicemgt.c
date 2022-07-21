@@ -400,6 +400,17 @@ EAS_RESULT VMInitMIDI (S_EAS_DATA *pEASData, S_SYNTH **ppSynth)
 }
 
 /*----------------------------------------------------------------------------
+ * VMIncRefCount()
+ *----------------------------------------------------------------------------
+ * Increment reference count for virtual synth
+ *----------------------------------------------------------------------------
+*/
+void VMIncRefCount (S_SYNTH *pSynth)
+{
+    pSynth->refCount++;
+}
+
+/*----------------------------------------------------------------------------
  * VMReset()
  *----------------------------------------------------------------------------
  * Purpose:
@@ -3134,6 +3145,31 @@ EAS_RESULT VMSetPolyphony (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 poly
 }
 
 /*----------------------------------------------------------------------------
+ * VMGetPolyphony()
+ *----------------------------------------------------------------------------
+ * Purpose:
+ * Get the virtual synth polyphony
+ *
+ * Inputs:
+ * pVoiceMgr        pointer to synthesizer data
+ * pPolyphonyCount  pointer to variable to hold polyphony count
+ * pSynth           pointer to virtual synth
+ *
+ * Outputs:
+ * Returns error code
+ *
+ * Side Effects:
+ *
+ *----------------------------------------------------------------------------
+*/
+/*lint -esym(715, pVoiceMgr) reserved for future use */
+EAS_RESULT VMGetPolyphony (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 *pPolyphonyCount)
+{
+    *pPolyphonyCount = (EAS_U16) pSynth->maxPolyphony;
+    return EAS_SUCCESS;
+}
+
+/*----------------------------------------------------------------------------
  * VMSetPriority()
  *----------------------------------------------------------------------------
  * Purpose:
@@ -3155,6 +3191,31 @@ EAS_RESULT VMSetPolyphony (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 poly
 EAS_RESULT VMSetPriority (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 priority)
 {
     pSynth->priority = (EAS_U8) priority ;
+    return EAS_SUCCESS;
+}
+
+/*----------------------------------------------------------------------------
+ * VMGetPriority()
+ *----------------------------------------------------------------------------
+ * Purpose:
+ * Get the virtual synth priority
+ *
+ * Inputs:
+ * pVoiceMgr        pointer to synthesizer data
+ * pPriority        pointer to variable to hold priority
+ * pSynth           pointer to virtual synth
+ *
+ * Outputs:
+ * Returns error code
+ *
+ * Side Effects:
+ *
+ *----------------------------------------------------------------------------
+*/
+/*lint -esym(715, pVoiceMgr) reserved for future use */
+EAS_RESULT VMGetPriority (S_VOICE_MGR *pVoiceMgr, S_SYNTH *pSynth, EAS_I32 *pPriority)
+{
+    *pPriority = pSynth->priority;
     return EAS_SUCCESS;
 }
 
@@ -3244,6 +3305,34 @@ EAS_RESULT VMValidateEASLib (EAS_SNDLIB_HANDLE pEAS)
 }
 
 /*----------------------------------------------------------------------------
+ * VMSetGlobalEASLib()
+ *----------------------------------------------------------------------------
+ * Purpose:
+ * Sets the EAS library to be used by the synthesizer
+ *
+ * Inputs:
+ * psEASData - pointer to overall EAS data structure
+ *
+ * Outputs:
+ *
+ *
+ * Side Effects:
+ *
+ *----------------------------------------------------------------------------
+*/
+EAS_RESULT VMSetGlobalEASLib (S_VOICE_MGR *pVoiceMgr, EAS_SNDLIB_HANDLE pEAS)
+{
+    EAS_RESULT result;
+
+    result = VMValidateEASLib(pEAS);
+    if (result != EAS_SUCCESS)
+        return result;
+
+    pVoiceMgr->pGlobalEAS = pEAS;
+    return EAS_SUCCESS;
+}
+
+/*----------------------------------------------------------------------------
  * VMSetEASLib()
  *----------------------------------------------------------------------------
  * Purpose:
@@ -3272,6 +3361,32 @@ EAS_RESULT VMSetEASLib (S_SYNTH *pSynth, EAS_SNDLIB_HANDLE pEAS)
 }
 
 #ifdef DLS_SYNTHESIZER
+/*----------------------------------------------------------------------------
+ * VMSetGlobalDLSLib()
+ *----------------------------------------------------------------------------
+ * Purpose:
+ * Sets the DLS library to be used by the synthesizer
+ *
+ * Inputs:
+ * psEASData - pointer to overall EAS data structure
+ *
+ * Outputs:
+ *
+ *
+ * Side Effects:
+ *
+ *----------------------------------------------------------------------------
+*/
+EAS_RESULT VMSetGlobalDLSLib (EAS_DATA_HANDLE pEASData, EAS_DLSLIB_HANDLE pDLS)
+{
+
+    if (pEASData->pVoiceMgr->pGlobalDLS)
+        DLSCleanup(pEASData->hwInstData, pEASData->pVoiceMgr->pGlobalDLS);
+
+    pEASData->pVoiceMgr->pGlobalDLS = pDLS;
+    return EAS_SUCCESS;
+}
+
 /*----------------------------------------------------------------------------
  * VMSetDLSLib()
  *----------------------------------------------------------------------------
@@ -3316,6 +3431,40 @@ EAS_RESULT VMSetDLSLib (S_SYNTH *pSynth, EAS_DLSLIB_HANDLE pDLS)
 void VMSetTranposition (S_SYNTH *pSynth, EAS_I32 transposition)
 {
     pSynth->globalTranspose = (EAS_I8) transposition;
+}
+
+/*----------------------------------------------------------------------------
+ * VMGetTranposition()
+ *----------------------------------------------------------------------------
+ * Purpose:
+ * Gets the global key transposition used by the synthesizer.
+ * Transposes all melodic instruments up or down by the specified
+ * amount. Range is limited to +/-12 semitones.
+ *
+ * Inputs:
+ * psEASData - pointer to overall EAS data structure
+ *
+ * Outputs:
+ *
+ *
+ * Side Effects:
+ *
+ *----------------------------------------------------------------------------
+*/
+void VMGetTranposition (S_SYNTH *pSynth, EAS_I32 *pTransposition)
+{
+    *pTransposition = pSynth->globalTranspose;
+}
+
+/*----------------------------------------------------------------------------
+ * VMGetNoteCount()
+ *----------------------------------------------------------------------------
+* Returns the total note count
+*----------------------------------------------------------------------------
+*/
+EAS_I32 VMGetNoteCount (S_SYNTH *pSynth)
+{
+    return pSynth->totalNoteCount;
 }
 
 /*----------------------------------------------------------------------------
