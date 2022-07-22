@@ -12,9 +12,9 @@ You may find several projects already using this library as a git submodule:
 The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources.
 
 This fork currently reverts these commits:
-* af41595537b044618234fe7dd9ebfcc652de1576 (Remove unused code from midi engine)
-* 34ba4804f643549b8ac74e5f56bfe64db3234447 (Remove unused code)
-* 2fa59c8c6851b453271f33f254c7549fa79d07fb (Partial Revert of "Build separate sonivox libs with and without jet")
+* af41595 af41595537b044618234fe7dd9ebfcc652de1576 (Remove unused code from midi engine)
+* 34ba480 34ba4804f643549b8ac74e5f56bfe64db3234447 (Remove unused code)
+* 2fa59c8 2fa59c8c6851b453271f33f254c7549fa79d07fb (Partial Revert of "Build separate sonivox libs with and without jet")
 
 All the sources from the Android repository are kept in place, but some are not built and included in the compiled products. A few, mostly empty, sources are included in the 'fakes' subdirectory, to allow compilation outside Android.
 
