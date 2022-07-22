@@ -2,6 +2,13 @@
 
 This project is a fork of the AOSP project 'platform_external_sonivox', including a CMake based build system to be used not on Android, but on any other computer Operating System. You may find and use the libraries with pkg-config or using the find_package() cmake command.
 
+There is neither MIDI input nor Audio output facilities included in the library. You need to provide your own input/output.
+
+You may find several projects already using this library as a git submodule:
+
+* [Linux-SonivoxEas](https://github.com/pedrolcl/Linux-SonivoxEas) with ALSA Sequencer MIDI input and Pulseaudio output.
+* [multiplatform-sonivoxeas](https://github.com/pedrolcl/multiplatform-sonivoxeas) with Drumstick::RT MIDI input and Qt Multimedia audio output.
+
 The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources.
 
 This fork currently reverts two commits:

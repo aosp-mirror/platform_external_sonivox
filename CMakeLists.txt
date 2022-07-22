@@ -101,13 +101,11 @@ target_compile_options( sonivox-objects PRIVATE
     -Wno-attributes
 )
 
-target_include_directories( sonivox-objects PUBLIC
-    "$<BUILD_INTERFACE:${PROJECT_CURRENT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>"
-)
-
 if (BUILD_SONIVOX_STATIC)
     add_library( sonivox-static STATIC $<TARGET_OBJECTS:sonivox-objects> )
+    target_include_directories( sonivox-static PUBLIC
+        "$<BUILD_INTERFACE:${PROJECT_CURRENT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
     set_target_properties(sonivox-static PROPERTIES PUBLIC_HEADER "${HEADERS}")
     add_library( sonivox::sonivox-static ALIAS sonivox-static)
     list(APPEND SONIVOX_TARGETS sonivox-static)
@@ -115,6 +113,9 @@ endif()
 
 if (BUILD_SONIVOX_SHARED)
     add_library( sonivox SHARED $<TARGET_OBJECTS:sonivox-objects> )
+    target_include_directories( sonivox PUBLIC
+        "$<BUILD_INTERFACE:${PROJECT_CURRENT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
     set_target_properties(sonivox PROPERTIES VERSION ${PROJECT_VERSION})
     set_target_properties(sonivox PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
     set_target_properties(sonivox PROPERTIES PUBLIC_HEADER "${HEADERS}")
