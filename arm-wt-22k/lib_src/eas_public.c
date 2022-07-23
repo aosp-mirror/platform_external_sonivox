@@ -1101,7 +1101,6 @@ EAS_PUBLIC EAS_RESULT EAS_Render (EAS_DATA_HANDLE pEASData, EAS_PCM *pOut, EAS_I
     return EAS_SUCCESS;
 }
 
-#ifdef JET_INTERFACE
 /*----------------------------------------------------------------------------
  * EAS_SetRepeat()
  *----------------------------------------------------------------------------
@@ -1227,7 +1226,6 @@ EAS_PUBLIC EAS_RESULT EAS_SetTransposition (EAS_DATA_HANDLE pEASData, EAS_HANDLE
         return EAS_ERROR_NOT_VALID_IN_THIS_STATE;
     return EAS_IntSetStrmParam(pEASData, pStream, PARSER_DATA_TRANSPOSITION, transposition);
 }
-#endif
 
 /*----------------------------------------------------------------------------
  * EAS_ParseEvents()
@@ -2106,7 +2104,6 @@ EAS_PUBLIC EAS_RESULT EAS_GetLocation (EAS_DATA_HANDLE pEASData, EAS_HANDLE pStr
     return EAS_SUCCESS;
 }
 
-#ifdef JET_INTERFACE
 /*----------------------------------------------------------------------------
  * EAS_GetRenderTime()
  *----------------------------------------------------------------------------
@@ -2176,13 +2173,11 @@ EAS_PUBLIC EAS_RESULT EAS_Pause (EAS_DATA_HANDLE pEASData, EAS_HANDLE pStream)
         /* set pause flag */
         pStream->streamFlags |= STREAM_FLAGS_PAUSE;
 
-#if 0
         /* pause the stream */
         if (pParserModule->pfPause)
             result = pParserModule->pfPause(pEASData, pStream->handle);
         else
             result = EAS_ERROR_NOT_IMPLEMENTED;
-#endif
     }
 
     return result;
@@ -2234,18 +2229,15 @@ EAS_PUBLIC EAS_RESULT EAS_Resume (EAS_DATA_HANDLE pEASData, EAS_HANDLE pStream)
         /* set resume flag */
         pStream->streamFlags |= STREAM_FLAGS_RESUME;
 
-#if 0
         /* resume the stream */
         if (pParserModule->pfResume)
             result = pParserModule->pfResume(pEASData, pStream->handle);
         else
             result = EAS_ERROR_NOT_IMPLEMENTED;
-#endif
     }
 
     return result;
 }
-#endif
 
 /*----------------------------------------------------------------------------
  * EAS_GetParameter()

@@ -25,7 +25,7 @@ using namespace std;
 
 class SonivoxTestEnvironment : public::testing::Environment {
   public:
-    SonivoxTestEnvironment() : res("/data/local/tmp/"), deleteOutput(true){}
+    SonivoxTestEnvironment() : res("test/res/"), deleteOutput(true){}
 
     // Parses the command line arguments
     int initFromOptions(int argc, char **argv);
