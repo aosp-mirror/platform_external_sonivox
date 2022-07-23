@@ -18,6 +18,21 @@ This fork currently reverts these commits:
 
 All the sources from the Android repository are kept in place, but some are not built and included in the compiled products. A few headers, mostly empty, are included in the 'fakes' subdirectory, to allow compilation outside Android.
 
+## Unit tests
+
+The Android unit tests have been integrated in the CMake build system, with little modifications. A requirement is GoogleTest, either installed system wide or it will be downloaded from the git repository. 
+
+It is **strongly** recommended that you run the test suite after you change some code or before trying the library on a new platform/compiler. Some compiler versions are known to output crashing products. Running the unit tests is a practical way to quickly detect this problem.
+
+To run the tests, you may use this command:
+
+	$ cmake --build <build_directory> --target test
+
+There are two environment variables that you may set before running the tests:
+
+	TEMP		< path to a temporary location with write permission for the output file >
+	TEST_RESOURCES	< path to the location of the input MIDI files: source_directory/test/res/ for instance >
+
 ## License
 
 Copyright (c) 2004-2006 Sonic Network Inc.
