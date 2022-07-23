@@ -221,4 +221,4 @@ target_link_libraries( SonivoxTest
 )
 
 include( GoogleTest )
-gtest_discover_tests( SonivoxTest EXTRA_ARGS "-P${PROJECT_SOURCE_DIR}/test/res/" )
+gtest_discover_tests( SonivoxTest EXTRA_ARGS "-P${PROJECT_SOURCE_DIR}/test/res/" DISCOVERY_TIMEOUT 500 ) 

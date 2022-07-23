@@ -25,7 +25,14 @@ using namespace std;
 
 class SonivoxTestEnvironment : public::testing::Environment {
   public:
-    SonivoxTestEnvironment() : res("test/res/"), deleteOutput(true){}
+	SonivoxTestEnvironment() : deleteOutput(true) { 
+		if (getenv("TEMP") != nullptr) {
+			snprintf(OUTPUT_FILE, sizeof(OUTPUT_FILE), "%s/output_midi.pcm", getenv("TEMP"));
+		}
+		if (getenv("TEST_RESOURCES") != nullptr) {
+			res = getenv("TEST_RESOURCES");
+		}
+	}
 
     // Parses the command line arguments
     int initFromOptions(int argc, char **argv);
@@ -35,6 +42,8 @@ class SonivoxTestEnvironment : public::testing::Environment {
     const string getRes() const { return res; }
 
     bool cleanUp() const { return deleteOutput; }
+
+	char OUTPUT_FILE[256]{"/tmp/output_midi.pcm"};
 
   private:
     string res;

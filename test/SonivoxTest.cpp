@@ -27,8 +27,6 @@
 
 #include "SonivoxTestEnvironment.h"
 
-#define OUTPUT_FILE "/tmp/output_midi.pcm"
-
 // number of Sonivox output buffers to aggregate into one MediaBuffer
 static constexpr uint32_t kNumBuffersToCombine = 4;
 static constexpr uint32_t kSeekBeyondPlayTimeOffsetMs = 10;
@@ -62,7 +60,7 @@ class SonivoxTest : public ::testing::TestWithParam<tuple</*fileName*/ string,
             delete[] mAudioBuffer;
             mAudioBuffer = nullptr;
         }
-        if (gEnv->cleanUp()) remove(OUTPUT_FILE);
+        if (gEnv->cleanUp()) remove(gEnv->OUTPUT_FILE);
     }
 
     virtual void SetUp() override {
@@ -244,8 +242,8 @@ TEST_P(SonivoxTest, DecodeTest) {
     EAS_I32 count;
     EAS_STATE state;
 
-    FILE *filePtr = fopen(OUTPUT_FILE, "wb");
-    ASSERT_NE(filePtr, nullptr) << "Failed to open file: " << OUTPUT_FILE;
+    FILE *filePtr = fopen(gEnv->OUTPUT_FILE, "wb");
+    ASSERT_NE(filePtr, nullptr) << "Failed to open file: " << gEnv->OUTPUT_FILE;
 
     while (1) {
         EAS_PCM *pcm = mPCMBuffer;
@@ -280,7 +278,7 @@ TEST_P(SonivoxTest, DecodeTest) {
         }
         int32_t numBytes = fwrite(mPCMBuffer, 1, numBytesOutput, filePtr);
         ASSERT_EQ(numBytes, numBytesOutput)
-                << "Wrote " << numBytes << " of " << numBytesOutput << " to file: " << OUTPUT_FILE;
+                << "Wrote " << numBytes << " of " << numBytesOutput << " to file: " << gEnv->OUTPUT_FILE;
     }
     fclose(filePtr);
 }
