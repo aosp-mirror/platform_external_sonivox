@@ -3,6 +3,7 @@
 This project is a fork of the Android Open Source Project 'platform_external_sonivox', including a CMake based build system to be used not on Android, but on any other computer Operating System.
 Google licensed this work originally named Sonivox EAS (Embedded Audio Synthesis) from the company Sonic Network Inc. under the terms of the Apache License 2.0.
 
+This is a Wave Table synthesizer, not using external soundfont files, but embedded samples instead. 
 There is neither MIDI input nor Audio output facilities included in the library. You need to provide your own input/output.
 
 You may find several projects already using this library as a git submodule:
@@ -59,6 +60,7 @@ There are two environment variables that you may set before running the tests:
 ## License
 
 Copyright (c) 2022 Pedro López-Cabanillas
+
 Copyright (c) 2004-2006 Sonic Network Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
