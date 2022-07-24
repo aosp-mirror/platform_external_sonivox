@@ -1,6 +1,7 @@
 # Fork of the AOSP 'platform_external_sonivox' project to use it outside of Android 
 
-This project is a fork of the AOSP project 'platform_external_sonivox', including a CMake based build system to be used not on Android, but on any other computer Operating System. You may find and use the libraries with pkg-config or the find_package() cmake command.
+This project is a fork of the Android Open Source Project 'platform_external_sonivox', including a CMake based build system to be used not on Android, but on any other computer Operating System.
+Google licensed this work originally named Sonivox EAS (Embedded Audio Synthesis) from the company Sonic Network Inc. under the terms of the Apache License 2.0.
 
 There is neither MIDI input nor Audio output facilities included in the library. You need to provide your own input/output.
 
@@ -12,17 +13,39 @@ You may find several projects already using this library as a git submodule:
 The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources.
 
 This fork currently reverts these commits:
-* [af41595](https://github.com/pedrolcl/platform_external_sonivox/commit/af41595537b044618234fe7dd9ebfcc652de1576) (Remove unused code from midi engine)
-* [34ba480](https://github.com/pedrolcl/platform_external_sonivox/commit/34ba4804f643549b8ac74e5f56bfe64db3234447) (Remove unused code)
-* [2fa59c8](https://github.com/pedrolcl/platform_external_sonivox/commit/2fa59c8c6851b453271f33f254c7549fa79d07fb) (Partial Revert of "Build separate sonivox libs with and without jet")
+
+* Full revert of [af41595](https://github.com/pedrolcl/platform_external_sonivox/commit/af41595537b044618234fe7dd9ebfcc652de1576) (Remove unused code from midi engine)
+* Full revert of [34ba480](https://github.com/pedrolcl/platform_external_sonivox/commit/34ba4804f643549b8ac74e5f56bfe64db3234447) (Remove unused code)
+* Partial revert of [2fa59c8](https://github.com/pedrolcl/platform_external_sonivox/commit/2fa59c8c6851b453271f33f254c7549fa79d07fb) (Build separate sonivox libs with and without jet...)
 
 All the sources from the Android repository are kept in place, but some are not built and included in the compiled products. A few headers, mostly empty, are included in the 'fakes' subdirectory, to allow compilation outside Android.
+
+## Using the library
+
+You may find and use the installed libraries with pkg-config or the find_package() cmake command. The API is documented in the 'docs' directory contents.
+
+The 'example' directory contains a simple command line utility to render standard MIDI files into raw PCM audio streams. This utility can be compiled after building and installing sonivox in some prefix like /usr, /usr/local, or $HOME/Sonivox.
+The CMake script contains three alternatives: using CMake only, using pkg-config and using sonivox as a subdirectory.
+
+Once compiled, you can use the program to listen MIDI files or to create MP3 files.
+
+Example 1: Render a MIDI file and save the rendered audio as a raw audio file:
+
+    $ sonivoxrender ants.mid > ants.pcm
+
+Example 2: pipe the rendered audio thru the ALSA 'aplay' utility:
+
+    $ sonivoxrender ants.mid | aplay -c 2 -f S16_LE -r 22050
+
+Example 3: pipe the rendered audio thru the 'lame' utility creating a MP3 file:
+
+    $ sonivoxrender ants.mid | lame -r -s 22050 - ants.mp3
 
 ## Unit tests
 
 The Android unit tests have been integrated in the CMake build system, with little modifications. A requirement is GoogleTest, either installed system wide or it will be downloaded from the git repository. 
 
-It is **strongly** recommended that you run the test suite after you change some code or before trying the library on a new platform/compiler. Some compiler versions are known to output crashing products. Running the unit tests is a practical way to quickly detect this problem.
+It is **strongly** recommended that you run the test suite after changing some code or before trying the library on a new platform/compiler. Some compiler versions are known to output crashing products. Running the unit tests is a practical way to quickly detect this problem.
 
 To run the tests, you may use this command:
 
@@ -35,6 +58,7 @@ There are two environment variables that you may set before running the tests:
 
 ## License
 
+Copyright (c) 2022 Pedro López-Cabanillas
 Copyright (c) 2004-2006 Sonic Network Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
