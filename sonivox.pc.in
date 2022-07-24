@@ -1,11 +1,12 @@
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
 libdir=@sonivox_libdir@
-includedir=@sonivox_includedir@
+includedir=@sonivox_includedir@/sonivox
 
 Name: sonivox
 Description: Sonivox EAS Software Synthesizer
-URL: https://github.com/pedrolcl/platform_external_sonivox
+URL: https://github.com/pedrolcl/sonivox
 Version: @PROJECT_VERSION@
 Libs: -L${libdir} -lsonivox
+Libs.private: -lm
 Cflags: -I${includedir}

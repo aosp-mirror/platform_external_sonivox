@@ -28,6 +28,13 @@ if (NOT GTest_FOUND)
     FetchContent_MakeAvailable( googletest )
 endif()
 
+if (UNIX AND NOT APPLE)
+    find_library(MATH_LIBRARY m)
+    message(STATUS "Math library: ${MATH_LIBRARY}")
+else()
+    set(MATH_LIBRARY "")
+endif()
+
 list(APPEND SOURCES
   arm-wt-22k/host_src/eas_config.c 
   arm-wt-22k/host_src/eas_hostmm.c 
@@ -110,23 +117,26 @@ target_include_directories( sonivox-objects PRIVATE
 
 set_target_properties( sonivox-objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE )
 
-target_compile_options( sonivox-objects PRIVATE
-    -Wno-unused-parameter
-    -Wno-unused-value
-    -Wno-unused-variable
-    -Wno-unused-function
-    -Wno-misleading-indentation
-    -Wno-attributes
-)
+if (CMAKE_COMPILER_IS_GNUCC)
+    target_compile_options( sonivox-objects PRIVATE
+        -Wno-unused-parameter
+        -Wno-unused-value
+        -Wno-unused-variable
+        -Wno-unused-function
+        -Wno-misleading-indentation
+        -Wno-attributes
+    )
+endif()
 
 if (BUILD_SONIVOX_STATIC)
     add_library( sonivox-static STATIC $<TARGET_OBJECTS:sonivox-objects> )
     target_include_directories( sonivox-static PUBLIC
         "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
-    set_target_properties(sonivox-static PROPERTIES PUBLIC_HEADER "${HEADERS}")
+    set_target_properties( sonivox-static PROPERTIES PUBLIC_HEADER "${HEADERS}")
+    target_link_libraries( sonivox-static PUBLIC ${MATH_LIBRARY} )
     add_library( sonivox::sonivox-static ALIAS sonivox-static)
-    list(APPEND SONIVOX_TARGETS sonivox-static)
+    list( APPEND SONIVOX_TARGETS sonivox-static )
 endif()
 
 if (BUILD_SONIVOX_SHARED)
@@ -134,11 +144,13 @@ if (BUILD_SONIVOX_SHARED)
     target_include_directories( sonivox PUBLIC
         "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
-    set_target_properties(sonivox PROPERTIES VERSION ${PROJECT_VERSION})
-    set_target_properties(sonivox PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
-    set_target_properties(sonivox PROPERTIES PUBLIC_HEADER "${HEADERS}")
-    add_library( sonivox::sonivox ALIAS sonivox)
-    list(APPEND SONIVOX_TARGETS sonivox)
+    set_target_properties( sonivox PROPERTIES VERSION ${PROJECT_VERSION} )
+    set_target_properties( sonivox PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR} )
+    set_target_properties( sonivox PROPERTIES PUBLIC_HEADER "${HEADERS}" )
+    target_link_libraries( sonivox PRIVATE ${MATH_LIBRARY} )
+    target_link_options( sonivox PRIVATE "LINKER:-z,defs" )
+    add_library( sonivox::sonivox ALIAS sonivox )
+    list( APPEND SONIVOX_TARGETS sonivox )
 endif()
 
 if(IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
