@@ -3,7 +3,7 @@
 This project is a fork of the Android Open Source Project 'platform_external_sonivox', including a CMake based build system to be used not on Android, but on any other computer Operating System.
 Google licensed this work originally named Sonivox EAS (Embedded Audio Synthesis) from the company Sonic Network Inc. under the terms of the Apache License 2.0.
 
-This is a Wave Table synthesizer, not using external soundfont files, but embedded samples instead. 
+This is a Wave Table synthesizer, not using external soundfont files but embedded samples instead. It is also a real time GM synthesizer. It consumes very little resources, so it may be indicated in projects for small embedded devices.
 There is neither MIDI input nor Audio output facilities included in the library. You need to provide your own input/output.
 
 You may find several projects already using this library as a git submodule:
@@ -11,7 +11,7 @@ You may find several projects already using this library as a git submodule:
 * [Linux-SonivoxEas](https://github.com/pedrolcl/Linux-SonivoxEas) with ALSA Sequencer MIDI input and Pulseaudio output.
 * [multiplatform-sonivoxeas](https://github.com/pedrolcl/multiplatform-sonivoxeas) with Drumstick::RT MIDI input and Qt Multimedia audio output.
 
-The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources.
+The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources. See also the [CMake documentation](https://cmake.org/cmake/help/latest/index.html) for common build options.
 
 This fork currently reverts these commits:
 
@@ -25,7 +25,7 @@ All the sources from the Android repository are kept in place, but some are not 
 
 You may find and use the installed libraries with pkg-config or the find_package() cmake command. The API is documented in the 'docs' directory contents.
 
-The 'example' directory contains a simple command line utility to render standard MIDI files into raw PCM audio streams. This utility can be compiled after building and installing sonivox in some prefix like /usr, /usr/local, or $HOME/Sonivox.
+The 'example' directory contains a simple command line utility to render standard MIDI files into raw PCM audio streams. This utility can be compiled after building and installing sonivox in some prefix like `/usr`, `/usr/local`, or `$HOME/Sonivox`.
 The CMake script contains three alternatives: using CMake only, using pkg-config and using sonivox as a subdirectory.
 
 Once compiled, you can use the program to listen MIDI files or to create MP3 files.
@@ -51,8 +51,12 @@ It is **strongly** recommended that you run the test suite after changing some c
 To run the tests, you may use this command:
 
 	$ cmake --build <build_directory> --target test
+        
+or simply:
 
-There are two environment variables that you may set before running the tests:
+        $ ctest
+
+There are two environment variables that you may set before running the tests (mandatory for the Qt Creator integrated test runner).
 
 	TEMP		< path to a temporary location with write permission for the output file >
 	TEST_RESOURCES	< path to the location of the input MIDI files: source_directory/test/res/ for instance >
