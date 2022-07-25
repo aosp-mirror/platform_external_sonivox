@@ -11,7 +11,7 @@ You may find several projects already using this library as a git submodule:
 * [Linux-SonivoxEas](https://github.com/pedrolcl/Linux-SonivoxEas) with ALSA Sequencer MIDI input and Pulseaudio output.
 * [multiplatform-sonivoxeas](https://github.com/pedrolcl/multiplatform-sonivoxeas) with Drumstick::RT MIDI input and Qt Multimedia audio output.
 
-The build system has two options: BUILD_SONIVOX_STATIC and BUILD_SONIVOX_SHARED to control the generation and install of both the static and shared libraries from the sources. See also the [CMake documentation](https://cmake.org/cmake/help/latest/index.html) for common build options.
+The build system has two options: `BUILD_SONIVOX_STATIC` and `BUILD_SONIVOX_SHARED` to control the generation and install of both the static and shared libraries from the sources. See also the [CMake documentation](https://cmake.org/cmake/help/latest/index.html) for common build options.
 
 This fork currently reverts these commits:
 
@@ -19,14 +19,14 @@ This fork currently reverts these commits:
 * Full revert of [34ba480](https://github.com/pedrolcl/platform_external_sonivox/commit/34ba4804f643549b8ac74e5f56bfe64db3234447) (Remove unused code)
 * Partial revert of [2fa59c8](https://github.com/pedrolcl/platform_external_sonivox/commit/2fa59c8c6851b453271f33f254c7549fa79d07fb) (Build separate sonivox libs with and without jet...)
 
-All the sources from the Android repository are kept in place, but some are not built and included in the compiled products. A few headers, mostly empty, are included in the 'fakes' subdirectory, to allow compilation outside Android.
+All the sources from the Android repository are kept in place, but some are not built and included in the compiled products. A few headers, mostly empty, are included in the 'fakes' subdirectory to allow compilation outside Android.
 
 ## Using the library
 
-You may find and use the installed libraries with pkg-config or the find_package() cmake command. The API is documented in the 'docs' directory contents.
+You may find and use the installed libraries with `pkg-config` or the `find_package()` CMake command. The library API is documented in the 'docs' directory contents.
 
 The 'example' directory contains a simple command line utility to render standard MIDI files into raw PCM audio streams. This utility can be compiled after building and installing sonivox in some prefix like `/usr`, `/usr/local`, or `$HOME/Sonivox`.
-The CMake script contains three alternatives: using CMake only, using pkg-config and using sonivox as a subdirectory.
+The CMake script contains three alternatives: using CMake only, using `pkg-config` and using sonivox as a subdirectory.
 
 Once compiled, you can use the program to listen MIDI files or to create MP3 files.
 
@@ -34,7 +34,7 @@ Example 1: Render a MIDI file and save the rendered audio as a raw audio file:
 
     $ sonivoxrender ants.mid > ants.pcm
 
-Example 2: pipe the rendered audio thru the ALSA 'aplay' utility:
+Example 2: pipe the rendered audio thru the Linux ALSA 'aplay' utility:
 
     $ sonivoxrender ants.mid | aplay -c 2 -f S16_LE -r 22050
 
@@ -54,7 +54,7 @@ To run the tests, you may use this command:
         
 or simply:
 
-        $ ctest
+	$ ctest
 
 There are two environment variables that you may set before running the tests (mandatory for the Qt Creator integrated test runner).
 
