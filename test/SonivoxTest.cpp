@@ -70,7 +70,7 @@ class SonivoxTest : public ::testing::TestWithParam<tuple</*fileName*/ string,
         mTotalAudioChannels = get<2>(params);
         mAudioSampleRate = get<3>(params);
 
-        mFd = open(mInputMediaFile.c_str(), O_RDONLY | O_LARGEFILE);
+        mFd = open(mInputMediaFile.c_str(), O_RDONLY | OPEN_FLAG);
         ASSERT_GE(mFd, 0) << "Failed to get the file descriptor for file: " << mInputMediaFile;
 
         struct stat buf;

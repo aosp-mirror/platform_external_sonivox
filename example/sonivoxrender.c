@@ -29,23 +29,31 @@
 
 #define UNUSED(X) (void)X
 
+#ifdef __WIN32__
+#define OPEN_FLAG _O_BINARY
+#else
+#define OPEN_FLAG O_LARGEFILE
+#endif
+
 EAS_I32 reverb_type = -1;
 EAS_I32 reverb_wet = 0;
 uint32_t mBase = 0;
 int64_t mLength = 0;
 int mFd = 0;
 
-static int readFunction(void *handle, void *buffer, int offset, int size) {
+int readFunction(void *handle, void *buffer, int offset, int size) {
     UNUSED(handle);
-    if (offset > mLength) offset = mLength;
+	if (offset > mLength) { 
+		offset = mLength;
+	}
     lseek(mFd, mBase + offset, SEEK_SET);
     if (offset + size > mLength) {
         size = mLength - offset;
     }
-    return read(mFd, buffer, size);
+	return read(mFd, buffer, size);
 }
 
-static int sizeFunction(void *handle) {
+int sizeFunction(void *handle) {
     UNUSED(handle);
     return mLength;
 }
@@ -63,7 +71,7 @@ int renderFile(char *fileName)
     int ok = EXIT_SUCCESS;
     int err = 0;
 
-    mFd = open(fileName, O_RDONLY);
+    mFd = open(fileName, O_RDONLY | OPEN_FLAG);
     if (mFd < 0) {
         fprintf(stderr, "Failed to open %s. error: %s\n", fileName, strerror(errno));
         ok = EXIT_FAILURE;
@@ -140,7 +148,21 @@ int renderFile(char *fileName)
         ok = EXIT_FAILURE;
         goto cleanup;
     }
+	
+	EAS_I32 playLength = 0;
+	result = EAS_ParseMetaData(mEASDataHandle, mEASStreamHandle, &playLength);
+	if (result != EAS_SUCCESS) {
+        fprintf(stderr, "Failed to parse MIDI file metadata\n");
+        ok = EXIT_FAILURE;
+        goto cleanup;
+    }
 
+	if (playLength == 0) {
+		fprintf(stderr, "MIDI file time length returned 0\n");
+        ok = EXIT_FAILURE;
+        goto cleanup;
+	}
+	
     mEASConfig = EAS_Config();
     if (mEASConfig == NULL) {
         fprintf(stderr, "Failed to get the library configuration\n");
