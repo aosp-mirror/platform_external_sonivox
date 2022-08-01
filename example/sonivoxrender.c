@@ -30,7 +30,7 @@
 #define UNUSED(X) (void)X
 
 #ifdef __WIN32__
-#define OPEN_FLAG _O_BINARY
+#define OPEN_FLAG O_BINARY
 #else
 #define OPEN_FLAG O_LARGEFILE
 #endif
@@ -70,6 +70,10 @@ int renderFile(char *fileName)
     struct stat statbuf;
     int ok = EXIT_SUCCESS;
     int err = 0;
+
+#ifdef __WIN32__
+	setmode(fileno(stdout), O_BINARY);
+#endif
 
     mFd = open(fileName, O_RDONLY | OPEN_FLAG);
     if (mFd < 0) {
