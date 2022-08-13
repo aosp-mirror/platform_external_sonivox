@@ -13,7 +13,9 @@ You may find several projects already using this library as a git submodule:
 * [Linux-SonivoxEas](https://github.com/pedrolcl/Linux-SonivoxEas) with ALSA Sequencer MIDI input and Pulseaudio output.
 * [multiplatform-sonivoxeas](https://github.com/pedrolcl/multiplatform-sonivoxeas) with Drumstick::RT MIDI input and Qt Multimedia audio output.
 
-The build system has two options: `BUILD_SONIVOX_STATIC` and `BUILD_SONIVOX_SHARED` to control the generation and install of both the static and shared libraries from the sources. See also the [CMake documentation](https://cmake.org/cmake/help/latest/index.html) for common build options.
+The build system has two options: `BUILD_SONIVOX_STATIC` and `BUILD_SONIVOX_SHARED` to control the generation and install of both the static and shared libraries from the sources. Both options are ON by default.
+Another option is `BUILD_TESTING`, also ON by default, to control if the unit tests are built, which require Google Test.
+See also the [CMake documentation](https://cmake.org/cmake/help/latest/index.html) for common build options.
 
 This fork currently reverts these commits:
 
