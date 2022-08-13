@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project( sonivox 
     LANGUAGES C CXX
-    VERSION 3.6.10.14
+    VERSION 3.6.11.0
 )
 
 # GoogleTest requires at least C++14
@@ -100,8 +100,10 @@ list(APPEND SOURCES
   arm-wt-22k/lib_src/wt_22khz.c 
 )
 
+configure_file(arm-wt-22k/host_src/eas.cmake libsonivox/eas.h @ONLY)
+
 list(APPEND HEADERS 
-    arm-wt-22k/host_src/eas.h
+    ${PROJECT_BINARY_DIR}/libsonivox/eas.h
     arm-wt-22k/host_src/eas_chorus.h
     arm-wt-22k/host_src/eas_reverb.h
     arm-wt-22k/host_src/eas_types.h
@@ -129,6 +131,7 @@ target_compile_definitions( sonivox-objects PRIVATE
 )
 
 target_include_directories( sonivox-objects PRIVATE
+    ${PROJECT_BINARY_DIR}/libsonivox
     arm-wt-22k/host_src
     arm-wt-22k/lib_src
     fakes
@@ -150,7 +153,7 @@ endif()
 if (BUILD_SONIVOX_STATIC)
     add_library( sonivox-static STATIC $<TARGET_OBJECTS:sonivox-objects> )
     target_include_directories( sonivox-static PUBLIC
-        "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
+        "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox;${PROJECT_BINARY_DIR}/libsonivox>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
     set_target_properties( sonivox-static PROPERTIES PUBLIC_HEADER "${HEADERS}")
     target_link_libraries( sonivox-static PUBLIC ${MATH_LIBRARY} )
@@ -161,7 +164,7 @@ endif()
 if (BUILD_SONIVOX_SHARED)
     add_library( sonivox SHARED $<TARGET_OBJECTS:sonivox-objects> )
     target_include_directories( sonivox PUBLIC
-        "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox>"
+        "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/arm-wt-22k/include/libsonivox;${PROJECT_BINARY_DIR}/libsonivox>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sonivox>" )
     set_target_properties( sonivox PROPERTIES VERSION ${PROJECT_VERSION} )
     set_target_properties( sonivox PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR} )
@@ -242,6 +245,7 @@ if (BUILD_TESTING)
     )
 
     target_include_directories( SonivoxTest PRIVATE
+        ${PROJECT_BINARY_DIR}
         arm-wt-22k/include
         fakes
     )

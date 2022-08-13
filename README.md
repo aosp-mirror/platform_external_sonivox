@@ -67,7 +67,9 @@ There are two environment variables that you may set before running the tests (m
 
 ## License
 
-Copyright (c) 2022 Pedro López-Cabanillas
+Copyright (c) 2022 Pedro López-Cabanillas.
+
+Copyright (c) 2008-2022, The Android Open Source Project.
 
 Copyright (c) 2004-2006 Sonic Network Inc.
 
