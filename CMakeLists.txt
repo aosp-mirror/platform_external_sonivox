@@ -1,5 +1,5 @@
 #[=========================================================================[
-  Copyright (c) 2022 Pedro López-Cabanillas
+  Copyright (c) 2022-2023 Pedro López-Cabanillas
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ if (BUILD_TESTING)
     endif()
 endif()
 
-if (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
     find_library(MATH_LIBRARY m)
     message(STATUS "Math library: ${MATH_LIBRARY}")
 else()
@@ -94,8 +94,8 @@ list(APPEND SOURCES
 #arm-wt-22k/lib_src/eas_wavefiledata.c 
   arm-wt-22k/lib_src/eas_wtengine.c 
   arm-wt-22k/lib_src/eas_wtsynth.c 
-#arm-wt-22k/lib_src/eas_xmf.c 
-#arm-wt-22k/lib_src/eas_xmfdata.c 
+  arm-wt-22k/lib_src/eas_xmf.c
+  arm-wt-22k/lib_src/eas_xmfdata.c
 #arm-wt-22k/lib_src/jet.c 
   arm-wt-22k/lib_src/wt_22khz.c 
 )
@@ -126,7 +126,7 @@ target_compile_definitions( sonivox-objects PRIVATE
   #_IMELODY_PARSER
   #_RTTTL_PARSER
   #_OTA_PARSER
-  #_XMF_PARSER
+  _XMF_PARSER
   #JET_INTERFACE
 )
 
