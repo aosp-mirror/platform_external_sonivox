@@ -18,13 +18,20 @@
     <target_preparer class="com.android.tradefed.targetprep.PushFilePreparer">
         <option name="cleanup" value="true" />
         <option name="push" value="SonivoxTest->/data/local/tmp/SonivoxTest" />
-        <option name="push-file"
-        key="https://storage.googleapis.com/android_media/external/sonivox/test/SonivoxTestRes-1.0.zip?unzip=true"
-        value="/data/local/tmp/SonivoxTestRes/" />
+    </target_preparer>
+    <target_preparer class="com.android.compatibility.common.tradefed.targetprep.DynamicConfigPusher">
+        <option name="target" value="host" />
+        <option name="config-filename" value="SonivoxTest" />
+        <option name="version" value="1.0"/>
+    </target_preparer>
+    <target_preparer class="com.android.compatibility.common.tradefed.targetprep.MediaPreparer">
+        <option name="push-all" value="true" />
+        <option name="media-folder-name" value="SonivoxTestRes-1.0"/>
+        <option name="dynamic-config-module" value="SonivoxTest" />
     </target_preparer>
     <test class="com.android.tradefed.testtype.GTest" >
         <option name="native-test-device-path" value="/data/local/tmp" />
         <option name="module-name" value="SonivoxTest" />
-        <option name="native-test-flag" value="-P /data/local/tmp/SonivoxTestRes/" />
+        <option name="native-test-flag" value="-P /sdcard/test/SonivoxTestRes-1.0/" />
     </test>
 </configuration>
