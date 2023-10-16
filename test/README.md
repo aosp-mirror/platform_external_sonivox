@@ -22,15 +22,15 @@ To test 32-bit binary push binaries from nativetest.
 adb push ${OUT}/data/nativetest/SonivoxTest/SonivoxTest /data/local/tmp/
 ```
 
-The resource file for the tests is taken from [here](https://storage.googleapis.com/android_media/external/sonivox/test/SonivoxTestRes-1.0.zip). Download, unzip and push these files into device for testing.
+The resource file for the tests is taken from [here](https://dl.google.com/android-unittest/media/external/sonivox/test/SonivoxTestRes-1.0.zip). Download, unzip and push these files into device for testing.
 
 ```
-adb push SonivoxTestRes-1.0/. /data/local/tmp/SonivoxTestRes/
+adb push SonivoxTestRes-1.0 /sdcard/test/
 ```
 
 usage: SonivoxTest -P \<path_to_res_folder\> -C <remove_output_file>
 ```
-adb shell /data/local/tmp/SonivoxTest -P /data/local/tmp/SonivoxTestRes/ -C true
+adb shell /data/local/tmp/SonivoxTest -P /sdcard/test/SonivoxTestRes-1.0/ -C true
 ```
 Alternatively, the test can also be run using atest command.
 
