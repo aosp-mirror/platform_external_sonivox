@@ -26,8 +26,9 @@ package {
 cc_test {
     name: "SonivoxTest",
     gtest: true,
+    test_suites: ["device-tests"],
 
-    srcs: [ "SonivoxTest.cpp" ],
+    srcs: ["SonivoxTest.cpp"],
 
     static_libs: [
         "libsonivox",
