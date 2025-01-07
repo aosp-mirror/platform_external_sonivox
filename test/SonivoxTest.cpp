@@ -72,6 +72,18 @@ class SonivoxTest : public ::testing::TestWithParam<tuple</*fileName*/ string,
         mTotalAudioChannels = get<2>(params);
         mAudioSampleRate = get<3>(params);
 
+        // b/384791354: we're having presubmit failures that appear to be
+        // flaky non-population of the data to the device.
+        // To help diagnose, let's see what's in that directory. to see if it is
+        // non-population, incorrect permissions, or something novel+interesting.
+        {
+            string cmd;
+            // this will also show the directory itself....
+            cmd = "ls -la " + gEnv->getRes() + "/";
+            printf("Output from running %s\n", cmd.c_str());
+            system(cmd.c_str());
+        }
+
         mFd = open(mInputMediaFile.c_str(), O_RDONLY | O_LARGEFILE);
         ASSERT_GE(mFd, 0) << "Failed to get the file descriptor for file: " << mInputMediaFile;
 
