@@ -26,12 +26,12 @@
     </target_preparer>
     <target_preparer class="com.android.compatibility.common.tradefed.targetprep.MediaPreparer">
         <option name="push-all" value="true" />
-        <option name="media-folder-name" value="SonivoxTestRes-1.0"/>
+        <option name="media-folder-name" value="/data/local/tmp/SonivoxTestRes-1.0"/>
         <option name="dynamic-config-module" value="SonivoxTest" />
     </target_preparer>
     <test class="com.android.tradefed.testtype.GTest" >
         <option name="native-test-device-path" value="/data/local/tmp" />
         <option name="module-name" value="SonivoxTest" />
-        <option name="native-test-flag" value="-P /sdcard/test/SonivoxTestRes-1.0/" />
+        <option name="native-test-flag" value="-P /data/local/tmp/SonivoxTestRes-1.0/" />
     </test>
 </configuration>
